@@ -33,5 +33,21 @@ export default function Filters() {
           </select>
         </div>
       </div>
+
+      <div className="space-y-3">
+        <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          Price range
+        </label>
+        <input type="range"
+          min={0}
+          max={2000}
+          step={25}
+          value={filters.maxPrice}
+          onChange={(e) =>setFilter("maxPrice",Number(e.target.value))}
+          aria-label="Maximum price"
+          className="range-input"
+         />
+         <div className="flex items"></div>
+      </div>
       </section>
       )}
