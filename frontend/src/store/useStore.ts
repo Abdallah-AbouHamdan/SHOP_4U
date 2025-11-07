@@ -15,3 +15,14 @@ export type Product = {
     discounted?:boolean;
 };
 
+type State = {
+    products:Product[];
+    cart:string[];
+    filters:{
+        category:string;
+        minPrice:number;
+        maxPrice:number;
+        discounted:boolean;
+        sort:"populare"|"priceLow"|"priceHigh";
+    };
+}
