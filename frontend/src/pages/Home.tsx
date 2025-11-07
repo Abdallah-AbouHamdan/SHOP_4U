@@ -47,7 +47,31 @@ export default function Filters() {
           aria-label="Maximum price"
           className="range-input"
          />
-         <div className="flex items"></div>
+         <div className="flex items-center gap-3 text-sm">
+          <div className="flex-1 rounded-2xl border border-slate-200 bg-white px-3 py-2">
+            <label className="text-xs uppercase text-slate-400">Min</label>
+            <input
+              type="number"
+              min={0}
+              max={filters.maxPrice}
+              value={filters.minPrice}
+              onChange={(e) => setFilter("minPrice", Number(e.target.value))}
+              className="w-full bg-transparent text-slate-800 outline-none"
+            />
+          </div>
+          <span className="text-xs font-semibold uppercase text-slate-400">to</span>
+          <div className="flex-1 rounded-2xl border border-slate-200 bg-white px-3 py-2">
+            <label className="text-xs uppercase text-slate-400">Max</label>
+            <input
+              type="number"
+              min={filters.minPrice}
+              max={2000}
+              value={filters.maxPrice}
+              onChange={(e) => setFilter("maxPrice", Number(e.target.value))}
+              className="w-full bg-transparent text-slate-800 outline-none"
+            />
+          </div>
+        </div>
       </div>
       </section>
       )}
