@@ -1,4 +1,4 @@
-
+import Filters from "../components/Filters"
 export default function Home() {
   return (
     <div className="bg-[#e1e1e1] pb-16 pt-8 px">
@@ -7,7 +7,7 @@ export default function Home() {
                 <Filters />
             </aside>
 
-            
+
         </div>
     </div>
   )

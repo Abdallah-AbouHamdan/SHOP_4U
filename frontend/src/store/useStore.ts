@@ -1,43 +1,43 @@
-import {create} from "zustand";
-import {persist} from "zustand/middleware";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export type Product = {
-    id:string;
-    title:string;
-    price:number;
-    compareAtPrice?:number;
-    caregory:string;
-    seller:string;
-    tagline:string;
-    image:string;
-    rating:number;
-    reviews:number;
-    discounted?:boolean;
+  id: string;
+  title: string;
+  price: number;
+  compareAtPrice?: number;
+  category: string;
+  seller: string;
+  tagline: string;
+  image: string;
+  rating: number;
+  reviews: number;
+  discounted?: boolean;
 };
 
 type State = {
-    products:Product[];
-    cart:string[];
-    filters:{
-        category:string;
-        minPrice:number;
-        maxPrice:number;
-        discounted:boolean;
-        sort:"populare"|"priceLow"|"priceHigh";
-    };
-}
+  products: Product[];
+  cart: string[];
+  filters: {
+    category: string;
+    minPrice: number;
+    maxPrice: number;
+    discounted: boolean;
+    sort: "popular" | "priceLow" | "priceHigh";
+  };
+};
 
 type Actions = {
-    addToCart:(id:string)=> void;
-    removeFromeCart:(id:string)=>void;
-    serFilter:(key:keyof State["filters"],value:any)=>void;
+  addToCart: (id: string) => void;
+  removeFromCart: (id: string) => void;
+  setFilter: (key: keyof State["filters"], value: any) => void;
 };
 
 export const useStore = create<State & Actions>()(
-    persist(
-        (set)=>({
-            products:[
-                {
+  persist(
+    (set) => ({
+      products: [
+  {
     id: "p1",
     title: "Cotton Shorts",
     price: 29.99,
@@ -175,16 +175,16 @@ export const useStore = create<State & Actions>()(
     reviews: 420,
     discounted: true,
   },
-            ],
-            carts:[],
-            filters:{
-                caregory:"All",
-                minPrice:0,
-                macPrice:2000,
-                discounted:false,
-                sort:"popular",
-            },
-            addToCart: (id) => set((s) => ({ cart: [...s.cart, id] })),
+],
+      cart: [],
+      filters: {
+        category: "All",
+        minPrice: 0,
+        maxPrice: 2000,
+        discounted: false,
+        sort: "popular",
+      },
+      addToCart: (id) => set((s) => ({ cart: [...s.cart, id] })),
       removeFromCart: (id) =>
         set((s) => ({ cart: s.cart.filter((pid) => pid !== id) })),
       setFilter: (key, value) =>
