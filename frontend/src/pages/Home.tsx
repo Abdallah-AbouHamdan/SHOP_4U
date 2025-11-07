@@ -32,7 +32,7 @@ export default function Home() {
             </div>
           </section>
 
-          
+          {/* <ProductGrid /> */}
         </main>
       </div>
     </div>
