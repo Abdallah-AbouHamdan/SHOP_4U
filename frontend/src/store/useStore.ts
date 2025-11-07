@@ -26,3 +26,9 @@ type State = {
         sort:"populare"|"priceLow"|"priceHigh";
     };
 }
+
+type Actions = {
+    addToCart:(id:string)=> void;
+    removeFromeCart:(id:string)=>void;
+    serFilter:(key:keyof State["filters"],value:any)=>void;
+};
