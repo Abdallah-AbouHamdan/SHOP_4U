@@ -184,7 +184,12 @@ export const useStore = create<State & Actions>()(
                 discounted:false,
                 sort:"popular",
             },
-            
-        })
-    )
-)
+            addToCart: (id) => set((s) => ({ cart: [...s.cart, id] })),
+      removeFromCart: (id) =>
+        set((s) => ({ cart: s.cart.filter((pid) => pid !== id) })),
+      setFilter: (key, value) =>
+        set((s) => ({ filters: { ...s.filters, [key]: value } })),
+    }),
+    { name: "shop4u-storage" }
+  )
+);
