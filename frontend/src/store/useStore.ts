@@ -179,7 +179,12 @@ export const useStore = create<State & Actions>()(
             carts:[],
             filters:{
                 caregory:"All",
-            }
+                minPrice:0,
+                macPrice:2000,
+                discounted:false,
+                sort:"popular",
+            },
+            
         })
     )
 )
