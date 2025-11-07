@@ -1,5 +1,6 @@
 import { FaStar } from "react-icons/fa";
 import { useStore } from "../store/useStore";
+import { GiShoppingCart } from "react-icons/gi";
 
 type Props = {id:string};
 
@@ -43,7 +44,13 @@ export default function ProductCard({id}:Props){
              )}
             </div>
             </div>
-            
+            <button
+            onClick={() => addToCart(p.id)}
+            className="mt-4 inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+            >
+            <span aria-hidden><GiShoppingCart /></span>
+            Add to cart
+            </button>
         </article>
     )
 }
