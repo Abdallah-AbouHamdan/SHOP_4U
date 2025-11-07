@@ -73,5 +73,14 @@ export default function Filters() {
           </div>
         </div>
       </div>
+      <label className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700">
+        Discounted items only
+        <input
+          type="checkbox"
+          className="toggle-input"
+          checked={filters.discounted}
+          onChange={(e) => setFilter("discounted", e.target.checked)}
+        />
+      </label>
       </section>
       )}
