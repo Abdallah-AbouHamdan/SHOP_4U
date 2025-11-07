@@ -27,7 +27,9 @@ export default function Filters() {
             value={filters.category}
             onChange={(e) => setFilter("category", e.target.value)}
           >
-            
+            {categories.map((category) => (
+              <option key={category}>{category}</option>
+            ))}
           </select>
         </div>
       </div>
