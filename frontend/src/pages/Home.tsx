@@ -1,4 +1,5 @@
 import Filters from "../components/Filters";
+import ProductGrid from "../components/ProductGrid";
 
 export default function Home() {
   return (
@@ -32,7 +33,7 @@ export default function Home() {
             </div>
           </section>
 
-          {/* <ProductGrid /> */}
+          <ProductGrid />
         </main>
       </div>
     </div>
