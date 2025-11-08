@@ -30,7 +30,7 @@ export default function ProductCard({ id }: Props) {
           loading="lazy"
           alt={p.title}
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-900/60 via-slate-900/10 to-transparent opacity-0 transition duration-300 group-hover:opacity-100" />
+        <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-slate-900/60 via-slate-900/10 to-transparent opacity-0 transition duration-300 group-hover:opacity-100" />
         <div className="absolute left-4 right-4 top-4 flex flex-wrap items-center gap-2">
           <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-700 shadow">
             {p.category}
