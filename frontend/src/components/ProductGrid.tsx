@@ -10,6 +10,11 @@ export default function ProductGrid() {
         if(filters.discounted && !p.discounted) return false;
         return true;
     })
+    .sort((a,b) =>{
+        if (filters.sort === "priceLow") return a.price - b.price;
+        if (filters.sort === "priceHigh") return b.price - a.price;
+        return b.rating - a.rating;
+    })
   return (
     
   )
