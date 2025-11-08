@@ -24,11 +24,11 @@ export default function ProductGrid() {
     <>
     <div className="mb-4 flex items-center justify-between text-sm text-slate-500">
         <span>
-            Showing <span className="font-semibold text-slate-900">{filtered.length}</span>{""}
+            Showing <span className="font-semibold text-slate-900">{filtered.length}</span>{" "}
             {filtered.length === 1 ?"item":"items"}
         </span>
         <span className="hidden sm:block">
-        Sorted by{""}
+        Sorted by{" "}
         <span className="font-medium text-slate-900">
             {filters.sort === "popular"
             ?"Most Popular"

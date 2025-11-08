@@ -4,12 +4,7 @@ import ProductGrid from "../components/ProductGrid";
 export default function Home() {
   return (
     <div className="bg-[#ffffff] pb-16 pt-8">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 lg:flex-row">
-        <aside className="w-full shrink-0 lg:w-72">
-          <Filters />
-        </aside>
-        <main className="flex-1 space-y-6">
-          <section className="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm">
+      <section className="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm mb-5 mx-auto w-4/5" >
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
                 <p className="text-xs font-semibold uppercase tacking-[0.3em] text-purple-500">
@@ -32,6 +27,12 @@ export default function Home() {
               </div>
             </div>
           </section>
+      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 lg:flex-row">
+        <aside className="w-full shrink-0 lg:w-72">
+          <Filters />
+        </aside>
+        <main className="flex-1 space-y-6">
+          
 
           <ProductGrid />
         </main>
