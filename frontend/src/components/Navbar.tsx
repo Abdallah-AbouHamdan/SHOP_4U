@@ -2,8 +2,12 @@ import { MdOutlineShoppingCart } from "react-icons/md";
 import { IoIosSearch } from "react-icons/io";
 import { FiMoon } from "react-icons/fi";
 import { GiShoppingCart } from "react-icons/gi";
+import { useStore } from "../store/useStore";
 
 export default function Navbar() {
+  const search = useStore((s) => s.filters.search ?? "");
+  const setFilter = useStore((s) => s.setFilter);
+
   return (
        <nav className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-4 sm:flex-row sm:items-center">
@@ -20,7 +24,13 @@ export default function Navbar() {
         </div>
         <div className="flex flex-1 items-center gap-3 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-500">
           <span aria-hidden><IoIosSearch /></span>
-          <input type="text" placeholder="Search products ..." className="flex-1 bg-transporent text-slate-900 outline-none placeholder:text-slate-400" />
+          <input
+            type="text"
+            placeholder="Search products ..."
+            value={search}
+            onChange={(e) => setFilter("search", e.target.value)}
+            className="flex-1 bg-transporent text-slate-900 outline-none placeholder:text-slate-400"
+          />
         </div>
         <div className="flex items-center gap-3 text-lg">
           <button aria-label="theme" className="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-slate-500 hover:text-slate-900">

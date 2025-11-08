@@ -24,6 +24,7 @@ type State = {
     maxPrice: number;
     discounted: boolean;
     sort: "popular" | "priceLow" | "priceHigh";
+    search: string;
   };
 };
 
@@ -183,6 +184,7 @@ export const useStore = create<State & Actions>()(
         maxPrice: 2000,
         discounted: false,
         sort: "popular",
+        search: "",
       },
       addToCart: (id) => set((s) => ({ cart: [...s.cart, id] })),
       removeFromCart: (id) =>

@@ -3,11 +3,16 @@ import ProductCard from "./ProductCard";
 
 export default function ProductGrid() {
     const {products,filters} = useStore();
+    const searchTerm = (filters.search ?? "").trim().toLowerCase();
     const filtered = products
     .filter((p) =>{
         if(filters.category !=="All" && p.category !== filters.category) return false;
         if(p.price < filters.minPrice || p.price > filters.maxPrice) return false;
         if(filters.discounted && !p.discounted) return false;
+        if(searchTerm.length){
+            const haystack = `${p.title} ${p.tagline} ${p.category} ${p.seller}`.toLowerCase();
+            if(!haystack.includes(searchTerm)) return false;
+        }
         return true;
     })
     .sort((a,b) =>{
