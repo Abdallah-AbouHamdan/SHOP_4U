@@ -122,7 +122,7 @@ export const useStore = create<State & Actions>()(
   },
   {
     id: "p7",
-    title: "Classic Denim Jacket",
+    title: "Classic Jacket",
     price: 89.5,
     compareAtPrice: 99.99,
     category: "Fashion Forward",
@@ -136,7 +136,7 @@ export const useStore = create<State & Actions>()(
   },
   {
     id: "p8",
-    title: "Smart Watch Series 8",
+    title: "Smart Watch",
     price: 399.99,
     compareAtPrice: 449.99,
     category: "Tech Zone",
@@ -150,7 +150,7 @@ export const useStore = create<State & Actions>()(
   },
   {
     id: "p9",
-    title: "Scented Soy Candle Set",
+    title: "Candle Set",
     price: 34.99,
     compareAtPrice: 49.99,
     category: "Lifestyle",
@@ -164,7 +164,7 @@ export const useStore = create<State & Actions>()(
   },
   {
     id: "p10",
-    title: "Yoga Mat Pro Grip",
+    title: "Yoga Mat",
     price: 59.99,
     compareAtPrice: 79.99,
     category: "Sport Zone",

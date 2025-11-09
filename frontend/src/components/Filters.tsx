@@ -1,3 +1,4 @@
+import { CiFilter } from "react-icons/ci";
 import { useStore } from "../store/useStore";
 
 const categories = ["All", "Fashion Forward", "Sport Zone", "Tech Zone", "Lifestyle"];
@@ -8,13 +9,13 @@ export default function Filters() {
   return (
     <section className="space-y-5 rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-sm">
       <header>
-        <p className="text-xs font-semibold uppercase tracking-widest text-purple-500">
+        <div className="flex">
+          <span><CiFilter /></span>
+           <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">
           Filters
         </p>
-        <h2 className="text-xl font-semibold text-slate-900">Fine tune results</h2>
-        <p className="text-sm text-slate-500">
-          Shop from trusted sellers across multiple categories.
-        </p>
+        </div>
+       
       </header>
 
       <div className="space-y-2">

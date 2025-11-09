@@ -23,7 +23,7 @@ input::placeholder {
   appearance: none;
   height: 6px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #111322, #a855f7);
+  background: linear-gradient(90deg, #111322, #55f758);
   cursor: pointer;
 }
 

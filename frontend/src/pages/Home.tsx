@@ -7,7 +7,7 @@ export default function Home() {
       <section className="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm mb-5 mx-auto w-4/5" >
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <p className="text-xs font-semibold uppercase tacking-[0.3em] text-purple-500">
+                <p className="text-xs font-semibold uppercase tacking-[0.3em] text-slate-500">
                   Discover
                 </p>
                 <h1 className="text-2xl font-semibold text-slate-900">
@@ -16,14 +16,6 @@ export default function Home() {
                 <p className="text-sm text-slate-500">
                   Shop from trusted sellers across multiple categories
                 </p>
-              </div>
-              <div className="flex gap-3 text-sm font-semibold">
-                 <button className="rounded-2xl border border-slate-200 px-4 py-2 text-slate-600">
-                  Filters
-                </button>
-                <button className="rounded-2xl bg-slate-900 px-4 py-2 text-white shadow">
-                  Flash deals
-                </button>
               </div>
             </div>
           </section>

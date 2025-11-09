@@ -1,6 +1,7 @@
 import { FaStar } from "react-icons/fa";
 import { GiShoppingCart } from "react-icons/gi";
 import { useStore } from "../store/useStore";
+import { IoIosHome } from "react-icons/io";
 
 type Props = { id: string };
 
@@ -41,24 +42,26 @@ export default function ProductCard({ id }: Props) {
             </span>
           )}
         </div>
-        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs font-semibold text-white">
-          <span className="flex items-center gap-1">
-            <FaStar className="text-amber-400" />
-            <span>{p.rating.toFixed(1)}</span>
-            <span className="text-[11px] text-white/80">
-              ({p.reviews.toLocaleString()})
-            </span>
-          </span>
-          <span className="uppercase tracking-wide text-white/80">
-            {p.seller}
-          </span>
-        </div>
+         
       </div>
-
+          
       <div className="flex flex-1 flex-col gap-3 px-1 py-4 text-sm text-slate-600 sm:px-2">
         <div>
-          <h3 className="text-lg font-semibold text-slate-900">{p.title}</h3>
-          <p className="text-slate-500">{p.tagline}</p>
+          <div className="flex">
+          <IoIosHome />
+          <span className="uppercase text-[12px] tracking-wide text-slate-500">
+           {p.seller}
+         </span>
+         </div>
+          <h3 className="text-lg font-semibold text-slate-900">{ p.title}</h3>
+          <span className="flex items-center gap-1">
+           <FaStar className="text-amber-400" />
+           <span>{p.rating.toFixed(1)}</span>
+           <span className="text-[11px] text-black/80">
+             ({p.reviews.toLocaleString()})
+           </span>
+          </span>
+          <p className="text-slate-500">{ p.tagline}</p>
         </div>
 
         <div className="flex items-baseline gap-3">
