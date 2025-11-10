@@ -68,7 +68,7 @@ input::placeholder {
 }
 
 .toggle-input:checked {
-  background: linear-gradient(120deg, #7f5bff, #ea4ccc);
+  background: linear-gradient(120deg, #356c2f, #3bdd35);
 }
 
 .toggle-input:checked::after {
