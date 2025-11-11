@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useStore } from "../store/useStore";
 
 const currency = new Intl.NumberFormat("en-US", {
@@ -9,8 +9,15 @@ const currency = new Intl.NumberFormat("en-US", {
 
 export default function ProductModal() {
     const { products, selectedProductId, closeProductModal, addToCart } = useStore();
+
     const [quantity, setQuantity] = useState(1);
-  return (
+  
+    const product = useMemo(
+        () => products.find((p) => p.id === selectedProductId),
+        [products,selectedProductId]
+    );
+    
+    return (
     <div>Product</div>
   )
 }
