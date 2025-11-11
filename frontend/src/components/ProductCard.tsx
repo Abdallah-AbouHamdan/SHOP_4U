@@ -12,7 +12,7 @@ const currency = new Intl.NumberFormat("en-US", {
 });
 
 export default function ProductCard({ id }: Props) {
-  const { products, addToCart } = useStore();
+  const { products, addToCart, openProductModal } = useStore();
   const p = products.find((x) => x.id === id);
   if (!p) return null;
 
@@ -24,7 +24,12 @@ export default function ProductCard({ id }: Props) {
 
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-100 bg-white p-4 shadow-[0_15px_45px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:border-slate-200 hover:shadow-[0_20px_55px_rgba(15,23,42,0.12)]">
-      <div className="relative overflow-hidden rounded-2xl bg-slate-100">
+        <button
+        type="button"
+        onClick={() => openProductModal(p.id)}
+        className="relative w-full overflow-hidden rounded-2xl bg-slate-100 text-left transition focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-slate-900"
+        aria-label={`View details for ${p.title}`}
+        >
         <img
           src={p.image}
           className="h-56 w-full object-cover transition duration-700 group-hover:scale-105"
@@ -42,8 +47,7 @@ export default function ProductCard({ id }: Props) {
             </span>
           )}
         </div>
-         
-      </div>
+        </button>
           
       <div className="flex flex-1 flex-col gap-3 px-1 py-4 text-sm text-slate-600 sm:px-2">
         <div>
