@@ -18,6 +18,7 @@ export type Product = {
 type State = {
   products: Product[];
   cart: string[];
+  selectedProductId: string | null;
   filters: {
     category: string;
     minPrice: number;
@@ -32,6 +33,8 @@ type Actions = {
   addToCart: (id: string) => void;
   removeFromCart: (id: string) => void;
   setFilter: (key: keyof State["filters"], value: any) => void;
+  openProductModal: (id: string) => void;
+  closeProductModal:() => void;
 };
 
 export const useStore = create<State & Actions>()(
@@ -178,6 +181,7 @@ export const useStore = create<State & Actions>()(
   },
 ],
       cart: [],
+      selectedProductId:null,
       filters: {
         category: "All",
         minPrice: 0,
@@ -191,7 +195,12 @@ export const useStore = create<State & Actions>()(
         set((s) => ({ cart: s.cart.filter((pid) => pid !== id) })),
       setFilter: (key, value) =>
         set((s) => ({ filters: { ...s.filters, [key]: value } })),
+      openProductModal: (id) => set({ selectedProductId: id}),
+      closeProductModal: () => set({ selectedProductId: null}),
     }),
-    { name: "shop4u-storage" }
+    {
+      name: "shop4u-storage",
+      partialize:({ cart, filters}) => ({ cart, filters}),
+    }
   )
 );
