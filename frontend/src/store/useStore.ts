@@ -13,6 +13,7 @@ export type Product = {
   rating: number;
   reviews: number;
   discounted?: boolean;
+  description?: string;
 };
 
 type State = {
@@ -46,8 +47,8 @@ export const useStore = create<State & Actions>()(
     title: "Cotton Shorts",
     price: 29.99,
     compareAtPrice: 39.99,
-    category: "Fashion Forward",
-    seller: "Fashion Forward",
+    category: "Fashion",
+    seller: "Fashion",
     tagline: "Cooling linen weave",
     image:
       "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80",
@@ -128,7 +129,7 @@ export const useStore = create<State & Actions>()(
     title: "Classic Jacket",
     price: 89.5,
     compareAtPrice: 99.99,
-    category: "Fashion Forward",
+    category: "Fashion",
     seller: "Urban Stitch",
     tagline: "Timeless everyday layering",
     image:

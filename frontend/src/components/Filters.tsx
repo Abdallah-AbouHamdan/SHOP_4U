@@ -1,7 +1,7 @@
 import { CiFilter } from "react-icons/ci";
 import { useStore } from "../store/useStore";
 
-const categories = ["All", "Fashion Forward", "Sport Zone", "Tech Zone", "Lifestyle"];
+const categories = ["All", "Fashion", "Sport Zone", "Tech Zone", "Lifestyle"];
 
 export default function Filters() {
   const { filters, setFilter } = useStore();
