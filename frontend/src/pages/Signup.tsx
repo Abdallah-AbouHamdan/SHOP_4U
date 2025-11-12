@@ -44,6 +44,16 @@ export default function Signup() {
                         className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
                         required />
                     </label>
+
+                    <label className="space-y-2 text-sm font-semibold text-slate-700">
+                        Email 
+                        <input 
+                        type="email"
+                        name="email"
+                        placeholder="you@example.com"
+                        className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
+                        required />
+                    </label>
                 </div>
             </form>
         </div>
