@@ -77,9 +77,9 @@ export default function ProductModal() {
         </button>
 
         <div className="pr-1 sm:pr-3">
-          <div className="grid gap-4 [grid-template-columns:minmax(120px,150px)_minmax(0,1fr)] sm:grid-cols-[230px_minmax(0,1fr)] sm:items-start sm:gap-6">
+          <div className="grid gap-4 grid-cols-[minmax(120px,150px)_minmax(0,1fr)] sm:grid-cols-[230px_minmax(0,1fr)] sm:items-start sm:gap-6">
             <div className="space-y-2 sm:space-y-3">
-              <div className="overflow-hidden rounded-[24px] border border-slate-100 bg-slate-50 shadow-inner sm:rounded-[28px]">
+              <div className="overflow-hidden rounded-3xl border border-slate-100 bg-slate-50 shadow-inner sm:rounded-[28px]">
                 <img
                   src={product.image}
                   alt={product.title}

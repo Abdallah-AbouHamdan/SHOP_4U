@@ -4,6 +4,7 @@ import { IoIosSearch } from "react-icons/io";
 import { FiMoon, FiMenu, FiX } from "react-icons/fi";
 import { GiShoppingCart } from "react-icons/gi";
 import { useStore } from "../store/useStore";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   const search = useStore((s) => s.filters.search ?? "");
@@ -17,17 +18,17 @@ export default function Navbar() {
       <div className="mx-auto max-w-6xl px-6 py-4">
         <div className="flex flex-row items-center gap-4 md:gap-6">
           <div className="flex flex-1 items-center justify-between gap-3 text-slate-900 md:flex-none">
-            <div className="flex items-center gap-3">
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-purple-500 via-violet-500 to-blue-500 text-2xl text-white shadow-lg">
-              <MdOutlineShoppingCart />
-            </span>
-            <div>
-              <p className="text-lg font-semibold">SHOP_4U</p>
-              <p className="text-xs uppercase tracking-[0.3em] text-slate-400">
-                quick shop
-              </p>
-            </div>
-            </div>
+            <Link to="/" className="flex items-center gap-3 transition hover:opacity-80">
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-purple-500 via-violet-500 to-blue-500 text-2xl text-white shadow-lg">
+                <MdOutlineShoppingCart />
+              </span>
+              <div>
+                <p className="text-lg font-semibold">SHOP_4U</p>
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-400">
+                  quick shop
+                </p>
+              </div>
+            </Link>
           </div>
 
           <div className="hidden flex-1 items-center gap-3 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-500 md:flex">
@@ -42,6 +43,7 @@ export default function Navbar() {
               className="flex-1 bg-transparent text-slate-900 outline-none placeholder:text-slate-400"
             />
           </div>
+
           <div className="flex w-full items-center justify-end gap-3 py-4 text-lg md:ml-auto md:w-auto">
             <button
               aria-label="theme"
@@ -55,9 +57,12 @@ export default function Navbar() {
             >
               <GiShoppingCart />
             </button>
-            <button className="rounded-2xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-slate-800">
+            <Link
+              to="/login"
+              className="rounded-2xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-slate-800"
+            >
               Login
-            </button>
+            </Link>
             <button
               onClick={toggleMenu}
               aria-label="Toggle menu"
@@ -102,5 +107,5 @@ export default function Navbar() {
         </>
       )}
     </nav>
-  )
+  );
 }
