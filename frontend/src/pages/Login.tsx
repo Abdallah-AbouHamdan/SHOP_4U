@@ -1,4 +1,5 @@
 import { type FormEvent } from "react"
+import { Link } from "react-router-dom";
 
 export default function Login() {
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -16,7 +17,7 @@ export default function Login() {
                     </h1>
                 </div>
                 <form onSubmit={handleSubmit}
-                    className="w-full max-w-md rounded-[32px] border border-slate-200 bg-white px-6 py-8 text-slate-900 shadow-[0_25px_80px_rgba(15,23,42,0.08)]">
+                    className="w-full max-w-md rounded-4xl border border-slate-200 bg-white px-6 py-8 text-slate-900 shadow-[0_25px_80px_rgba(15,23,42,0.08)]">
                     <div className="space-y-6">
                         <div className="space-y-1">
                             <h2 className="text-xl font-semibold text-slate-900">Sign In</h2>
@@ -38,10 +39,35 @@ export default function Login() {
                                 required />
                         </div>
 
-                        <div></div>
+                        <div className="space-y-2">
+                            <label
+                                htmlFor="password"
+                                className="text-sm font-semibold text-slate-700">
+                                Password
+                            </label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="**********"
+                                className="w-full rounded-2xl border borer-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
+                                required />
+                        </div>
+                        <button
+                            type="submit"
+                            className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+                        >
+                            Sign in
+                        </button>
+                        <p className="text-center text-sm text-slate-600">
+                            Don&apos;t have an account?{" "}
+                            <Link to="/signup" className="font-semibold text-slate-900 underline-offset-2 hover:underline">
+                                Sign Up
+                            </Link>
+                        </p>
                     </div>
                 </form>
             </div>
         </section>
-    )
+    );
 }
