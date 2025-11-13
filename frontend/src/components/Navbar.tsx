@@ -11,10 +11,10 @@ export default function Navbar() {
   const setFilter = useStore((s) => s.setFilter);
   const user = useStore((s) => s.user);
   const logout = useStore((s) => s.logout);
+  const cartCount = useStore((s)=> s.cart.length);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
