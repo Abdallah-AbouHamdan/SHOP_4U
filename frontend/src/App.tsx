@@ -1,10 +1,13 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ProductModal from "./components/ProductModal";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Dashboard from "./pages/Dashboard";
+import type { ReactNode } from "react";
+import { useStore } from "./store/useStore";
 
 function App() {
   return (
@@ -16,6 +19,13 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route 
+            path="/dashboard" 
+            element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+            }/>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
@@ -24,6 +34,15 @@ function App() {
       <ProductModal />
     </>
   )
+}
+
+function ProtectedRoute({ children }: {children: ReactNode }) {
+  const user = useStore((s) => s.user);
+  const location = useLocation();
+  if(!user) {
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+  return <>{children}</>
 }
 
 export default App
