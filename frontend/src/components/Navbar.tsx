@@ -16,6 +16,7 @@ export default function Navbar() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const navigate = useNavigate();
 
+  const [isCartOpen,setIsCartOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
   const handleProtectedNav = () => {
