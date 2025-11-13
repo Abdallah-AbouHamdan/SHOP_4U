@@ -19,13 +19,13 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route 
-            path="/dashboard" 
-            element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-            }/>
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
@@ -36,10 +36,10 @@ function App() {
   )
 }
 
-function ProtectedRoute({ children }: {children: ReactNode }) {
+function ProtectedRoute({ children }: { children: ReactNode }) {
   const user = useStore((s) => s.user);
   const location = useLocation();
-  if(!user) {
+  if (!user) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
   return <>{children}</>

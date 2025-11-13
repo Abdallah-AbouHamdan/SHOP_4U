@@ -4,14 +4,21 @@ import { IoIosSearch } from "react-icons/io";
 import { FiMoon, FiMenu, FiX } from "react-icons/fi";
 import { GiShoppingCart } from "react-icons/gi";
 import { useStore } from "../store/useStore";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const search = useStore((s) => s.filters.search ?? "");
   const setFilter = useStore((s) => s.setFilter);
+  const user = useStore((s) => s.user);
+  const logout = useStore((s) => s.logout);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <nav className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur">
@@ -57,12 +64,28 @@ export default function Navbar() {
             >
               <GiShoppingCart />
             </button>
-            <Link
-              to="/login"
-              className="rounded-2xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-slate-800"
-            >
-              Login
-            </Link>
+            {user ? (
+              <>
+                <span className="hidden text-sm font-semibold text-slate-600 md:inline">
+                  Hi,{user.fullName ?? "Shopper"}
+                </span>
+                <Link to="/dashboard" className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm  font-semibold text-slate-700 shadow-sm transition hover:border-slate-900">
+                  Dashoard
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="rouonded-2xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-slate-800">
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/login"
+                className="rounded-2xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-slate-800"
+              >
+                Login
+              </Link>
+            )}
             <button
               onClick={toggleMenu}
               aria-label="Toggle menu"
