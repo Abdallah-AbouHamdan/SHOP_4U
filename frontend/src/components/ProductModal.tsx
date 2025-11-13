@@ -5,6 +5,7 @@ import { GiShoppingCart } from "react-icons/gi";
 import { HiOutlineMinus, HiOutlinePlus } from "react-icons/hi";
 import { IoIosClose, IoIosHome } from "react-icons/io";
 import { useStore } from "../store/useStore";
+import { useNavigate } from "react-router-dom";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -13,9 +14,18 @@ const currency = new Intl.NumberFormat("en-US", {
 });
 
 export default function ProductModal() {
-  const { products, selectedProductId, closeProductModal, addToCart } =
+  const { 
+    products,
+    selectedProductId,
+    closeProductModal,
+    addToCart,
+    favorites,
+    toggleFavorite,
+    user,
+     } =
     useStore();
   const [quantity, setQuantity] = useState(1);
+  const navigate = useNavigate();
 
   const product = useMemo(
     () => products.find((p) => p.id === selectedProductId),
