@@ -1,10 +1,27 @@
 import { type FormEvent } from "react"
-import { Link } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useStore } from "../store/useStore";
 
 export default function Login() {
-    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
+    const login = useStore((s) => s.login);
+    const user = useStore((s) => s.user);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const state = location.state as { from?: string } | null;
+    const redirectPath = 
+        state?.from && state.from !== "/login" ? state.from : "/dashboard";
+
+    if(user){
+        return <Navigate to={redirectPath} replace />;
     }
+    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        login({
+            email: formData.get("email") as string,
+        });
+        navigate(redirectPath, { replace: true });
+    };
     return (
         <section className="bg-white">
             <div className="mx-auto flex min-h-[70vh] w-11/12 max-w-6xl flex-col items-center justify-center gap-10 px-4 py-10">
