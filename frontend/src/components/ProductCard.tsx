@@ -1,6 +1,7 @@
 import { FaStar } from "react-icons/fa";
 import { GiShoppingCart } from "react-icons/gi";
 import { useStore } from "../store/useStore";
+import { useNavigate } from "react-router-dom";
 
 type Props = { id: string };
 
@@ -11,7 +12,8 @@ const currency = new Intl.NumberFormat("en-US", {
 });
 
 export default function ProductCard({ id }: Props) {
-  const { products, addToCart, openProductModal } = useStore();
+  const { products, addToCart, openProductModal, user } = useStore();
+  const navigate = useNavigate();
   const p = products.find((x) => x.id === id);
   if (!p) return null;
 
@@ -78,7 +80,13 @@ export default function ProductCard({ id }: Props) {
 
         <div className="mt-auto">
           <button
-            onClick={() => addToCart(p.id)}
+            onClick={() => {
+              if (!user) {
+                navigate("/login", { state: { from:"/dashboard"}});
+                return;
+              }
+              addToCart(p.id);
+            }}
             className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-slate-800 sm:px-5 sm:py-3 sm:text-sm"
           >
             <GiShoppingCart aria-hidden />
