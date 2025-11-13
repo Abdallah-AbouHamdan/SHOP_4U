@@ -5,6 +5,7 @@ import { GiShoppingCart } from "react-icons/gi";
 import { HiOutlineMinus, HiOutlinePlus } from "react-icons/hi";
 import { IoIosClose, IoIosHome } from "react-icons/io";
 import { useStore } from "../store/useStore";
+import { useNavigate } from "react-router-dom";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -13,9 +14,18 @@ const currency = new Intl.NumberFormat("en-US", {
 });
 
 export default function ProductModal() {
-  const { products, selectedProductId, closeProductModal, addToCart } =
+  const { 
+    products,
+    selectedProductId,
+    closeProductModal,
+    addToCart,
+    favorites,
+    toggleFavorite,
+    user,
+     } =
     useStore();
   const [quantity, setQuantity] = useState(1);
+  const navigate = useNavigate();
 
   const product = useMemo(
     () => products.find((p) => p.id === selectedProductId),
@@ -43,9 +53,9 @@ export default function ProductModal() {
   const discountPercent =
     hasCompare && product.compareAtPrice
       ? Math.round(
-          ((product.compareAtPrice - product.price) / product.compareAtPrice) *
-            100
-        )
+        ((product.compareAtPrice - product.price) / product.compareAtPrice) *
+        100
+      )
       : null;
 
 
@@ -55,8 +65,22 @@ export default function ProductModal() {
   };
 
   const handleAddToCart = () => {
+    if (!user) {
+      navigate("/login", {state: {from:"/dashboard"}});
+      return;
+    }
     for (let i = 0; i < quantity; i += 1) addToCart(product.id);
   };
+
+  const handleFavorite = () => {
+    if(!user){
+      navigate("/login", {state: { from: "/dashboard"}});
+      return;
+    }
+    toggleFavorite(product.id);
+  };
+
+  const isFavorite = favorites.includes(product.id);
 
   return (
     <div
@@ -175,8 +199,14 @@ export default function ProductModal() {
                   </button>
                   <button
                     type="button"
-                    className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 text-xl text-slate-500 transition hover:border-slate-300 hover:text-slate-800 sm:h-12 sm:w-12 sm:text-2xl"
-                    aria-label="Add to wishlist"
+                    onClick={handleFavorite}
+                    className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl border text-xl transition sm:h-12 sm:w-12 sm:text-2xl ${
+                      isFavorite
+                        ? "border-rose-200 bg-rose-50 text-rose-600"
+                        : "border-slate-200 text-slate-500 hover:border-slate-300 hover:text-slate-800"
+                    }`}
+                    aria-label={isFavorite ? "Remove from wishlist" : "Add to wishlist"}
+                    aria-pressed={isFavorite}
                   >
                     <CiHeart />
                   </button>

@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="max-w-sm">
           <div className="flex items-center gap-3 text-slate-900">
             <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-purple-500 via-violet-500 to-fuchsia-500 text-2xl text-white shadow-lg">
-             <MdOutlineShoppingCart />
+              <MdOutlineShoppingCart />
             </span>
             <div>
               <p className="text-lg font-semibold">SHOP_4U</p>

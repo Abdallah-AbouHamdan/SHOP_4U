@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useStore } from "../store/useStore";
 
 
 const accountTypes = [
@@ -8,11 +9,27 @@ const accountTypes = [
 ]
 export default function Signup() {
     const [accountType, setAccountType] = useState<"buyer" | "seller">("buyer");
+    const login = useStore((s) => s.login);
+    const user = useStore((s) => s.user);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const state = location.state as {from?: string } | null;
+    const redirectPath =
+        state?.from && state.from !== "/login" ? state.from : "/dashboard";
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        login({
+            email: formData.get("email") as string,
+            fullName: formData.get("fullName") as string,
+            accountType,
+        });
+        navigate(redirectPath, { replace: true});
     };
-
+    if (user) {
+        return <Navigate to={redirectPath} replace />;
+    }
     return (
         <section className="bg-white">
             <div className="mx-auto flex min-h-[70vh] w-11/12 max-w-6xl flex-col items-center justify-center gap-10 px-4 py-10">

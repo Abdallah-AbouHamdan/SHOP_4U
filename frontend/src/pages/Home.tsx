@@ -50,7 +50,7 @@ export default function Home() {
           <Filters />
         </aside>
         <main className="flex-1 space-y-6">
-          
+
 
           <ProductGrid />
         </main>
