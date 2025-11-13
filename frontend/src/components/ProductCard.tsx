@@ -56,7 +56,7 @@ export default function ProductCard({ id }: Props) {
           </span>
         </div>
       </button>
-          
+
       <div className="flex flex-1 flex-col gap-2 px-1 py-3 text-[13px] text-slate-600 sm:gap-3 sm:px-2 sm:py-4 sm:text-sm">
         <div>
           <h3 className="text-base font-semibold text-slate-900 sm:text-lg">

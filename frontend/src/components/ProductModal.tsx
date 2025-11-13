@@ -43,9 +43,9 @@ export default function ProductModal() {
   const discountPercent =
     hasCompare && product.compareAtPrice
       ? Math.round(
-          ((product.compareAtPrice - product.price) / product.compareAtPrice) *
-            100
-        )
+        ((product.compareAtPrice - product.price) / product.compareAtPrice) *
+        100
+      )
       : null;
 
 

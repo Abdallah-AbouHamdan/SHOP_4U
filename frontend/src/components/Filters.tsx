@@ -11,11 +11,11 @@ export default function Filters() {
       <header>
         <div className="flex">
           <span><CiFilter /></span>
-           <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">
-          Filters
-        </p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+            Filters
+          </p>
         </div>
-       
+
       </header>
 
       <div className="space-y-2">
