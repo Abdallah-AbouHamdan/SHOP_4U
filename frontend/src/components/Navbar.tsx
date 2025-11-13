@@ -19,6 +19,13 @@ export default function Navbar() {
   const [isCartOpen,setIsCartOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
+  const handleCartClick = () =>{
+    if(!user){
+      navigate("/login",{state:{from:"/cart"}});
+      return;
+    }
+    setIsCartOpen(true);
+  }
   const handleProtectedNav = () => {
     if (!user) {
       navigate("/login", { state: { from: "/dashboard" } });
