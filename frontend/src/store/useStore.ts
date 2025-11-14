@@ -64,7 +64,7 @@ export const useStore = create<State & Actions>()(
           seller: "Fashion",
           tagline: "Cooling linen weave",
           image:
-            "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1719473466836-ff9f5ebe0e1b?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
           rating: 4.1,
           reviews: 132,
           discounted: true,
@@ -78,20 +78,20 @@ export const useStore = create<State & Actions>()(
           seller: "Sport Zone",
           tagline: "Carbon string bed",
           image:
-            "https://images.unsplash.com/photo-1515664069236-68a7992cb90c?auto=format&fit=crop&w=600&q=80",
+            "https://plus.unsplash.com/premium_photo-1666913667023-4bfd0f6cff0a?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dGVubmlzJTIwcmFja2V0fGVufDB8fDB8fHww",
           rating: 4.5,
           reviews: 254,
           discounted: true,
         },
         {
           id: "p3",
-          title: "Mac 14 Pro",
+          title: "Mac 4 Pro",
           price: 1999.99,
           category: "Tech Zone",
           seller: "Tech Zone",
           tagline: "M3 power for pros",
           image:
-            "https://images.unsplash.com/photo-1484712401471-05c7215830eb?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1565443492615-7e3d2324d925?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bWFjJTIwNCUyMHByb3xlbnwwfHwwfHx8MA%3D%3D",
           rating: 4.7,
           reviews: 982,
         },
@@ -104,7 +104,7 @@ export const useStore = create<State & Actions>()(
           seller: "City Luxe",
           tagline: "Carry-on approved",
           image:
-            "https://images.unsplash.com/photo-1528701800489-20be3c18c6da?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1650542218150-5e59a58d4312?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8TGVhdGhlciUyMFdlZWtlbmRlcnxlbnwwfHwwfHx8MA%3D%3D",
           rating: 4.4,
           reviews: 88,
           discounted: true,
@@ -118,7 +118,7 @@ export const useStore = create<State & Actions>()(
           seller: "Soundify",
           tagline: "Noise-cancelling comfort",
           image:
-            "https://images.unsplash.com/photo-1585386959984-a4155223163e?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1627989580309-bfaf3e58af6f?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d2lyZWxlc3MlMjBlYXJidWRzfGVufDB8fDB8fHww",
           rating: 4.6,
           reviews: 641,
           discounted: true,
@@ -132,7 +132,7 @@ export const useStore = create<State & Actions>()(
           seller: "Peak Performance",
           tagline: "Responsive cushioning system",
           image:
-            "https://images.unsplash.com/photo-1600185365881-3b4e27b6f3e8?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1562183241-b937e95585b6?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cnVubmluZyUyMHNob2VzfGVufDB8fDB8fHww",
           rating: 4.8,
           reviews: 1194,
           discounted: true,
@@ -146,7 +146,7 @@ export const useStore = create<State & Actions>()(
           seller: "Urban Stitch",
           tagline: "Timeless everyday layering",
           image:
-            "https://images.unsplash.com/photo-1593032457862-6c67fdc5b427?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8amFja2V0fGVufDB8fDB8fHww",
           rating: 4.3,
           reviews: 321,
           discounted: true,
@@ -160,7 +160,7 @@ export const useStore = create<State & Actions>()(
           seller: "Tech Zone",
           tagline: "Track health & stay connected",
           image:
-            "https://images.unsplash.com/photo-1517153297954-9d81b763f42d?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1461141346587-763ab02bced9?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8c21hcnQlMjB3YXRjaHxlbnwwfHwwfHx8MA%3D%3D",
           rating: 4.6,
           reviews: 784,
           discounted: true,
@@ -174,7 +174,7 @@ export const useStore = create<State & Actions>()(
           seller: "Calm Home",
           tagline: "Relaxing lavender blend",
           image:
-            "https://images.unsplash.com/photo-1608222021266-0c0e5b8f05df?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1728897161054-a31928d12a16?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGNhbmRsZSUyMHNlcnxlbnwwfHwwfHx8MA%3D%3D",
           rating: 4.9,
           reviews: 205,
           discounted: true,
@@ -188,7 +188,7 @@ export const useStore = create<State & Actions>()(
           seller: "ZenFit",
           tagline: "Non-slip eco material",
           image:
-            "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?auto=format&fit=crop&w=600&q=80",
+            "https://plus.unsplash.com/premium_photo-1663090241828-1d5f7456b699?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
           rating: 4.5,
           reviews: 420,
           discounted: true,
