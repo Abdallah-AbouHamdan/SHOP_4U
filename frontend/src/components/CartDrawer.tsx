@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../store/useStore";
 import { useMemo } from "react";
+import { FiX } from "react-icons/fi";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -59,42 +60,43 @@ export default function CartDrawer({ open, onClose }: Props) {
         className="flex-1 bg-slate-900/30"
         aria-label="Close cart drawer"
       />
-      <div className="flex w-full max-w-md flex-col border-l border-slate-200 bg-white shadow-2xl">
-        <div className="flex items-center justify-between px-6 py-4">
+      <div className="relative flex w-full max-w-md flex-col border-l border-slate-200 bg-white shadow-2xl">
+        <div className="px-6 pt-6">
           <h2 className="text-lg font-semibold text-slate-900">
             Shopping cart ({totalItems})
           </h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-xl font-semibold text-slate-400 hover:text-slate-800"
-            aria-label="Close cart"
-          >
-            ×
-          </button>
         </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-4 top-4 text-slate-400 transition hover:text-slate-800 focus:outline-none"
+          aria-label="Close cart"
+        >
+          <FiX className="h-6 w-6" aria-hidden="true" />
+        </button>
         <div className="flex-1 overflow-y-auto px-6 pb-4">
           <div className="space-y-4">
             {items.map(({ product, quantity }) => (
               <div
                 key={product.id}
-                className="flex items-center gap-3 rounded-2xl border border-slate-200 p-3"
+                className="relative flex items-center gap-3 rounded-2xl border border-slate-200 p-3"
               >
                 <img
                   src={product.image}
                   alt={product.title}
                   className="h-16 w-16 rounded-2xl object-cover"
                 />
-                <div className="flex flex-1 flex-col gap-1">
+                <button
+                  type="button"
+                  onClick={() => removeProductFromCart(product.id)}
+                  className="absolute right-3 top-3 text-slate-400 transition hover:text-slate-800 focus:outline-none"
+                  aria-label={`Remove ${product.title} from cart`}
+                >
+                  <FiX className="h-5 w-5" aria-hidden="true" />
+                </button>
+                <div className="flex flex-1 min-w-0 flex-col gap-1">
                   <div className="flex items-center justify-between">
                     <p className="font-semibold text-slate-900">{product.title}</p>
-                    <button
-                      type="button"
-                      onClick={() => removeProductFromCart(product.id)}
-                      className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500"
-                    >
-                      Remove
-                    </button>
                   </div>
                   <p className="text-xs text-slate-500">{product.seller}</p>
                   <div className="flex items-center gap-2 text-xs text-slate-500">

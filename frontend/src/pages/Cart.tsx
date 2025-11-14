@@ -35,7 +35,7 @@ export default function Cart() {
     const tax = subtotal * 0.08;
     const total = subtotal + shipping + tax;
     return (
-        <section className="bg-white">
+        <section className="bg-white min-h-screen">
             <div className="mx-auto w-11/12 max-w-6xl px-4 py-10">
                 <div className="flex flex-col gap-6 lg:flex-row">
                     <div className="flex-1 space-y-4">
@@ -45,7 +45,7 @@ export default function Cart() {
                         </header>
 
                         <div className="space-y-4 rounded-3xl border border-slate-200 p-4 shadow-sm">
-                            <div className="space-y-3 max-h-[320px] overflow-y-auto pr-1">
+                            <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
                                 {items.map(({ product, quantity }) => (
                                     <div
                                         key={product.id}
@@ -71,29 +71,63 @@ export default function Cart() {
                                 ))}
                             </div>
                         </div>
-                    </div>
-                    <div className="space-y-3 rounded-3xl border border-slate-200 p-4 shadow-sm">
-                        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-400">
-                            Delivery information
-                        </p>
-                        <div className="text-sm text-slate-600">
-                            <p>
-                                Name:{""}
-                                <span className="font-semibold text-slate-900">
-                                    {user?.fullName??"Shopper"}
-                                </span>
+
+                        <div className="space-y-3 rounded-3xl border border-slate-200 p-4 shadow-sm">
+                            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-400">
+                                Delivery information
                             </p>
-                            <p>
-                                Email:{""}
-                                <span className="font-semibold text-slate-900">
-                                    {user?.email??"guest@shop4u.com"}
-                                </span>
-                            </p>
+                            <div className="text-sm text-slate-600">
+                                <p>
+                                    Name:{" "}
+                                    <span className="font-semibold text-slate-900">
+                                        {user?.fullName ?? "Shopper"}
+                                    </span>
+                                </p>
+                                <p>
+                                    Email:{" "}
+                                    <span className="font-semibold text-slate-900">
+                                        {user?.email ?? "guest@shop4u.com"}
+                                    </span>
+                                </p>
+                            </div>
                         </div>
                     </div>
+
+                    <aside className=" mt-17 w-full max-w-sm space-y-4">
+                        <div className="rounded-3xl border border-slate-200 p-4 shadow-sm">
+                            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-400">
+                                Order total
+                            </p>
+                            <div className="mt-4 space-y-2 text-sm text-slate-600">
+                                <div className="flex justify-between">
+                                    <span>Subtotal</span>
+                                    <span className="text-slate-900">{currency.format(subtotal)}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>Shipping</span>
+                                    <span className="text-slate-900">{currency.format(shipping)}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>Tax</span>
+                                    <span className="text-slate-900">{currency.format(tax)}</span>
+                                </div>
+                            </div>
+                            <div className="mt-4 border-t border-slate-200 pt-3">
+                                <div className="flex items-center justify-between text-lg font-semibold text-slate-900">
+                                    <span>Total</span>
+                                    <span>{currency.format(total)}</span>
+                                </div>
+                                <button className="mt-5 w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
+                                    Place order
+                                </button>
+                                <p className="mt-3 text-xs text-slate-500">
+                                    By placing your order, you agree to our terms and conditions.
+                                </p>
+                            </div>
+                        </div>
+                    </aside>
                 </div>
-                
             </div>
         </section>
-    )
+    );
 }
