@@ -90,7 +90,88 @@ export default function Settings() {
           </div>
         </div>
 
-        
+        <section className="grid gap-6 md:grid-cols-[1.2fr_0.8fr]">
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-slate-900">Reset password</h3>
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+                secure
+              </p>
+            </div>
+            <form className="mt-6 space-y-4 text-sm text-slate-600" onSubmit={handleSubmit}>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+                  Current password
+                </span>
+                <input
+                  type="password"
+                  value={passwordForm.current}
+                  required
+                  onChange={(event) => handlePasswordChange("current", event.target.value)}
+                  className="rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none focus:border-slate-400"
+                />
+              </label>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+                  New password
+                </span>
+                <input
+                  type="password"
+                  value={passwordForm.next}
+                  required
+                  onChange={(event) => handlePasswordChange("next", event.target.value)}
+                  className="rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none focus:border-slate-400"
+                />
+              </label>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+                  Confirm password
+                </span>
+                <input
+                  type="password"
+                  value={passwordForm.confirm}
+                  required
+                  onChange={(event) => handlePasswordChange("confirm", event.target.value)}
+                  className="rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none focus:border-slate-400"
+                />
+              </label>
+              <button
+                type="submit"
+                className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-500/20 transition hover:bg-slate-800"
+              >
+                Save password
+              </button>
+            </form>
+          </div>
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-slate-900">Profile snapshot</h3>
+            <dl className="mt-6 grid gap-4 text-sm text-slate-600">
+              <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+                <dt className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+                  Email
+                </dt>
+                <dd className="font-semibold text-slate-900">{user?.email ?? "guest@shop4u.com"}</dd>
+              </div>
+              <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+                <dt className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+                  Member since
+                </dt>
+                <dd className="font-semibold text-slate-900">2025</dd>
+              </div>
+              <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+                <dt className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+                  Preferred
+                </dt>
+                <dd className="font-semibold text-slate-900">
+                  {user?.accountType ?? "buyer"}
+                </dd>
+              </div>
+            </dl>
+            <p className="mt-5 text-sm text-slate-500">
+              Updating your profile keeps your recommendations and deliveries on point.
+            </p>
+          </div>
+        </section>
       </div>
     </section>
 
