@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import type { ReactNode } from "react";
 import { useStore } from "./store/useStore";
+import Cart from "./pages/Cart";
 
 function App() {
   return (
@@ -33,6 +34,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Settings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/cart"
+              element={
+                <ProtectedRoute>
+                  <Cart />
                 </ProtectedRoute>
               }
             />
