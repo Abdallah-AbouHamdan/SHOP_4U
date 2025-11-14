@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useStore } from "../store/useStore";
 
 
@@ -9,35 +9,73 @@ const perks = [
 ];
 
 export default function Settings() {
-  const user= useStore((state) => state.user);
-  const logout= useStore((state) => state.logout);
+  const user = useStore((state) => state.user);
+  const logout = useStore((state) => state.logout);
   const [passwordForm, setPasswordForm] = useState({
-    current:"",
-    next:"",
-    confirm:"",
+    current: "",
+    next: "",
+    confirm: "",
   });
 
   const handlePasswordChange = (field: keyof typeof passwordForm, value: string) => {
-  setPasswordForm((prev) => ({ ...prev, [field]: value }));
+    setPasswordForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setPasswordForm({ current: "", next: "", confirm: "" });
   };
 
   return (
-    <section className="bg-white">
-      <div className="mx-auto flex min-h-[60vh] w-11/12 max-w-4xl flex-col justify-center gap-6 py-12">
-        <header className="space-y-2 text-center text-slate-600">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em]">
+    <section className="bg-[#f8fafc] py-12">
+      <div className="mx-auto w-11/12 max-w-6xl space-y-8">
+        <header className="space-y-3 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
             Account
           </p>
           <h1 className="text-3xl font-semibold text-slate-900">Settings</h1>
           <p className="text-sm text-slate-500">
-            Customize your SHOP_4U experience. More controls coming soon.
+            Manage your profile, reset your password, and learn why SHOP_4U delivers a
+            modern retail experience.
           </p>
         </header>
-        <div className="rounded-3xl border border-slate-200 bg-white px-6 py-10 text-center text-sm text-slate-500 shadow-[0_25px_80px_rgba(15,23,42,0.08)]">
-          This page is a placeholder for upcoming preferences and profile
-          controls.
+
+        <div className="grid gap-6 md:grid-cols-[2fr_1fr]">
+          <div className="space-y-5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+                  Profile
+                </p>
+                <h2 className="text-xl font-semibold text-slate-900">
+                  {user?.fullName ?? "Shopper"}
+                </h2>
+                <p className="text-sm text-slate-500">
+                  {user?.email ?? "guest@shop4u.com"}
+                </p>
+              </div>
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">
+                {user?.accountType ?? "buyer"}
+              </span>
+            </div>
+            <p className="text-sm text-slate-600">
+              Keep your profile secure, control your preferences, and enjoy a tailored
+              shopping experience. Update your details as needed and log out when you're
+              done.
+            </p>
+            <button
+              type="button"
+              onClick={logout}
+              className="inline-flex items-center justify-center rounded-2xl bg-rose-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-rose-600"
+            >
+              Logout
+            </button>
+          </div>
+
+          
         </div>
       </div>
     </section>
+
   );
 }
