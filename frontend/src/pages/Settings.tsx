@@ -1,4 +1,26 @@
+import { useState } from "react";
+import { useStore } from "../store/useStore";
+
+
+const perks = [
+  "Curated sellers with verified reviews so you shop with confidence.",
+  "Fast checkout, transparent tracking, and 24/7 customer support.",
+  "Exclusive drops, daily deals, and loyalty perks for returning shoppers.",
+];
+
 export default function Settings() {
+  const user= useStore((state) => state.user);
+  const logout= useStore((state) => state.logout);
+  const [passwordForm, setPasswordForm] = useState({
+    current:"",
+    next:"",
+    confirm:"",
+  });
+
+  const handlePasswordChange = (field: keyof typeof passwordForm, value: string) => {
+  setPasswordForm((prev) => ({ ...prev, [field]: value }));
+  };
+
   return (
     <section className="bg-white">
       <div className="mx-auto flex min-h-[60vh] w-11/12 max-w-4xl flex-col justify-center gap-6 py-12">
