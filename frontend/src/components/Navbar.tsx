@@ -13,6 +13,7 @@ export default function Navbar() {
   const user = useStore((s) => s.user);
   const logout = useStore((s) => s.logout);
   const cartCount = useStore((s) => s.cart.length);
+  const favoritesCount = useStore((s) => s.favorites.length);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const navigate = useNavigate();
@@ -28,12 +29,12 @@ export default function Navbar() {
     setIsCartOpen(true);
   };
 
-  const handleDashboardNav = () => {
+  const handleFavoritesNav = () => {
     if (!user) {
-      navigate("/login", { state: { from: "/dashboard" } });
+      navigate("/login", { state: { from: "/favorites" } });
       return;
     }
-    navigate("/dashboard");
+    navigate("/favorites");
   };
 
   const handleLogout = () => {
@@ -222,9 +223,8 @@ export default function Navbar() {
               type="button"
               aria-label="Toggle dark mode"
               onClick={handleThemeToggle}
-              className={`inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900 ${
-                isDarkMode ? "text-slate-900" : ""
-              }`}
+              className={`inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900 ${isDarkMode ? "text-slate-900" : ""
+                }`}
             >
               <FiMoon />
             </button>
@@ -244,10 +244,15 @@ export default function Navbar() {
             <button
               type="button"
               aria-label="Favorites"
-              onClick={handleDashboardNav}
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+              onClick={handleFavoritesNav}
+              className="relative inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
             >
               <IoHeartOutline />
+              {favoritesCount > 0 && (
+                <span className="absolute right-0 top-0 translate-x-1/2 -translate-y-1/2 rounded-full bg-rose-500 px-2 py-px text-[10px] font-semibold text-white">
+                  {favoritesCount}
+                </span>
+              )}
             </button>
             <button
               type="button"
@@ -286,18 +291,22 @@ export default function Navbar() {
                 <button
                   type="button"
                   aria-label="Favorites"
-                  onClick={handleDashboardNav}
-                  className="flex items-center justify-center rounded-2xl border border-slate-200 bg-white py-3 text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+                  onClick={handleFavoritesNav}
+                  className="relative flex items-center justify-center rounded-2xl border border-slate-200 bg-white py-3 text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
                 >
                   <IoHeartOutline />
+                  {favoritesCount > 0 && (
+                    <span className="absolute right-3 top-1 translate-y-[-50%] rounded-full bg-rose-500 px-2 py-0.5 text-[10px] font-semibold text-white">
+                      {favoritesCount}
+                    </span>
+                  )}
                 </button>
                 <button
                   type="button"
                   aria-label="Toggle dark mode"
                   onClick={handleThemeToggle}
-                  className={`flex items-center justify-center rounded-2xl border border-slate-200 bg-white py-3 text-slate-600 transition hover:border-slate-300 hover:text-slate-900 ${
-                    isDarkMode ? "text-slate-900" : ""
-                  }`}
+                  className={`flex items-center justify-center rounded-2xl border border-slate-200 bg-white py-3 text-slate-600 transition hover:border-slate-300 hover:text-slate-900 ${isDarkMode ? "text-slate-900" : ""
+                    }`}
                 >
                   <FiMoon />
                 </button>
