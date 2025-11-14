@@ -2,6 +2,7 @@ import { FaStar } from "react-icons/fa";
 import { GiShoppingCart } from "react-icons/gi";
 import { useStore } from "../store/useStore";
 import { useLocation, useNavigate } from "react-router-dom";
+import type { MouseEvent } from "react";
 
 type Props = { id: string };
 
@@ -26,7 +27,14 @@ export default function ProductCard({ id }: Props) {
 
   const isFavorite = favorites.includes(p.id);
 
-  
+  const handleFavoriteToggle = (event: MouseEvent<HTMLButtonElement>) =>{
+    event.stopPropagation();
+    if(!user){
+      navigate("/login",{ state: {from: location.pathname }});
+      return;
+    }
+    toggleFavorite(p.id)
+  }
 
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-100 bg-white p-4 shadow-[0_15px_45px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:border-slate-200 hover:shadow-[0_20px_55px_rgba(15,23,42,0.12)]">
