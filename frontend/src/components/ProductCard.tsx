@@ -3,6 +3,7 @@ import { GiShoppingCart } from "react-icons/gi";
 import { useStore } from "../store/useStore";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { MouseEvent } from "react";
+import { CiHeart } from "react-icons/ci";
 
 type Props = { id: string };
 
@@ -27,10 +28,10 @@ export default function ProductCard({ id }: Props) {
 
   const isFavorite = favorites.includes(p.id);
 
-  const handleFavoriteToggle = (event: MouseEvent<HTMLButtonElement>) =>{
+  const handleFavoriteToggle = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    if(!user){
-      navigate("/login",{ state: {from: location.pathname }});
+    if (!user) {
+      navigate("/login", { state: { from: location.pathname } });
       return;
     }
     toggleFavorite(p.id)
@@ -71,6 +72,18 @@ export default function ProductCard({ id }: Props) {
           </span>
         </div>
       </button>
+      <button
+        type="button"
+        onClick={handleFavoriteToggle}
+        className={`absolute right-5 top-5 inline-flex h-10 w-10 items-center justify-center rounded-full border transition ${isFavorite
+            ? "border-rose-200 bg-rose-50 text-rose-600 shadow-sm"
+            : "border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-900"
+          }`}
+        aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+        aria-pressed={isFavorite}
+      >
+        <CiHeart className= "h-5 w-5" />
+      </button>
 
       <div className="flex flex-1 flex-col gap-2 px-1 py-3 text-[13px] text-slate-600 sm:gap-3 sm:px-2 sm:py-4 sm:text-sm">
         <div>
@@ -95,7 +108,7 @@ export default function ProductCard({ id }: Props) {
           <button
             onClick={() => {
               if (!user) {
-                navigate("/login", { state: { from:"/dashboard"}});
+                navigate("/login", { state: { from: "/dashboard" } });
                 return;
               }
               addToCart(p.id);

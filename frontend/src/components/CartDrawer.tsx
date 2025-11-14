@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useStore } from "../store/useStore";
 import { useMemo } from "react";
 import { FiX } from "react-icons/fi";
-import { GiShoppingCart } from "react-icons/gi";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
