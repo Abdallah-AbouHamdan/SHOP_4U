@@ -41,12 +41,14 @@ type User = {
 type Actions = {
   addToCart: (id: string) => void;
   removeFromCart: (id: string) => void;
+  removeProductFromCart: (id: string) => void;
+  clearCart: () => void;
   setFilter: (key: keyof State["filters"], value: any) => void;
   openProductModal: (id: string) => void;
   closeProductModal: () => void;
   toggleFavorite: (id: string) => void;
   login: (user: User) => void;
-  logout:() => void;
+  logout: () => void;
 };
 
 export const useStore = create<State & Actions>()(
@@ -206,23 +208,37 @@ export const useStore = create<State & Actions>()(
       user: null,
       addToCart: (id) => set((s) => ({ cart: [...s.cart, id] })),
       removeFromCart: (id) =>
+        set((s) => {
+          const index = s.cart.indexOf(id);
+          if (index === -1) return {};
+          const next = [...s.cart];
+          next.splice(index, 1);
+          return { cart: next };
+        }),
+      removeProductFromCart: (id) =>
         set((s) => ({ cart: s.cart.filter((pid) => pid !== id) })),
+      clearCart: () => set({ cart: [] }),
       setFilter: (key, value) =>
         set((s) => ({ filters: { ...s.filters, [key]: value } })),
       openProductModal: (id) => set({ selectedProductId: id }),
       closeProductModal: () => set({ selectedProductId: null }),
-      toggleFavorite: (id) => 
-        set((s) => 
-        s.favorites.includes(id)
-         ? {favorites: s.favorites.filter((favId) => favId !== id)}
-         : {favorites: [...s.favorites,id]}
+      toggleFavorite: (id) =>
+        set((s) =>
+          s.favorites.includes(id)
+            ? { favorites: s.favorites.filter((favId) => favId !== id) }
+            : { favorites: [...s.favorites, id] }
         ),
-        login: (user) => set({ user }),
-        logout: () =>set({user: null , cart: [], favorites: []}),
+      login: (user) => set({ user }),
+      logout: () => set({ user: null, cart: [], favorites: [] }),
     }),
     {
       name: "shop4u-storage",
-      partialize: ({ cart, filters , user , favorites }) => ({ cart, filters , user , favorites }),
+      partialize: ({ cart, filters, user, favorites }) => ({
+        cart,
+        filters,
+        user,
+        favorites,
+      }),
     }
   )
 );

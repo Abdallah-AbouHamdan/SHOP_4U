@@ -1,0 +1,146 @@
+import { useNavigate } from "react-router-dom";
+import { useStore } from "../store/useStore";
+import { useMemo } from "react";
+
+const currency = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  maximumFractionDigits: 2,
+});
+
+type Props = {
+  open: boolean;
+  onClose: () => void;
+};
+
+export default function CartDrawer({ open, onClose }: Props) {
+  const { products, cart, addToCart, removeFromCart, removeProductFromCart } =
+    useStore();
+  const navigate = useNavigate();
+
+  const items = useMemo(() => {
+    const map = new Map<string, number>();
+    cart.forEach((id) => {
+      map.set(id, (map.get(id) ?? 0) + 1);
+    });
+    return Array.from(map.entries())
+      .map(([id, quantity]) => {
+        const product = products.find((p) => p.id === id);
+        if (!product) return null;
+        return { product, quantity };
+      })
+      .filter(Boolean) as {
+      product: (typeof products)[number];
+      quantity: number;
+    }[];
+  }, [cart, products]);
+
+  const subtotal = useMemo(
+    () =>
+      items.reduce(
+        (sum, { product, quantity }) => sum + product.price * quantity,
+        0
+      ),
+    [items]
+  );
+
+  const totalItems = useMemo(
+    () => items.reduce((sum, { quantity }) => sum + quantity, 0),
+    [items]
+  );
+
+  if (!open) return null;
+
+  return (
+     <div className="fixed inset-0 z-50 flex">
+      <button
+        type="button"
+        onClick={onClose}
+        className="flex-1 bg-slate-900/30"
+        aria-label="Close cart drawer"
+      />
+      <div className="flex w-full max-w-md flex-col border-l border-slate-200 bg-white shadow-2xl">
+        <div className="flex items-center justify-between px-6 py-4">
+          <h2 className="text-lg font-semibold text-slate-900">
+            Shopping cart ({totalItems})
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-xl font-semibold text-slate-400 hover:text-slate-800"
+            aria-label="Close cart"
+          >
+            ×
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto px-6 pb-4">
+          <div className="space-y-4">
+            {items.map(({ product, quantity }) => (
+              <div
+                key={product.id}
+                className="flex items-center gap-3 rounded-2xl border border-slate-200 p-3"
+              >
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  className="h-16 w-16 rounded-2xl object-cover"
+                />
+                <div className="flex flex-1 flex-col gap-1">
+                  <div className="flex items-center justify-between">
+                    <p className="font-semibold text-slate-900">{product.title}</p>
+                    <button
+                      type="button"
+                      onClick={() => removeProductFromCart(product.id)}
+                      className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                  <p className="text-xs text-slate-500">{product.seller}</p>
+                  <div className="flex items-center gap-2 text-xs text-slate-500">
+                    <button
+                      type="button"
+                      onClick={() => removeFromCart(product.id)}
+                      className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200"
+                    >
+                      −
+                    </button>
+                    <span className="font-semibold text-slate-900">{quantity}</span>
+                    <button
+                      type="button"
+                      onClick={() => addToCart(product.id)}
+                      className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div className="text-sm font-semibold text-slate-900">
+                  {currency.format(product.price * quantity)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="px-6 pb-6">
+          <div className="flex items-center justify-between text-sm text-slate-600">
+            <span>Subtotal</span>
+            <span className="font-semibold text-slate-900">
+              {currency.format(subtotal)}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              onClose();
+              navigate("/cart");
+            }}
+            className="mt-4 w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+          >
+            Proceed to checkout
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
