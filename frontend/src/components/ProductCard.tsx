@@ -1,7 +1,7 @@
 import { FaStar } from "react-icons/fa";
 import { GiShoppingCart } from "react-icons/gi";
 import { useStore } from "../store/useStore";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type Props = { id: string };
 
@@ -12,8 +12,9 @@ const currency = new Intl.NumberFormat("en-US", {
 });
 
 export default function ProductCard({ id }: Props) {
-  const { products, addToCart, openProductModal, user } = useStore();
+  const { products, addToCart, openProductModal, user, favorites, toggleFavorite } = useStore();
   const navigate = useNavigate();
+  const location = useLocation();
   const p = products.find((x) => x.id === id);
   if (!p) return null;
 
@@ -22,6 +23,10 @@ export default function ProductCard({ id }: Props) {
     hasCompare && p.compareAtPrice
       ? Math.round(((p.compareAtPrice - p.price) / p.compareAtPrice) * 100)
       : null;
+
+  const isFavorite = favorites.includes(p.id);
+
+  
 
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-100 bg-white p-4 shadow-[0_15px_45px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:border-slate-200 hover:shadow-[0_20px_55px_rgba(15,23,42,0.12)]">

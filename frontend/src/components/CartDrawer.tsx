@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useStore } from "../store/useStore";
 import { useMemo } from "react";
 import { FiX } from "react-icons/fi";
+import { GiShoppingCart } from "react-icons/gi";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -63,6 +64,7 @@ export default function CartDrawer({ open, onClose }: Props) {
       <div className="relative flex w-full max-w-md flex-col border-l border-slate-200 bg-white shadow-2xl">
         <div className="px-6 pt-6">
           <h2 className="text-lg font-semibold text-slate-900">
+            {/* <GiShoppingCart /> */}
             Shopping cart ({totalItems})
           </h2>
         </div>
