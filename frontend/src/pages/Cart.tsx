@@ -72,7 +72,27 @@ export default function Cart() {
                             </div>
                         </div>
                     </div>
+                    <div className="space-y-3 rounded-3xl border border-slate-200 p-4 shadow-sm">
+                        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-400">
+                            Delivery information
+                        </p>
+                        <div className="text-sm text-slate-600">
+                            <p>
+                                Name:{""}
+                                <span className="font-semibold text-slate-900">
+                                    {user?.fullName??"Shopper"}
+                                </span>
+                            </p>
+                            <p>
+                                Email:{""}
+                                <span className="font-semibold text-slate-900">
+                                    {user?.email??"guest@shop4u.com"}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
                 </div>
+                
             </div>
         </section>
     )
