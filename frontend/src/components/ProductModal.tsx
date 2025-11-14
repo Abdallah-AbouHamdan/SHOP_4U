@@ -14,7 +14,7 @@ const currency = new Intl.NumberFormat("en-US", {
 });
 
 export default function ProductModal() {
-  const { 
+  const {
     products,
     selectedProductId,
     closeProductModal,
@@ -22,7 +22,7 @@ export default function ProductModal() {
     favorites,
     toggleFavorite,
     user,
-     } =
+  } =
     useStore();
   const [quantity, setQuantity] = useState(1);
   const navigate = useNavigate();
@@ -66,15 +66,15 @@ export default function ProductModal() {
 
   const handleAddToCart = () => {
     if (!user) {
-      navigate("/login", {state: {from:"/dashboard"}});
+      navigate("/login", { state: { from: "/dashboard" } });
       return;
     }
     for (let i = 0; i < quantity; i += 1) addToCart(product.id);
   };
 
   const handleFavorite = () => {
-    if(!user){
-      navigate("/login", {state: { from: "/dashboard"}});
+    if (!user) {
+      navigate("/login", { state: { from: "/dashboard" } });
       return;
     }
     toggleFavorite(product.id);
@@ -197,19 +197,25 @@ export default function ProductModal() {
                     <GiShoppingCart aria-hidden />
                     Add to cart
                   </button>
-                  <button
-                    type="button"
-                    onClick={handleFavorite}
-                    className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl border text-xl transition sm:h-12 sm:w-12 sm:text-2xl ${
-                      isFavorite
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={handleFavorite}
+                      className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl border text-xl transition sm:h-12 sm:w-12 sm:text-2xl ${isFavorite
                         ? "border-rose-200 bg-rose-50 text-rose-600"
                         : "border-slate-200 text-slate-500 hover:border-slate-300 hover:text-slate-800"
-                    }`}
-                    aria-label={isFavorite ? "Remove from wishlist" : "Add to wishlist"}
-                    aria-pressed={isFavorite}
-                  >
-                    <CiHeart />
-                  </button>
+                        }`}
+                      aria-label={isFavorite ? "Remove from wishlist" : "Add to wishlist"}
+                      aria-pressed={isFavorite}>
+                      <CiHeart />
+                    </button>
+
+                    {favorites.length > 0 && (
+                      <span className="absolute -top-1 -right-1 rounded-full bg-rose-500 px-2 text-[9px] font-semibold text-white">
+                        {favorites.length}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 gap-1.5 text-xs font-semibold sm:grid-cols-2 sm:gap-2 sm:text-sm">
@@ -231,6 +237,6 @@ export default function ProductModal() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

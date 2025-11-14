@@ -63,6 +63,7 @@ export default function CartDrawer({ open, onClose }: Props) {
       <div className="relative flex w-full max-w-md flex-col border-l border-slate-200 bg-white shadow-2xl">
         <div className="px-6 pt-6">
           <h2 className="text-lg font-semibold text-slate-900">
+            {/* <GiShoppingCart /> */}
             Shopping cart ({totalItems})
           </h2>
         </div>
