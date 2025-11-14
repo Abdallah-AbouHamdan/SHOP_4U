@@ -3,30 +3,32 @@ import { MdOutlineShoppingCart } from "react-icons/md";
 import { IoIosSearch } from "react-icons/io";
 import { IoBagOutline, IoHeartOutline, IoPersonOutline } from "react-icons/io5";
 import { FiMenu, FiMoon, FiX } from "react-icons/fi";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useStore } from "../store/useStore";
+import CartDrawer from "./CartDrawer";
 
 export default function Navbar() {
   const search = useStore((s) => s.filters.search ?? "");
   const setFilter = useStore((s) => s.setFilter);
   const user = useStore((s) => s.user);
   const logout = useStore((s) => s.logout);
-  const cartCount = useStore((s)=> s.cart.length);
+  const cartCount = useStore((s) => s.cart.length);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const navigate = useNavigate();
 
-  const [isCartOpen,setIsCartOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
-  const handleCartClick = () =>{
-    if(!user){
-      navigate("/login",{state:{from:"/cart"}});
+  const handleCartClick = () => {
+    if (!user) {
+      navigate("/login", { state: { from: "/cart" } });
       return;
     }
     setIsCartOpen(true);
-  }
-  const handleProtectedNav = () => {
+  };
+
+  const handleDashboardNav = () => {
     if (!user) {
       navigate("/login", { state: { from: "/dashboard" } });
       return;
@@ -124,7 +126,6 @@ export default function Navbar() {
             />
             <div className="fixed left-1/2 top-20 z-40 w-[calc(100%-2rem)] max-w-6xl -translate-x-1/2 md:hidden">
               <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white/95 p-5 shadow-2xl shadow-slate-900/10">
-              <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white/95 p-5 shadow-2xl shadow-slate-900/10">
                 <div className="flex items-center gap-3 rounded-full border border-slate-200 bg-[#f2f2f2] px-5 py-3 text-sm text-slate-500">
                   <span aria-hidden>
                     <IoIosSearch />
@@ -145,7 +146,6 @@ export default function Navbar() {
                 >
                   Toggle theme
                 </button>
-              </div>
               </div>
             </div>
           </>
@@ -175,10 +175,15 @@ export default function Navbar() {
               <button
                 type="button"
                 aria-label="Cart"
-                onClick={handleProtectedNav}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+                onClick={handleCartClick}
+                className="relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
               >
                 <IoBagOutline />
+                {cartCount > 0 && (
+                  <span className="absolute right-0 top-0 translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-900 px-2 py-px text-[10px] font-semibold text-white">
+                    {cartCount}
+                  </span>
+                )}
               </button>
               <button
                 type="button"
@@ -226,15 +231,20 @@ export default function Navbar() {
             <button
               type="button"
               aria-label="Cart"
-              onClick={handleProtectedNav}
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+              onClick={handleCartClick}
+              className="relative inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
             >
               <IoBagOutline />
+              {cartCount > 0 && (
+                <span className="absolute right-0 top-0 translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-900 px-2 py-px text-[10px] font-semibold text-white">
+                  {cartCount}
+                </span>
+              )}
             </button>
             <button
               type="button"
               aria-label="Favorites"
-              onClick={handleProtectedNav}
+              onClick={handleDashboardNav}
               className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
             >
               <IoHeartOutline />
@@ -276,7 +286,7 @@ export default function Navbar() {
                 <button
                   type="button"
                   aria-label="Favorites"
-                  onClick={handleProtectedNav}
+                  onClick={handleDashboardNav}
                   className="flex items-center justify-center rounded-2xl border border-slate-200 bg-white py-3 text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
                 >
                   <IoHeartOutline />
@@ -312,6 +322,7 @@ export default function Navbar() {
           </div>
         </>
       )}
+      <CartDrawer open={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </nav>
   );
 }
