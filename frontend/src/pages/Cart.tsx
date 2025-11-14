@@ -22,7 +22,13 @@ export default function Cart() {
       .filter(Boolean) as { product: (typeof products)[number]; quantity: number }[];
   }, [cart, products]);
 
-  
+  const subtotal = useMemo(
+    () =>
+      items.reduce(
+        (sum, { product, quantity }) => sum + product.price * quantity,
+        0
+      ),
+    [items]
   );
   return (
     <div>Cart</div>
