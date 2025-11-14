@@ -72,8 +72,25 @@ export default function Settings() {
             </button>
           </div>
 
-          
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+              Why choose SHOP_4U
+            </p>
+            <h3 className="mt-2 text-lg font-semibold text-slate-900">
+              Built for modern discovery.
+            </h3>
+            <div className="mt-4 space-y-3 text-sm text-slate-600">
+              {perks.map((perk) => (
+                <p key={perk} className="flex items-start gap-2">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-slate-900" />
+                  {perk}
+                </p>
+              ))}
+            </div>
+          </div>
         </div>
+
+        
       </div>
     </section>
 
