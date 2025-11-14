@@ -40,8 +40,8 @@ export default function Settings() {
           </p>
         </header>
 
-        <div className="grid gap-6 md:grid-cols-[2fr_1fr]">
-          <div className="space-y-5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="space-y-5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm h-full">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
@@ -72,7 +72,7 @@ export default function Settings() {
             </button>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm h-full">
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
               Why choose SHOP_4U
             </p>
@@ -90,8 +90,8 @@ export default function Settings() {
           </div>
         </div>
 
-        <section className="grid gap-6 md:grid-cols-[1.2fr_0.8fr]">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <section className="grid gap-6 md:grid-cols-2">
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm h-full">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-slate-900">Reset password</h3>
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
@@ -143,7 +143,7 @@ export default function Settings() {
               </button>
             </form>
           </div>
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm h-full">
             <h3 className="text-lg font-semibold text-slate-900">Profile snapshot</h3>
             <dl className="mt-6 grid gap-4 text-sm text-slate-600">
               <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
