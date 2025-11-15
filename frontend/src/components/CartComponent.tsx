@@ -110,7 +110,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                       onClick={() => removeFromCart(product.id)}
                       className="inline-flex h-7 w-7 items-center cursor-pointer justify-center rounded-full border border-slate-200"
                     >
-                     - {/* <FaMinus className="text-2l text-black" /> */}
+                      <FaMinus className="text-2l text-black" />
                     </button>
                     <span className="font-semibold text-slate-900">{quantity}</span>
                     <button
@@ -118,7 +118,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                       onClick={() => addToCart(product.id)}
                       className="inline-flex h-7 w-7 items-center cursor-pointer justify-center rounded-full border border-slate-200"
                     >
-                     + {/* <FaPlus className="text-2l text-black"/> */}
+                      <FaPlus className="text-2l text-black"/>
                     </button>
                   </div>
                 </div>
