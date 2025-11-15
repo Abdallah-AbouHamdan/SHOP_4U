@@ -2,20 +2,35 @@ import { CiFilter } from "react-icons/ci";
 import { useStore } from "../store/useStore";
 
 const categories = ["All", "Fashion", "Sport Zone", "Tech Zone", "Lifestyle"];
+const SLIDER_MIN = 0;
+const SLIDER_MAX = 2000;
 
 export default function Filters() {
   const { filters, setFilter } = useStore();
+
+  const handleMinRangeChange = (value: number) => {
+    setFilter("minPrice", Math.min(value, filters.maxPrice));
+  };
+
+  const handleMaxRangeChange = (value: number) => {
+    setFilter("maxPrice", Math.max(value, filters.minPrice));
+  };
+
+  const minPercent = (filters.minPrice / SLIDER_MAX) * 100;
+  const maxPercent = (filters.maxPrice / SLIDER_MAX) * 100;
+  const highlightWidth = Math.max(maxPercent - minPercent, 0);
 
   return (
     <section className="space-y-5 rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-sm">
       <header>
         <div className="flex">
-          <span><CiFilter /></span>
+          <span>
+            <CiFilter />
+          </span>
           <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">
             Filters
           </p>
         </div>
-
       </header>
 
       <div className="space-y-2">
@@ -39,16 +54,37 @@ export default function Filters() {
         <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
           Price range
         </label>
-        <input
-          type="range"
-          min={0}
-          max={2000}
-          step={25}
-          value={filters.maxPrice}
-          onChange={(e) => setFilter("maxPrice", Number(e.target.value))}
-          aria-label="Maximum price"
-          className="range-input"
-        />
+        <div className="space-y-2">
+          <div className="relative h-5">
+            <div className="absolute inset-0 flex items-center">
+              <div className="h-1 w-full rounded-full bg-blue-50" />
+            </div>
+            <div
+              className="absolute top-1/2 h-1 -translate-y-1/2 rounded-full bg-linear-to-br from-green-800 via-green-500 to-green-400"
+              style={{ left: `${minPercent}%`, width: `${highlightWidth}%` }}
+            />
+            <input
+              type="range"
+              min={SLIDER_MIN}
+              max={SLIDER_MAX}
+              step={25}
+              value={filters.minPrice}
+              onChange={(e) => handleMinRangeChange(Number(e.target.value))}
+              aria-label="Minimum price"
+              className="range-input range-input--handle z-20"
+            />
+            <input
+              type="range"
+              min={SLIDER_MIN}
+              max={SLIDER_MAX}
+              step={25}
+              value={filters.maxPrice}
+              onChange={(e) => handleMaxRangeChange(Number(e.target.value))}
+              aria-label="Maximum price"
+              className="range-input range-input--handle z-10"
+            />
+          </div>
+        </div>
         <div className="flex items-center gap-3 text-sm">
           <div className="flex-1 rounded-2xl border border-slate-200 bg-white px-3 py-2">
             <label className="text-xs uppercase text-slate-400">Min</label>
@@ -57,7 +93,7 @@ export default function Filters() {
               min={0}
               max={filters.maxPrice}
               value={filters.minPrice}
-              onChange={(e) => setFilter("minPrice", Number(e.target.value))}
+              onChange={(e) => handleMinRangeChange(Number(e.target.value))}
               className="w-full bg-transparent text-slate-800 outline-none"
             />
           </div>
@@ -69,7 +105,7 @@ export default function Filters() {
               min={filters.minPrice}
               max={2000}
               value={filters.maxPrice}
-              onChange={(e) => setFilter("maxPrice", Number(e.target.value))}
+              onChange={(e) => handleMaxRangeChange(Number(e.target.value))}
               className="w-full bg-transparent text-slate-800 outline-none"
             />
           </div>

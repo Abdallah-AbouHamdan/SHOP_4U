@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { IoIosSearch } from "react-icons/io";
-import { IoBagOutline, IoHeartOutline, IoPersonOutline } from "react-icons/io5";
+import { GiShoppingCart } from "react-icons/gi";
+import { IoHeartOutline, IoPersonOutline } from "react-icons/io5";
 import { FiMenu, FiMoon, FiX } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { useStore } from "../store/useStore";
-import CartDrawer from "./CartDrawer";
+import CartComponent from "./CartComponent";
 
 export default function Navbar() {
   const search = useStore((s) => s.filters.search ?? "");
@@ -73,7 +74,7 @@ export default function Navbar() {
               className="flex items-center gap-3 text-slate-900 transition hover:opacity-80"
             >
               <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-purple-500 via-violet-500 to-blue-500 text-2xl text-white shadow-lg">
-                <MdOutlineShoppingCart />
+                <MdOutlineShoppingCart className="cursor-pointer"/>
               </span>
               <div className="leading-tight">
                 <p className="text-lg font-semibold">SHOP_4U</p>
@@ -88,17 +89,17 @@ export default function Navbar() {
                 type="button"
                 aria-label="Toggle dark mode"
                 onClick={handleThemeToggle}
-                className={`inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900 ${isDarkMode ? "text-slate-900" : ""}`}
+                className={`inline-flex h-11 w-11 items-center  justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900 ${isDarkMode ? "text-slate-900" : ""}`}
               >
-                <FiMoon />
+                <FiMoon className="cursor-pointer"/>
               </button>
               <button
                 type="button"
                 aria-label="Cart"
                 onClick={redirectToLogin}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+                className="inline-flex h-11 w-11 items-center  justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
               >
-                <IoBagOutline />
+                <GiShoppingCart  className="cursor-pointer"/>
               </button>
               <Link
                 to="/login"
@@ -110,9 +111,9 @@ export default function Navbar() {
                 type="button"
                 onClick={toggleMenu}
                 aria-label="Toggle menu"
-                className="rounded-2xl border border-slate-200 bg-white p-2 text-slate-600 transition hover:border-slate-300 hover:text-slate-900 md:hidden"
+                className="rounded-2xl border cursor-pointer border-slate-200 bg-white p-2 text-slate-600 transition hover:border-slate-300 hover:text-slate-900 md:hidden"
               >
-                {isMenuOpen ? <FiX /> : <FiMenu />}
+                {isMenuOpen ? <FiX className="cursor-pointer"/> : <FiMenu />}
               </button>
             </div>
           </div>
@@ -129,7 +130,7 @@ export default function Navbar() {
               <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white/95 p-5 shadow-2xl shadow-slate-900/10">
                 <div className="flex items-center gap-3 rounded-full border border-slate-200 bg-[#f2f2f2] px-5 py-3 text-sm text-slate-500">
                   <span aria-hidden>
-                    <IoIosSearch />
+                    <IoIosSearch className="cursor-pointer"/>
                   </span>
                   <input
                     type="text"
@@ -143,7 +144,7 @@ export default function Navbar() {
                   type="button"
                   aria-label="Toggle dark mode"
                   onClick={handleThemeToggle}
-                  className={`rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-900 ${isDarkMode ? "text-slate-900" : ""}`}
+                  className={`rounded-2xl cursor-pointer border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-900 ${isDarkMode ? "text-slate-900" : ""}`}
                 >
                   Toggle theme
                 </button>
@@ -161,7 +162,7 @@ export default function Navbar() {
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-6">
           <div className="flex items-center justify-between gap-3">
             <Link to="/" className="flex items-center gap-3 transition hover:opacity-80">
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-purple-500 via-violet-500 to-blue-500 text-2xl text-white shadow-lg">
+              <span className="flex h-12 w-12 items-center cursor-pointer justify-center rounded-2xl bg-linear-to-br from-purple-500 via-violet-500 to-blue-500 text-2xl text-white shadow-lg">
                 <MdOutlineShoppingCart />
               </span>
               <div className="leading-tight">
@@ -177,9 +178,9 @@ export default function Navbar() {
                 type="button"
                 aria-label="Cart"
                 onClick={handleCartClick}
-                className="relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+                className="relative inline-flex cursor-pointer h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
               >
-                <IoBagOutline />
+                <GiShoppingCart />
                 {cartCount > 0 && (
                   <span className="absolute right-0 top-0 translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-900 px-2 py-px text-[10px] font-semibold text-white">
                     {cartCount}
@@ -190,7 +191,7 @@ export default function Navbar() {
                 type="button"
                 aria-label="Settings"
                 onClick={handleSettingsNav}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+                className="inline-flex h-11 cursor-pointer w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
               >
                 <IoPersonOutline />
               </button>
@@ -198,7 +199,7 @@ export default function Navbar() {
                 type="button"
                 onClick={toggleMenu}
                 aria-label="Toggle menu"
-                className="rounded-2xl border border-slate-200 bg-white p-2 text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+                className="rounded-2xl border cursor-pointer border-slate-200 bg-white p-2 text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
               >
                 {isMenuOpen ? <FiX /> : <FiMenu />}
               </button>
@@ -223,7 +224,7 @@ export default function Navbar() {
               type="button"
               aria-label="Toggle dark mode"
               onClick={handleThemeToggle}
-              className={`inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900 ${isDarkMode ? "text-slate-900" : ""
+              className={`inline-flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900 ${isDarkMode ? "text-slate-900" : ""
                 }`}
             >
               <FiMoon />
@@ -232,9 +233,9 @@ export default function Navbar() {
               type="button"
               aria-label="Cart"
               onClick={handleCartClick}
-              className="relative inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+              className="relative inline-flex h-12 cursor-pointer w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
             >
-              <IoBagOutline />
+              <GiShoppingCart />
               {cartCount > 0 && (
                 <span className="absolute right-0 top-0 translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-900 px-2 py-px text-[10px] font-semibold text-white">
                   {cartCount}
@@ -245,11 +246,11 @@ export default function Navbar() {
               type="button"
               aria-label="Favorites"
               onClick={handleFavoritesNav}
-              className="relative inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+              className="relative inline-flex h-12 cursor-pointer w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
             >
               <IoHeartOutline />
               {favoritesCount > 0 && (
-                <span className="absolute right-0 top-0 translate-x-1/2 -translate-y-1/2 rounded-full bg-rose-500 px-2 py-px text-[10px] font-semibold text-white">
+                <span className="absolute right-0 top-0  translate-x-1/2 -translate-y-1/2 rounded-full bg-rose-500 px-2 py-px text-[10px] font-semibold text-white">
                   {favoritesCount}
                 </span>
               )}
@@ -258,7 +259,7 @@ export default function Navbar() {
               type="button"
               aria-label="Settings"
               onClick={handleSettingsNav}
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+              className="inline-flex h-12 w-12 items-center cursor-pointer justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
             >
               <IoPersonOutline />
             </button>
@@ -292,7 +293,7 @@ export default function Navbar() {
                   type="button"
                   aria-label="Favorites"
                   onClick={handleFavoritesNav}
-                  className="relative flex items-center justify-center rounded-2xl border border-slate-200 bg-white py-3 text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+                  className="relative flex items-center justify-center cursor-pointer rounded-2xl border border-slate-200 bg-white py-3 text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
                 >
                   <IoHeartOutline />
                   {favoritesCount > 0 && (
@@ -305,7 +306,7 @@ export default function Navbar() {
                   type="button"
                   aria-label="Toggle dark mode"
                   onClick={handleThemeToggle}
-                  className={`flex items-center justify-center rounded-2xl border border-slate-200 bg-white py-3 text-slate-600 transition hover:border-slate-300 hover:text-slate-900 ${isDarkMode ? "text-slate-900" : ""
+                  className={`flex items-center justify-center cursor-pointer rounded-2xl border border-slate-200 bg-white py-3 text-slate-600 transition hover:border-slate-300 hover:text-slate-900 ${isDarkMode ? "text-slate-900" : ""
                     }`}
                 >
                   <FiMoon />
@@ -315,14 +316,14 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={handleSettingsNav}
-                  className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-900"
+                  className="rounded-2xl border cursor-pointer border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-900"
                 >
                   Settings
                 </button>
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+                  className="rounded-2xl bg-slate-900 px-4 py-3 cursor-pointer text-sm font-semibold text-white transition hover:bg-slate-800"
                 >
                   Logout
                 </button>
@@ -331,7 +332,7 @@ export default function Navbar() {
           </div>
         </>
       )}
-      <CartDrawer open={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      <CartComponent open={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </nav>
   );
 }

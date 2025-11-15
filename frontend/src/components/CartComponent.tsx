@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { useStore } from "../store/useStore";
 import { useMemo } from "react";
 import { FiX } from "react-icons/fi";
+import { GiShoppingCart } from "react-icons/gi";
+import { FaMinus, FaPlus } from "react-icons/fa";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -53,28 +55,30 @@ export default function CartDrawer({ open, onClose }: Props) {
   if (!open) return null;
 
   return (
-     <div className="fixed inset-0 z-50 flex">
+     <div className="fixed inset-0 z-50 flex overflow-y-auto">
       <button
         type="button"
         onClick={onClose}
-        className="flex-1 bg-slate-900/30"
+        className="flex-1 bg-slate-900/30 min-h-screen"
         aria-label="Close cart drawer"
       />
-      <div className="relative flex w-full max-w-md flex-col border-l border-slate-200 bg-white shadow-2xl">
-        <div className="px-6 pt-6">
-          <h2 className="text-lg font-semibold text-slate-900">
-            {/* <GiShoppingCart /> */}
-            Shopping cart ({totalItems})
-          </h2>
+      <div className="relative flex w-full max-w-md flex-col border-l border-slate-200 bg-white shadow-2xl h-screen overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-3">
+              <GiShoppingCart aria-hidden className="w-6 h-6" />
+            <h2 className="text-lg font-semibold text-slate-900">
+              Shopping cart ({totalItems})
+            </h2>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-xl font-semibold text-slate-400 transition hover:text-slate-800 focus:outline-none"
+            aria-label="Close cart"
+          >
+            <FiX className="h-6 w-6 cursor-pointer" aria-hidden="true" />
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute right-4 top-4 text-slate-400 transition hover:text-slate-800 focus:outline-none"
-          aria-label="Close cart"
-        >
-          <FiX className="h-6 w-6" aria-hidden="true" />
-        </button>
         <div className="flex-1 overflow-y-auto px-6 pb-4">
           <div className="space-y-4">
             {items.map(({ product, quantity }) => (
@@ -93,7 +97,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                   className="absolute right-3 top-3 text-slate-400 transition hover:text-slate-800 focus:outline-none"
                   aria-label={`Remove ${product.title} from cart`}
                 >
-                  <FiX className="h-5 w-5" aria-hidden="true" />
+                  <FiX className="h-5 w-5 cursor-pointer" aria-hidden="true" />
                 </button>
                 <div className="flex flex-1 min-w-0 flex-col gap-1">
                   <div className="flex items-center justify-between">
@@ -104,17 +108,17 @@ export default function CartDrawer({ open, onClose }: Props) {
                     <button
                       type="button"
                       onClick={() => removeFromCart(product.id)}
-                      className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200"
+                      className="inline-flex h-7 w-7 items-center cursor-pointer justify-center rounded-full border border-slate-200"
                     >
-                      −
+                      <FaMinus className="text-2l text-black" />
                     </button>
                     <span className="font-semibold text-slate-900">{quantity}</span>
                     <button
                       type="button"
                       onClick={() => addToCart(product.id)}
-                      className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200"
+                      className="inline-flex h-7 w-7 items-center cursor-pointer justify-center rounded-full border border-slate-200"
                     >
-                      +
+                      <FaPlus className="text-2l text-black"/>
                     </button>
                   </div>
                 </div>
@@ -125,7 +129,7 @@ export default function CartDrawer({ open, onClose }: Props) {
             ))}
           </div>
         </div>
-        <div className="px-6 pb-6">
+        <div className="sticky bottom-0 border-t border-slate-200 bg-white px-6 pb-6 pt-4">
           <div className="flex items-center justify-between text-sm text-slate-600">
             <span>Subtotal</span>
             <span className="font-semibold text-slate-900">
@@ -138,7 +142,7 @@ export default function CartDrawer({ open, onClose }: Props) {
               onClose();
               navigate("/cart");
             }}
-            className="mt-4 w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+            className="mt-4 w-full rounded-2xl cursor-pointer bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
           >
             Proceed to checkout
           </button>

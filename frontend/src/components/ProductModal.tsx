@@ -94,10 +94,10 @@ export default function ProductModal() {
         <button
           type="button"
           onClick={closeProductModal}
-          className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:scale-105 hover:text-slate-900"
+          className="absolute right-4 top-4 inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:scale-105 hover:text-slate-900"
           aria-label="Close product details"
         >
-          <IoIosClose className="text-2xl" />
+          <IoIosClose className="text-2xl hover:text-3xl" />
         </button>
 
         <div className="pr-1 sm:pr-3">
@@ -169,7 +169,7 @@ export default function ProductModal() {
                       onClick={() =>
                         setQuantity((qty) => (qty > 1 ? qty - 1 : qty))
                       }
-                      className="flex h-10 w-10 items-center justify-center text-slate-600 transition hover:text-slate-900"
+                      className="flex h-10 w-10 items-center cursor-pointer justify-center text-slate-600 transition hover:text-slate-900"
                       aria-label="Decrease quantity"
                     >
                       <HiOutlineMinus />
@@ -180,7 +180,7 @@ export default function ProductModal() {
                     <button
                       type="button"
                       onClick={() => setQuantity((qty) => qty + 1)}
-                      className="flex h-10 w-10 items-center justify-center text-slate-600 transition hover:text-slate-900"
+                      className="flex h-10 w-10 items-center justify-center cursor-pointer text-slate-600 transition hover:text-slate-900"
                       aria-label="Increase quantity"
                     >
                       <HiOutlinePlus />
@@ -191,7 +191,7 @@ export default function ProductModal() {
                 <div className="flex flex-wrap gap-2.5 sm:gap-3">
                   <button
                     type="button"
-                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 sm:px-5 sm:py-3"
+                    className="inline-flex flex-1 items-center justify-center gap-2 cursor-pointer rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 sm:px-5 sm:py-3"
                     onClick={handleAddToCart}
                   >
                     <GiShoppingCart aria-hidden />
@@ -201,7 +201,7 @@ export default function ProductModal() {
                     <button
                       type="button"
                       onClick={handleFavorite}
-                      className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl border text-xl transition sm:h-12 sm:w-12 sm:text-2xl ${isFavorite
+                      className={`inline-flex h-11 w-11 items-center cursor-pointer justify-center rounded-2xl border text-xl transition sm:h-12 sm:w-12 sm:text-2xl ${isFavorite
                         ? "border-rose-200 bg-rose-50 text-rose-600"
                         : "border-slate-200 text-slate-500 hover:border-slate-300 hover:text-slate-800"
                         }`}
@@ -221,13 +221,13 @@ export default function ProductModal() {
                 <div className="grid grid-cols-1 gap-1.5 text-xs font-semibold sm:grid-cols-2 sm:gap-2 sm:text-sm">
                   <button
                     type="button"
-                    className="rounded-2xl border border-slate-200 px-3 py-2 text-slate-700 transition hover:border-slate-300 hover:text-slate-900"
+                    className="rounded-2xl border border-slate-200 px-3 py-2 cursor-pointer text-slate-700 transition hover:border-slate-300 hover:text-slate-900"
                   >
                     Reviews
                   </button>
                   <button
                     type="button"
-                    className="rounded-2xl border border-slate-200 px-3 py-2 text-slate-700 transition hover:border-slate-300 hover:text-slate-900"
+                    className="rounded-2xl border border-slate-200 px-3 py-2 cursor-pointer text-slate-700 transition hover:border-slate-300 hover:text-slate-900"
                   >
                     Product details
                   </button>

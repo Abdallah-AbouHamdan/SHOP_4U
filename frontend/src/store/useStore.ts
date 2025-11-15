@@ -34,7 +34,7 @@ type State = {
 
 type User = {
   email: string;
-  fullName?: string;
+  username?: string;
   accountType?: "buyer" | "seller";
 };
 
@@ -49,6 +49,7 @@ type Actions = {
   toggleFavorite: (id: string) => void;
   login: (user: User) => void;
   logout: () => void;
+  updateUsername: (username: string) => void;
 };
 
 export const useStore = create<State & Actions>()(
@@ -228,7 +229,17 @@ export const useStore = create<State & Actions>()(
             ? { favorites: s.favorites.filter((favId) => favId !== id) }
             : { favorites: [...s.favorites, id] }
         ),
-      login: (user) => set({ user }),
+      login: (user) =>
+        set((state) => ({
+          user: {
+            ...(state.user ?? {}),
+            ...user,
+          },
+        })),
+      updateUsername: (username) =>
+        set((state) =>
+          state.user ? { user: { ...state.user, username } } : {}
+        ),
       logout: () => set({ user: null, cart: [], favorites: [] }),
     }),
     {

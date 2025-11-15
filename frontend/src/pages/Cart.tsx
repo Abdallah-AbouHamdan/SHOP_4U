@@ -78,9 +78,9 @@ export default function Cart() {
                             </p>
                             <div className="text-sm text-slate-600">
                                 <p>
-                                    Name:{" "}
+                                Name:{" "}
                                     <span className="font-semibold text-slate-900">
-                                        {user?.fullName ?? "Shopper"}
+                                        {user?.username ?? "Shopper"}
                                     </span>
                                 </p>
                                 <p>
