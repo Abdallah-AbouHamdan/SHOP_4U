@@ -18,31 +18,56 @@ input::placeholder {
 }
 
 .range-input {
+  position: absolute;
+  inset: 0;
   width: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
   -webkit-appearance: none;
   appearance: none;
-  height: 6px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #111322, #55f758);
-  cursor: pointer;
+  pointer-events: none;
+}
+
+.range-input.range-input--handle {
+  pointer-events: auto;
 }
 
 .range-input::-webkit-slider-thumb {
   -webkit-appearance: none;
+  appearance: none;
   height: 20px;
   width: 20px;
-  border-radius: 50%;
-  border: 2px solid #111322;
+  border-radius: 999px;
+  border: 3px solid #25eb25;
   background: #fff;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+  margin-top: -7px;
 }
 
 .range-input::-moz-range-thumb {
   height: 20px;
   width: 20px;
-  border-radius: 50%;
-  border: 2px solid #111322;
+  border-radius: 999px;
+  border: 3px solid #25eb2f;
   background: #fff;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
 }
+
+.range-input::-ms-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 999px;
+  border: 3px solid #25eb25;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+.range-input:focus {
+  outline: none;
+}
+
 
 .toggle-input {
   appearance: none;
