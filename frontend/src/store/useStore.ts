@@ -1,4 +1,3 @@
-import { error } from "console";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -33,6 +32,7 @@ type State = {
   user: User | null;
   savedUsernames: Record<string, string>;
   userRecords: Record<string, UserRecord>;
+  orders: Order[];
 };
 
 type User = {
@@ -56,6 +56,9 @@ type RegisterData = Credentials & {
   username: string;
   accountType: "buyer" | "seller";
 };
+
+export type OrderStatus = "Pending" | "Processing" | "Shipped" | "Deliverd";
+
 
 type Actions = {
   addToCart: (id: string) => void;
