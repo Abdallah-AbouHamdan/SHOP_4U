@@ -12,6 +12,7 @@ export default function Settings() {
   const user = useStore((state) => state.user);
   const logout = useStore((state) => state.logout);
   const updateUser = useStore((state) => state.updateUser);
+  const changePassword = useStore((state) => state.changePassword);
   const [passwordForm, setPasswordForm] = useState({
     current: "",
     next: "",

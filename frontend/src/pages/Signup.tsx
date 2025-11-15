@@ -11,6 +11,7 @@ export default function Signup() {
     const [accountType, setAccountType] = useState<"buyer" | "seller">("buyer");
     const [formError, setFormError] = useState<string | null>(null);
     const login = useStore((s) => s.login);
+    const registerUser = useStore((s) => s.registerUser);
     const user = useStore((s) => s.user);
     const navigate = useNavigate();
     const location = useLocation();
@@ -42,11 +43,24 @@ export default function Signup() {
         }
         setFormError(null);
 
-        login({
+        const registration = registerUser({
             email,
             username,
             accountType,
+            password,
         });
+
+        if (!registration.success) {
+            setFormError(registration.error ?? "Unable to create account.");
+            return;
+        }
+
+        const loginResult = login({ email, password });
+        if (!loginResult.success) {
+            setFormError(loginResult.error ?? "Something went wrong with login.");
+            return;
+        }
+
         navigate(redirectPath, { replace: true });
     };
     if (user) {

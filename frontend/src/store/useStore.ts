@@ -1,3 +1,4 @@
+import { error } from "console";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -31,12 +32,29 @@ type State = {
   };
   user: User | null;
   savedUsernames: Record<string, string>;
+  userRecords: Record<string, UserRecord>;
 };
 
 type User = {
   email: string;
-  username?: string;
-  accountType?: "buyer" | "seller";
+  username: string;
+  accountType: "buyer" | "seller";
+};
+
+type UserRecord = {
+  username: string;
+  accountType: "buyer" | "seller";
+  password: string;
+};
+
+type Credentials = {
+  email: string;
+  password: string;
+};
+
+type RegisterData = Credentials & {
+  username: string;
+  accountType: "buyer" | "seller";
 };
 
 type Actions = {
@@ -48,14 +66,16 @@ type Actions = {
   openProductModal: (id: string) => void;
   closeProductModal: () => void;
   toggleFavorite: (id: string) => void;
-  login: (user: User) => void;
+  login: (credentials: Credentials) => { success: boolean; error?: string };
+  registerUser: (user: RegisterData) => { success: boolean; error?: string };
+  changePassword: (payload: {current:string; next:string}) => { success: boolean; error?:string};
   logout: () => void;
   updateUser: (user: Partial<User>) => void;
 };
 
 export const useStore = create<State & Actions>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       products: [
         {
           id: "p1",
@@ -209,6 +229,7 @@ export const useStore = create<State & Actions>()(
       },
       user: null,
       savedUsernames: {},
+      userRecords: {},
       addToCart: (id) => set((s) => ({ cart: [...s.cart, id] })),
       removeFromCart: (id) =>
         set((s) => {
@@ -231,28 +252,68 @@ export const useStore = create<State & Actions>()(
             ? { favorites: s.favorites.filter((favId) => favId !== id) }
             : { favorites: [...s.favorites, id] }
         ),
-      login: (incomingUser) =>
-        set((state) => {
-          const accountType =
-            incomingUser.accountType ?? state.user?.accountType ?? "buyer";
-          const defaultUsername = incomingUser.email.split("@")[0];
-          const username =
-            incomingUser.username ??
-            state.savedUsernames[incomingUser.email] ??
-            defaultUsername;
-
-          return {
-            user: {
-              email: incomingUser.email,
-              username,
+      login: ({ email, password }) => {
+        const state = get();
+        const record = state.userRecords[email];
+        if (!record) {
+          return { success: false, error: "No account found for that email." };
+        }
+        if (record.password !== password) {
+          return { success: false, error: "Incorrect password." };
+        }
+        set((prev) => ({
+          user: {
+            email,
+            username: record.username,
+            accountType: record.accountType,
+          },
+          savedUsernames: {
+            ...prev.savedUsernames,
+            [email]: record.username,
+          },
+        }));
+        return { success: true };
+      },
+      registerUser: ({ email, username, accountType, password }) => {
+        const state = get();
+        if (state.userRecords[email]) {
+          return { success: false, error: "An account with that email already exists." };
+        }
+        const trimmedUsername = username.trim() || email.split("@")[0];
+        set((prev) => ({
+          userRecords: {
+            ...prev.userRecords,
+            [email]: {
+              username: trimmedUsername,
               accountType,
+              password,
             },
-            savedUsernames: {
-              ...state.savedUsernames,
-              [incomingUser.email]: username,
+          },
+        }));
+        return { success: true };
+      },
+      changePassword: ({current, next}) =>{
+        const state = get();
+        if(!state.user){
+          return { success: false, error: "Log in to change password."};
+        }
+        const record = state.userRecords[state.user.email];
+        if(!record) {
+         return { success: false, error: "Account record is not available."};
+        }
+        if (record.password !== current){
+          return { success: false, error: "Current password is incorrect."};
+        }set((prev) => ({
+          userRecords: {
+            ...prev.userRecords,
+            [state.user!.email]:{
+              ...record,
+              password: next,
             },
-          };
-        }),
+          },
+        }));
+        return {success: true};
+      },
       updateUser: (updates) =>
         set((state) => {
           if (!state.user) return {};
@@ -263,6 +324,15 @@ export const useStore = create<State & Actions>()(
               ...state.savedUsernames,
               [state.user.email]: updates.username,
             };
+            if (state.userRecords[state.user.email]) {
+              nextState.userRecords = {
+                ...state.userRecords,
+                [state.user.email]: {
+                  ...state.userRecords[state.user.email],
+                  username: updates.username,
+                },
+              };
+            }
           }
           return nextState;
         }),
@@ -270,12 +340,13 @@ export const useStore = create<State & Actions>()(
     }),
     {
       name: "shop4u-storage",
-      partialize: ({ cart, filters, user, favorites, savedUsernames }) => ({
+      partialize: ({ cart, filters, user, favorites, savedUsernames, userRecords }) => ({
         cart,
         filters,
         user,
         favorites,
         savedUsernames,
+        userRecords,
       }),
     }
   )

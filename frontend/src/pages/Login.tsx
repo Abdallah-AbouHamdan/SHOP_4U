@@ -30,8 +30,12 @@ export default function Login() {
             setFormError("Password must be at least 8 characters long.");
             return;
         }
+        const result = login({ email, password });
+        if (!result.success) {
+            setFormError(result.error ?? "Invalid credentials.");
+            return;
+        }
         setFormError(null);
-        login({ email });
         navigate(redirectPath, { replace: true });
     };
     return (
