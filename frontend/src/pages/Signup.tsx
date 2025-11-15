@@ -1,18 +1,26 @@
 import { useState, type FormEvent } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import {
+    isEmailValid,
+    isPasswordValid,
+    isUsernameValid,
+    passwordRequirements,
+    usernameRequirements,
+} from "../utils/formValidation";
 import { useStore } from "../store/useStore";
 
 
 const accountTypes = [
     { value: "buyer", label: "Buyer - Shop for products" },
     { value: "seller", label: "Seller - Sell your products" }
-]
+];
 export default function Signup() {
     const [accountType, setAccountType] = useState<"buyer" | "seller">("buyer");
     const [formError, setFormError] = useState<string | null>(null);
     const login = useStore((s) => s.login);
     const registerUser = useStore((s) => s.registerUser);
     const user = useStore((s) => s.user);
+    const [formError, setFormError] = useState<string | null>(null);
     const navigate = useNavigate();
     const location = useLocation();
     const state = location.state as { from?: string } | null;
@@ -22,45 +30,30 @@ export default function Signup() {
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
-        const username = (formData.get("username") as string ?? "").trim();
-        const email = (formData.get("email") as string ?? "").trim();
+        const username = (formData.get("username") as string) ?? "";
+        const email = (formData.get("email") as string) ?? "";
         const password = (formData.get("password") as string) ?? "";
 
-        const usernamePattern = /^[a-zA-Z0-9_]{3,20}$/;
-        const emailPattern = /^\S+@\S+\.\S+$/;
-
-        if (!usernamePattern.test(username)) {
-            setFormError("Username must be 3-20 characters and can include letters, numbers, or underscores.");
+        if (!isUsernameValid(username)) {
+            setFormError(`Username must be ${usernameRequirements}.`);
             return;
         }
-        if (!emailPattern.test(email)) {
+        if (!isEmailValid(email)) {
             setFormError("Please enter a valid email address.");
             return;
         }
-        if (password.length < 8) {
-            setFormError("Password must be at least 8 characters long.");
+        if (!isPasswordValid(password)) {
+            setFormError(`Password must be ${passwordRequirements}.`);
             return;
         }
-        setFormError(null);
 
-        const registration = registerUser({
-            email,
-            username,
+        setFormError(null);
+        login({
+            email: email.trim(),
+            username: username.trim(),
             accountType,
             password,
         });
-
-        if (!registration.success) {
-            setFormError(registration.error ?? "Unable to create account.");
-            return;
-        }
-
-        const loginResult = login({ email, password });
-        if (!loginResult.success) {
-            setFormError(loginResult.error ?? "Something went wrong with login.");
-            return;
-        }
-
         navigate(redirectPath, { replace: true });
     };
     if (user) {
@@ -94,7 +87,8 @@ export default function Signup() {
                             <input
                                 type="text"
                                 name="username"
-                                placeholder="your_username"
+                                autoComplete="username"
+                                placeholder="shopper123"
                                 className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
                                 required
                                 onInput={() => setFormError(null)} />
@@ -152,6 +146,14 @@ export default function Signup() {
                             className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
                             Create account
                         </button>
+                        {formError && (
+                            <p
+                                className="text-center text-xs font-semibold uppercase tracking-[0.3em] text-rose-500"
+                                role="alert"
+                            >
+                                {formError}
+                            </p>
+                        )}
                         <p className="text-center text-sm text-slate-600">
                             Already have an account?{" "}
                             <Link

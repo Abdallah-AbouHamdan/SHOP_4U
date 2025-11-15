@@ -37,45 +37,8 @@ type State = {
 
 type User = {
   email: string;
-  username: string;
-  accountType: "buyer" | "seller";
-};
-
-type UserRecord = {
-  username: string;
-  accountType: "buyer" | "seller";
-  password: string;
-};
-
-type Credentials = {
-  email: string;
-  password: string;
-};
-
-type RegisterData = Credentials & {
-  username: string;
-  accountType: "buyer" | "seller";
-};
-
-export type OrderStatus = "Pending" | "Processing" | "Shipped" | "Deliverd";
-
-export type OrderItem = {
-  productId: string;
-  quantity: number;
-};
-
-export type Order = {
-  id: string;
-  number: string;
-  createdAt: string;
-  status: OrderStatus;
-  statusDetail: string;
-  items: OrderItem[];
-  subtotal: number;
-  shipping: number;
-  tax: number;
-  total: number;
-  confirmationCode: string;
+  username?: string;
+  accountType?: "buyer" | "seller";
 };
 
 type Actions = {
@@ -92,7 +55,7 @@ type Actions = {
   changePassword: (payload: {current:string; next:string}) => { success: boolean; error?:string};
   placeOrder: (payload: PlaceOrderPayload) => { success: boolean; error?: string};
   logout: () => void;
-  updateUser: (user: Partial<User>) => void;
+  updateUsername: (username: string) => void;
 };
 
 const ORDER_STATUS_FLOW: { status: OrderStatus; detail: string }[] = [
@@ -281,90 +244,17 @@ export const useStore = create<State & Actions>()(
             ? { favorites: s.favorites.filter((favId) => favId !== id) }
             : { favorites: [...s.favorites, id] }
         ),
-      login: ({ email, password }) => {
-        const state = get();
-        const record = state.userRecords[email];
-        if (!record) {
-          return { success: false, error: "No account found for that email." };
-        }
-        if (record.password !== password) {
-          return { success: false, error: "Incorrect password." };
-        }
-        set((prev) => ({
+      login: (user) =>
+        set((state) => ({
           user: {
-            email,
-            username: record.username,
-            accountType: record.accountType,
+            ...(state.user ?? {}),
+            ...user,
           },
-          savedUsernames: {
-            ...prev.savedUsernames,
-            [email]: record.username,
-          },
-        }));
-        return { success: true };
-      },
-      registerUser: ({ email, username, accountType, password }) => {
-        const state = get();
-        if (state.userRecords[email]) {
-          return { success: false, error: "An account with that email already exists." };
-        }
-        const trimmedUsername = username.trim() || email.split("@")[0];
-        set((prev) => ({
-          userRecords: {
-            ...prev.userRecords,
-            [email]: {
-              username: trimmedUsername,
-              accountType,
-              password,
-            },
-          },
-        }));
-        return { success: true };
-      },
-      changePassword: ({current, next}) =>{
-        const state = get();
-        if(!state.user){
-          return { success: false, error: "Log in to change password."};
-        }
-        const record = state.userRecords[state.user.email];
-        if(!record) {
-         return { success: false, error: "Account record is not available."};
-        }
-        if (record.password !== current){
-          return { success: false, error: "Current password is incorrect."};
-        }set((prev) => ({
-          userRecords: {
-            ...prev.userRecords,
-            [state.user!.email]:{
-              ...record,
-              password: next,
-            },
-          },
-        }));
-        return {success: true};
-      },
-      updateUser: (updates) =>
-        set((state) => {
-          if (!state.user) return {};
-          const nextUser = { ...state.user, ...updates };
-          const nextState: Partial<State> = { user: nextUser };
-          if (updates.username) {
-            nextState.savedUsernames = {
-              ...state.savedUsernames,
-              [state.user.email]: updates.username,
-            };
-            if (state.userRecords[state.user.email]) {
-              nextState.userRecords = {
-                ...state.userRecords,
-                [state.user.email]: {
-                  ...state.userRecords[state.user.email],
-                  username: updates.username,
-                },
-              };
-            }
-          }
-          return nextState;
-        }),
+        })),
+      updateUsername: (username) =>
+        set((state) =>
+          state.user ? { user: { ...state.user, username } } : {}
+        ),
       logout: () => set({ user: null, cart: [], favorites: [] }),
        placeOrder: ({ itemEntries, subtotal, shipping, tax, total }) => {
         if (!itemEntries.length) {
