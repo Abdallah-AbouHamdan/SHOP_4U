@@ -30,11 +30,12 @@ type State = {
     search: string;
   };
   user: User | null;
+  savedUsernames: Record<string, string>;
 };
 
 type User = {
   email: string;
-  fullName?: string;
+  username?: string;
   accountType?: "buyer" | "seller";
 };
 
@@ -49,6 +50,7 @@ type Actions = {
   toggleFavorite: (id: string) => void;
   login: (user: User) => void;
   logout: () => void;
+  updateUser: (user: Partial<User>) => void;
 };
 
 export const useStore = create<State & Actions>()(
@@ -206,6 +208,7 @@ export const useStore = create<State & Actions>()(
         search: "",
       },
       user: null,
+      savedUsernames: {},
       addToCart: (id) => set((s) => ({ cart: [...s.cart, id] })),
       removeFromCart: (id) =>
         set((s) => {
@@ -228,16 +231,51 @@ export const useStore = create<State & Actions>()(
             ? { favorites: s.favorites.filter((favId) => favId !== id) }
             : { favorites: [...s.favorites, id] }
         ),
-      login: (user) => set({ user }),
+      login: (incomingUser) =>
+        set((state) => {
+          const accountType =
+            incomingUser.accountType ?? state.user?.accountType ?? "buyer";
+          const defaultUsername = incomingUser.email.split("@")[0];
+          const username =
+            incomingUser.username ??
+            state.savedUsernames[incomingUser.email] ??
+            defaultUsername;
+
+          return {
+            user: {
+              email: incomingUser.email,
+              username,
+              accountType,
+            },
+            savedUsernames: {
+              ...state.savedUsernames,
+              [incomingUser.email]: username,
+            },
+          };
+        }),
+      updateUser: (updates) =>
+        set((state) => {
+          if (!state.user) return {};
+          const nextUser = { ...state.user, ...updates };
+          const nextState: Partial<State> = { user: nextUser };
+          if (updates.username) {
+            nextState.savedUsernames = {
+              ...state.savedUsernames,
+              [state.user.email]: updates.username,
+            };
+          }
+          return nextState;
+        }),
       logout: () => set({ user: null, cart: [], favorites: [] }),
     }),
     {
       name: "shop4u-storage",
-      partialize: ({ cart, filters, user, favorites }) => ({
+      partialize: ({ cart, filters, user, favorites, savedUsernames }) => ({
         cart,
         filters,
         user,
         favorites,
+        savedUsernames,
       }),
     }
   )

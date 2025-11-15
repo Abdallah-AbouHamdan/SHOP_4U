@@ -80,7 +80,7 @@ export default function Cart() {
                                 <p>
                                     Name:{" "}
                                     <span className="font-semibold text-slate-900">
-                                        {user?.fullName ?? "Shopper"}
+                                        {user?.username ?? "Shopper"}
                                     </span>
                                 </p>
                                 <p>

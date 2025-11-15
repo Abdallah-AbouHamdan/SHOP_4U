@@ -9,23 +9,45 @@ const accountTypes = [
 ]
 export default function Signup() {
     const [accountType, setAccountType] = useState<"buyer" | "seller">("buyer");
+    const [formError, setFormError] = useState<string | null>(null);
     const login = useStore((s) => s.login);
     const user = useStore((s) => s.user);
     const navigate = useNavigate();
     const location = useLocation();
-    const state = location.state as {from?: string } | null;
+    const state = location.state as { from?: string } | null;
     const redirectPath =
         state?.from && state.from !== "/login" ? state.from : "/dashboard";
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
+        const username = (formData.get("username") as string ?? "").trim();
+        const email = (formData.get("email") as string ?? "").trim();
+        const password = (formData.get("password") as string) ?? "";
+
+        const usernamePattern = /^[a-zA-Z0-9_]{3,20}$/;
+        const emailPattern = /^\S+@\S+\.\S+$/;
+
+        if (!usernamePattern.test(username)) {
+            setFormError("Username must be 3-20 characters and can include letters, numbers, or underscores.");
+            return;
+        }
+        if (!emailPattern.test(email)) {
+            setFormError("Please enter a valid email address.");
+            return;
+        }
+        if (password.length < 8) {
+            setFormError("Password must be at least 8 characters long.");
+            return;
+        }
+        setFormError(null);
+
         login({
-            email: formData.get("email") as string,
-            fullName: formData.get("fullName") as string,
+            email,
+            username,
             accountType,
         });
-        navigate(redirectPath, { replace: true});
+        navigate(redirectPath, { replace: true });
     };
     if (user) {
         return <Navigate to={redirectPath} replace />;
@@ -54,13 +76,14 @@ export default function Signup() {
                         </div>
 
                         <label className="space-y-2 text-sm font-semibold text-slate-700">
-                            Full Name
+                            Username
                             <input
                                 type="text"
-                                name="fullName"
-                                placeholder="John Doe"
+                                name="username"
+                                placeholder="your_username"
                                 className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
-                                required />
+                                required
+                                onInput={() => setFormError(null)} />
                         </label>
 
                         <label className="space-y-2 text-sm font-semibold text-slate-700">
@@ -70,7 +93,8 @@ export default function Signup() {
                                 name="email"
                                 placeholder="you@example.com"
                                 className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
-                                required />
+                                required
+                                onInput={() => setFormError(null)} />
                         </label>
 
                         <label className="space-y-2 text-sm font-semibold text-slate-700">
@@ -80,7 +104,8 @@ export default function Signup() {
                                 name="password"
                                 placeholder="**********"
                                 className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-400 focus:bg-white "
-                                required />
+                                required
+                                onInput={() => setFormError(null)} />
                         </label>
 
                         <div className="space-y-3">
@@ -105,6 +130,9 @@ export default function Signup() {
                             </div>
                         </div>
 
+                        {formError ? (
+                            <p className="text-sm text-rose-500">{formError}</p>
+                        ) : null}
                         <button
                             type="submit"
                             className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
