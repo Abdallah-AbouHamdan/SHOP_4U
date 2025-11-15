@@ -1,10 +1,12 @@
-import { type FormEvent } from "react"
+import { useState, type FormEvent } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { isEmailValid, isPasswordValid, passwordRequirements } from "../utils/formValidation";
 import { useStore } from "../store/useStore";
 
 export default function Login() {
     const login = useStore((s) => s.login);
     const user = useStore((s) => s.user);
+    const [formError, setFormError] = useState<string | null>(null);
     const navigate = useNavigate();
     const location = useLocation();
     const state = location.state as { from?: string } | null;
@@ -17,8 +19,21 @@ export default function Login() {
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
+        const email = (formData.get("email") as string) ?? "";
+        const password = (formData.get("password") as string) ?? "";
+
+        if (!isEmailValid(email)) {
+            setFormError("Please enter a valid email address.");
+            return;
+        }
+        if (!isPasswordValid(password)) {
+            setFormError(`Password must be ${passwordRequirements}.`);
+            return;
+        }
+
+        setFormError(null);
         login({
-            email: formData.get("email") as string,
+            email: email.trim(),
         });
         navigate(redirectPath, { replace: true });
     };
@@ -76,6 +91,14 @@ export default function Login() {
                         >
                             Sign in
                         </button>
+                        {formError && (
+                            <p
+                                className="text-center text-xs font-semibold uppercase tracking-[0.3em] text-rose-500"
+                                role="alert"
+                            >
+                                {formError}
+                            </p>
+                        )}
                         <p className="text-center text-sm text-slate-600">
                             Don&apos;t have an account?{" "}
                             <Link to="/signup" className="font-semibold text-slate-900 underline-offset-2 hover:underline">

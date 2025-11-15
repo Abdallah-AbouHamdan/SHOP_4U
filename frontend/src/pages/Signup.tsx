@@ -1,16 +1,24 @@
 import { useState, type FormEvent } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import {
+    isEmailValid,
+    isPasswordValid,
+    isUsernameValid,
+    passwordRequirements,
+    usernameRequirements,
+} from "../utils/formValidation";
 import { useStore } from "../store/useStore";
 
 
 const accountTypes = [
     { value: "buyer", label: "Buyer - Shop for products" },
     { value: "seller", label: "Seller - Sell your products" }
-]
+];
 export default function Signup() {
     const [accountType, setAccountType] = useState<"buyer" | "seller">("buyer");
     const login = useStore((s) => s.login);
     const user = useStore((s) => s.user);
+    const [formError, setFormError] = useState<string | null>(null);
     const navigate = useNavigate();
     const location = useLocation();
     const state = location.state as {from?: string } | null;
@@ -20,12 +28,30 @@ export default function Signup() {
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
+        const username = (formData.get("username") as string) ?? "";
+        const email = (formData.get("email") as string) ?? "";
+        const password = (formData.get("password") as string) ?? "";
+
+        if (!isUsernameValid(username)) {
+            setFormError(`Username must be ${usernameRequirements}.`);
+            return;
+        }
+        if (!isEmailValid(email)) {
+            setFormError("Please enter a valid email address.");
+            return;
+        }
+        if (!isPasswordValid(password)) {
+            setFormError(`Password must be ${passwordRequirements}.`);
+            return;
+        }
+
+        setFormError(null);
         login({
-            email: formData.get("email") as string,
-            fullName: formData.get("fullName") as string,
+            email: email.trim(),
+            username: username.trim(),
             accountType,
         });
-        navigate(redirectPath, { replace: true});
+        navigate(redirectPath, { replace: true });
     };
     if (user) {
         return <Navigate to={redirectPath} replace />;
@@ -54,11 +80,12 @@ export default function Signup() {
                         </div>
 
                         <label className="space-y-2 text-sm font-semibold text-slate-700">
-                            Full Name
+                            Username
                             <input
                                 type="text"
-                                name="fullName"
-                                placeholder="John Doe"
+                                name="username"
+                                autoComplete="username"
+                                placeholder="shopper123"
                                 className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
                                 required />
                         </label>
@@ -110,6 +137,14 @@ export default function Signup() {
                             className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
                             Create account
                         </button>
+                        {formError && (
+                            <p
+                                className="text-center text-xs font-semibold uppercase tracking-[0.3em] text-rose-500"
+                                role="alert"
+                            >
+                                {formError}
+                            </p>
+                        )}
                         <p className="text-center text-sm text-slate-600">
                             Already have an account?{" "}
                             <Link
