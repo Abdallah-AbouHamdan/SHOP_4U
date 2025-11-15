@@ -394,7 +394,7 @@ export const useStore = create<State & Actions>()(
             cart: [],
           };
         });
-        return { success: true };
+        return { success: true }:
       },
     }),
     {

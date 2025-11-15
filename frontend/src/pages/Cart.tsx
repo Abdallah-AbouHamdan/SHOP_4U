@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useStore } from "../store/useStore";
+import { useNavigate } from "react-router-dom";
 
 const currency = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -9,6 +10,8 @@ const currency = new Intl.NumberFormat("en-US", {
 
 export default function Cart() {
     const { products, cart, user } = useStore();
+    const placeOrder = useStore((s) => s.placeOrder);
+    const navigate = useNavigate();
 
     const items = useMemo(() => {
         const map = new Map<string, number>();
@@ -117,8 +120,25 @@ export default function Cart() {
                                     <span>Total</span>
                                     <span>{currency.format(total)}</span>
                                 </div>
-                                <button className="mt-5 w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
-                                    Place order
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        if (!items.length) return;
+                                        placeOrder({
+                                            itemEntries: items.map(({ product, quantity }) => ({
+                                                productId: product.id,
+                                                quantity,
+                                            })),
+                                            subtotal,
+                                            shipping,
+                                            tax,
+                                            total,
+                                        });
+                                        navigate("/orders");
+                                    }}
+                                    disabled={!items.length}
+                                    className="mt-5 w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+                                >                                    Place order
                                 </button>
                                 <p className="mt-3 text-xs text-slate-500">
                                     By placing your order, you agree to our terms and conditions.
