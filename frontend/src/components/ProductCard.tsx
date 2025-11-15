@@ -75,7 +75,7 @@ export default function ProductCard({ id }: Props) {
       <button
         type="button"
         onClick={handleFavoriteToggle}
-        className={`absolute right-5 top-5 inline-flex h-10 w-10 items-center justify-center rounded-full border transition ${isFavorite
+        className={`absolute right-5 top-5 inline-flex cursor-pointer h-10 w-10 items-center justify-center rounded-full border transition ${isFavorite
             ? "border-rose-200 bg-rose-50 text-rose-600 shadow-sm"
             : "border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-900"
           }`}
@@ -113,7 +113,7 @@ export default function ProductCard({ id }: Props) {
               }
               addToCart(p.id);
             }}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-slate-800 sm:px-5 sm:py-3 sm:text-sm"
+            className="inline-flex w-full items-center cursor-pointer justify-center gap-2 rounded-2xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-slate-800 sm:px-5 sm:py-3 sm:text-sm"
           >
             <GiShoppingCart aria-hidden />
             Add to cart
