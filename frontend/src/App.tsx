@@ -11,6 +11,7 @@ import type { ReactNode } from "react";
 import { useStore } from "./store/useStore";
 import Cart from "./pages/Cart";
 import Favorites from "./pages/Favorites";
+import Orders from "./pages/Orders";
 
 function App() {
   return (
@@ -51,6 +52,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Favorites />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/orders"
+              element={
+                <ProtectedRoute>
+                  <Orders />
                 </ProtectedRoute>
               }
             />
