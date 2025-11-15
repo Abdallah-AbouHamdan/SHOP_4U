@@ -59,6 +59,24 @@ type RegisterData = Credentials & {
 
 export type OrderStatus = "Pending" | "Processing" | "Shipped" | "Deliverd";
 
+export type OrderItem = {
+  productId: string;
+  quantity: number;
+};
+
+export type Order = {
+  id: string;
+  number: string;
+  createdAt: string;
+  status: OrderStatus;
+  statusDetail: string;
+  items: OrderItem[];
+  subtotal: number;
+  shipping: number;
+  tax: number;
+  total: number;
+  confirmationCode: string;
+};
 
 type Actions = {
   addToCart: (id: string) => void;
