@@ -16,12 +16,14 @@ const accountTypes = [
 ];
 export default function Signup() {
     const [accountType, setAccountType] = useState<"buyer" | "seller">("buyer");
+    const [formError, setFormError] = useState<string | null>(null);
     const login = useStore((s) => s.login);
+    const registerUser = useStore((s) => s.registerUser);
     const user = useStore((s) => s.user);
     const [formError, setFormError] = useState<string | null>(null);
     const navigate = useNavigate();
     const location = useLocation();
-    const state = location.state as {from?: string } | null;
+    const state = location.state as { from?: string } | null;
     const redirectPath =
         state?.from && state.from !== "/login" ? state.from : "/dashboard";
 
@@ -50,6 +52,7 @@ export default function Signup() {
             email: email.trim(),
             username: username.trim(),
             accountType,
+            password,
         });
         navigate(redirectPath, { replace: true });
     };
@@ -87,7 +90,8 @@ export default function Signup() {
                                 autoComplete="username"
                                 placeholder="shopper123"
                                 className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
-                                required />
+                                required
+                                onInput={() => setFormError(null)} />
                         </label>
 
                         <label className="space-y-2 text-sm font-semibold text-slate-700">
@@ -97,7 +101,8 @@ export default function Signup() {
                                 name="email"
                                 placeholder="you@example.com"
                                 className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
-                                required />
+                                required
+                                onInput={() => setFormError(null)} />
                         </label>
 
                         <label className="space-y-2 text-sm font-semibold text-slate-700">
@@ -107,7 +112,8 @@ export default function Signup() {
                                 name="password"
                                 placeholder="**********"
                                 className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-400 focus:bg-white "
-                                required />
+                                required
+                                onInput={() => setFormError(null)} />
                         </label>
 
                         <div className="space-y-3">
@@ -132,6 +138,9 @@ export default function Signup() {
                             </div>
                         </div>
 
+                        {formError ? (
+                            <p className="text-sm text-rose-500">{formError}</p>
+                        ) : null}
                         <button
                             type="submit"
                             className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">

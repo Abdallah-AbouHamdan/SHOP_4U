@@ -12,6 +12,8 @@ const perks = [
 export default function Settings() {
   const user = useStore((state) => state.user);
   const logout = useStore((state) => state.logout);
+  const updateUser = useStore((state) => state.updateUser);
+  const changePassword = useStore((state) => state.changePassword);
   const [passwordForm, setPasswordForm] = useState({
     current: "",
     next: "",
@@ -28,11 +30,58 @@ export default function Settings() {
 
   const handlePasswordChange = (field: keyof typeof passwordForm, value: string) => {
     setPasswordForm((prev) => ({ ...prev, [field]: value }));
+    setPasswordError(null);
+    setPasswordMessage(null);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    setUsernameInput(user?.username ?? "");
+  }, [user?.username]);
+
+  const handlePasswordSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setPasswordError(null);
+    setPasswordMessage(null);
+    const trimmedNext = passwordForm.next.trim();
+
+    if (trimmedNext.length < 8) {
+      setPasswordError("New password must be at least 8 characters long.");
+      return;
+    }
+    if (trimmedNext !== passwordForm.confirm) {
+      setPasswordError("New password and confirmation do not match.");
+      return;
+    }
+
+    const result = changePassword({ current: passwordForm.current, next: trimmedNext});
+    if(!result.success){
+      setPasswordError(result.error ?? "Failed to change password.");
+      return;
+    }
     setPasswordForm({ current: "", next: "", confirm: "" });
+    setPasswordMessage("Password updated.");
+    setPasswordError(null);
+  };
+
+  const handleUsernameSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const trimmed = usernameInput.trim();
+    const usernamePattern = /^[a-zA-Z0-9_]{3,20}$/;
+
+    if (!user) {
+      setUsernameError("Log in to update your username.");
+      setUsernameMessage(null);
+      return;
+    }
+    if (!usernamePattern.test(trimmed)) {
+      setUsernameError("Username must be 3-20 characters and can include letters, numbers, or underscores.");
+      setUsernameMessage(null);
+      return;
+    }
+    updateUser({ username: trimmed });
+    setUsernameMessage("Username updated.");
+    setUsernameError(null);
+    setUsernameInput(trimmed);
   };
 
   const handleUsernameSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -128,7 +177,10 @@ export default function Settings() {
                 secure
               </p>
             </div>
-            <form className="mt-6 space-y-4 text-sm text-slate-600" onSubmit={handleSubmit}>
+            <form
+              className="mt-6 space-y-4 text-sm text-slate-600"
+              onSubmit={handlePasswordSubmit}
+            >
               <label className="flex flex-col gap-1">
                 <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
                   Current password
@@ -165,6 +217,12 @@ export default function Settings() {
                   className="rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none focus:border-slate-400"
                 />
               </label>
+              {passwordError ? (
+                <p className="text-sm text-rose-500">{passwordError}</p>
+              ) : null}
+              {passwordMessage ? (
+                <p className="text-sm text-emerald-500">{passwordMessage}</p>
+              ) : null}
               <button
                 type="submit"
                 className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-500/20 transition hover:bg-slate-800"
@@ -247,6 +305,53 @@ export default function Settings() {
                 )}
               </form>
             </div>
+          </div>
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:col-span-2">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+                  Profile
+                </p>
+                <h3 className="text-lg font-semibold text-slate-900">Update username</h3>
+              </div>
+              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+                {user?.accountType ?? "buyer"}
+              </span>
+            </div>
+            <p className="mt-3 text-sm text-slate-600">
+              Swap in a fresh username to refresh your storefront badges and order receipts.
+            </p>
+            <form
+              className="mt-6 space-y-4 text-sm text-slate-600"
+              onSubmit={handleUsernameSubmit}>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+                  Username
+                </span>
+                <input
+                  type="text"
+                  value={usernameInput}
+                  onChange={(event) => setUsernameInput(event.target.value)}
+                  onInput={() => {
+                    setUsernameError(null);
+                    setUsernameMessage(null);
+                  }}
+                  placeholder="shopper123"
+                  className="rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none focus:border-slate-400"
+                />
+              </label>
+              {usernameError ? (
+                <p className="text-sm text-rose-500">{usernameError}</p>
+              ) : null}
+              {usernameMessage ? (
+                <p className="text-sm text-emerald-500">{usernameMessage}</p>
+              ) : null}
+              <button
+                type="submit"
+                className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
+                Save username
+              </button>
+            </form>
           </div>
         </section>
       </div>

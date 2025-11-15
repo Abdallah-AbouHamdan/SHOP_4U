@@ -30,6 +30,9 @@ type State = {
     search: string;
   };
   user: User | null;
+  savedUsernames: Record<string, string>;
+  userRecords: Record<string, UserRecord>;
+  orders: Order[];
 };
 
 type User = {
@@ -47,14 +50,24 @@ type Actions = {
   openProductModal: (id: string) => void;
   closeProductModal: () => void;
   toggleFavorite: (id: string) => void;
-  login: (user: User) => void;
+  login: (credentials: Credentials) => { success: boolean; error?: string };
+  registerUser: (user: RegisterData) => { success: boolean; error?: string };
+  changePassword: (payload: {current:string; next:string}) => { success: boolean; error?:string};
+  placeOrder: (payload: PlaceOrderPayload) => { success: boolean; error?: string};
   logout: () => void;
   updateUsername: (username: string) => void;
 };
 
+const ORDER_STATUS_FLOW: { status: OrderStatus; detail: string }[] = [
+  { status: "Pending", detail: "Awaiting fulfillment" },
+  { status: "Processing", detail: "Processing" },
+  { status: "Shipped", detail: "Out for delivery" },
+  { status: "Delivered", detail: "Delivered" },
+];
+
 export const useStore = create<State & Actions>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       products: [
         {
           id: "p1",
@@ -207,6 +220,8 @@ export const useStore = create<State & Actions>()(
         search: "",
       },
       user: null,
+      savedUsernames: {},
+      userRecords: {},
       addToCart: (id) => set((s) => ({ cart: [...s.cart, id] })),
       removeFromCart: (id) =>
         set((s) => {
@@ -241,14 +256,47 @@ export const useStore = create<State & Actions>()(
           state.user ? { user: { ...state.user, username } } : {}
         ),
       logout: () => set({ user: null, cart: [], favorites: [] }),
+       placeOrder: ({ itemEntries, subtotal, shipping, tax, total }) => {
+        if (!itemEntries.length) {
+          set(() => ({ cart: [] }));
+          return { success: false, error: "Cart is empty." };
+        }
+        set((state) => {
+          const flow = ORDER_STATUS_FLOW[state.orders.length % ORDER_STATUS_FLOW.length];
+          const newOrder: Order = {
+            id:
+              typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+                ? crypto.randomUUID()
+                : `order-${Date.now()}`,
+            number: `order${state.orders.length + 1}`,
+            createdAt: new Date().toISOString(),
+            status: flow.status,
+            statusDetail: flow.detail,
+            items: itemEntries,
+            subtotal,
+            shipping,
+            tax,
+            total,
+            confirmationCode: `CONF${Math.floor(100000 + Math.random() * 900000)}`,
+          };
+          return {
+            orders: [...state.orders, newOrder],
+            cart: [],
+          };
+        });
+        return { success: true }:
+      },
     }),
     {
       name: "shop4u-storage",
-      partialize: ({ cart, filters, user, favorites }) => ({
+      partialize: ({ cart, filters, user, favorites, savedUsernames, userRecords, orders }) => ({
         cart,
         filters,
         user,
         favorites,
+        savedUsernames,
+        userRecords,
+        orders,
       }),
     }
   )

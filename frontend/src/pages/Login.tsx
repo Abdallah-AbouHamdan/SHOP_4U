@@ -49,6 +49,7 @@ export default function Login() {
                     </h1>
                 </div>
                 <form onSubmit={handleSubmit}
+                    noValidate
                     className="w-full max-w-md rounded-4xl border border-slate-200 bg-white px-6 py-8 text-slate-900 shadow-[0_25px_80px_rgba(15,23,42,0.08)]">
                     <div className="space-y-6">
                         <div className="space-y-1">
@@ -68,7 +69,8 @@ export default function Login() {
                                 placeholder="you@example.com"
                                 className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:bg-white"
                                 type="email"
-                                required />
+                                required
+                                onInput={() => setFormError(null)} />
                         </div>
 
                         <div className="space-y-2">
@@ -83,8 +85,12 @@ export default function Login() {
                                 name="password"
                                 placeholder="**********"
                                 className="w-full rounded-2xl border borer-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
-                                required />
+                                required
+                                onInput={() => setFormError(null)} />
                         </div>
+                         {formError ? (
+                            <p className="text-sm text-rose-500">{formError}</p>
+                        ) : null}
                         <button
                             type="submit"
                             className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
