@@ -94,6 +94,13 @@ type Actions = {
   updateUser: (user: Partial<User>) => void;
 };
 
+const ORDER_STATUS_FLOW: { status: OrderStatus; detail: string }[] = [
+  { status: "Pending", detail: "Awaiting fulfillment" },
+  { status: "Processing", detail: "Processing" },
+  { status: "Shipped", detail: "Out for delivery" },
+  { status: "Delivered", detail: "Delivered" },
+];
+
 export const useStore = create<State & Actions>()(
   persist(
     (set, get) => ({
