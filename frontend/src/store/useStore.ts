@@ -119,7 +119,6 @@ type Actions = {
   addProduct: (payload: AddProductPayload) => { success: boolean; error?: string };
   logout: () => void;
   updateUsername: (username: string) => void;
-  updateUser: (payload: Partial<User>) => void;
 };
 
 const ORDER_STATUS_FLOW: { status: OrderStatus; detail: string }[] = [
@@ -309,99 +308,16 @@ export const useStore = create<State & Actions>()(
             ? { favorites: s.favorites.filter((favId) => favId !== id) }
             : { favorites: [...s.favorites, id] }
         ),
-      addProduct: (payload) => {
-        const currentUser = get().user;
-        if (!currentUser) {
-          return { success: false, error: "Log in to add a product." };
-        }
-        if (currentUser.accountType !== "seller") {
-          return { success: false, error: "Only seller accounts can add catalog items." };
-        }
-        const price = Number(payload.price);
-        if (Number.isNaN(price) || price <= 0) {
-          return { success: false, error: "Enter a valid price greater than zero." };
-        }
-        const trimmedTitle = payload.title?.trim();
-        if (!trimmedTitle) {
-          return { success: false, error: "Provide a product name." };
-        }
-        if (!payload.category) {
-          return { success: false, error: "Select a category." };
-        }
-        const imageUrl =
-          payload.image?.trim() ||
-          "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800&auto=format&fit=crop";
-        let compareAtPrice: number | undefined;
-        if (payload.compareAtPrice && payload.compareAtPrice > price) {
-          compareAtPrice = payload.compareAtPrice;
-        }
-        const newProduct: Product = {
-          id:
-            typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
-              ? crypto.randomUUID()
-              : `seller-product-${Date.now()}`,
-          title: trimmedTitle,
-          price,
-          compareAtPrice,
-          category: payload.category,
-          seller: currentUser.username ?? currentUser.email,
-          tagline: payload.tagline?.trim() || "Seller listing",
-          image: imageUrl,
-          rating: 4.5,
-          reviews: 0,
-          discounted: Boolean(compareAtPrice),
-          description: payload.description?.trim() || undefined,
-        };
-        set((state) => ({ products: [...state.products, newProduct] }));
-        return { success: true };
-      },
-      login: (credentials) => {
+      login: (user) =>
         set((state) => ({
           user: {
             ...(state.user ?? {}),
-            ...credentials,
+            ...user,
           },
-        }));
-        return { success: true };
-      },
-      registerUser: (payload) => {
-        const id =
-          typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
-            ? crypto.randomUUID()
-            : `user-${Date.now()}`;
-        const record: UserRecord = {
-          id,
-          email: payload.email,
-          username: payload.username,
-          accountType: payload.accountType,
-          createdAt: new Date().toISOString(),
-        };
-        set((state) => ({
-          userRecords: { ...state.userRecords, [record.id]: record },
-          savedUsernames: { ...state.savedUsernames, [payload.username]: record.id },
-          user: {
-            email: payload.email,
-            username: payload.username,
-            accountType: payload.accountType,
-          },
-        }));
-        return { success: true };
-      },
-      changePassword: ({ current, next }) => {
-        void current;
-        void next;
-        if (!get().user) {
-          return { success: false, error: "Log in to change your password." };
-        }
-        return { success: true };
-      },
+        })),
       updateUsername: (username) =>
         set((state) =>
           state.user ? { user: { ...state.user, username } } : {}
-        ),
-      updateUser: (payload) =>
-        set((state) =>
-          state.user ? { user: { ...state.user, ...payload } } : {}
         ),
       logout: () => set({ user: null, cart: [], favorites: [] }),
       placeOrder: ({ itemEntries, subtotal, shipping, tax, total }: PlaceOrderPayload) => {
