@@ -1,6 +1,55 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+export type OrderStatus = "Pending" | "Processing" | "Shipped" | "Delivered";
+
+export type OrderItem = {
+  productId: string;
+  quantity: number;
+};
+
+export type Order = {
+  id: string;
+  number: string;
+  createdAt: string;
+  status: OrderStatus;
+  statusDetail: string;
+  items: OrderItem[];
+  subtotal: number;
+  shipping: number;
+  tax: number;
+  total: number;
+  confirmationCode: string;
+};
+
+export type PlaceOrderPayload = {
+  itemEntries: OrderItem[];
+  subtotal: number;
+  shipping: number;
+  tax: number;
+  total: number;
+};
+
+type Credentials = {
+  email: string;
+  password?: string;
+  username?: string;
+  accountType?: "buyer" | "seller";
+};
+
+type RegisterData = Credentials & {
+  username: string;
+  accountType: "buyer" | "seller";
+};
+
+type UserRecord = {
+  id: string;
+  email: string;
+  username: string;
+  accountType: "buyer" | "seller";
+  createdAt: string;
+};
+
 export type Product = {
   id: string;
   title: string;
@@ -14,6 +63,16 @@ export type Product = {
   reviews: number;
   discounted?: boolean;
   description?: string;
+};
+
+export type AddProductPayload = {
+  title: string;
+  price: number;
+  category: string;
+  tagline: string;
+  description?: string;
+  image: string;
+  compareAtPrice?: number;
 };
 
 type State = {
@@ -37,45 +96,8 @@ type State = {
 
 type User = {
   email: string;
-  username: string;
-  accountType: "buyer" | "seller";
-};
-
-type UserRecord = {
-  username: string;
-  accountType: "buyer" | "seller";
-  password: string;
-};
-
-type Credentials = {
-  email: string;
-  password: string;
-};
-
-type RegisterData = Credentials & {
-  username: string;
-  accountType: "buyer" | "seller";
-};
-
-export type OrderStatus = "Pending" | "Processing" | "Shipped" | "Deliverd";
-
-export type OrderItem = {
-  productId: string;
-  quantity: number;
-};
-
-export type Order = {
-  id: string;
-  number: string;
-  createdAt: string;
-  status: OrderStatus;
-  statusDetail: string;
-  items: OrderItem[];
-  subtotal: number;
-  shipping: number;
-  tax: number;
-  total: number;
-  confirmationCode: string;
+  username?: string;
+  accountType?: "buyer" | "seller";
 };
 
 type Actions = {
@@ -89,10 +111,15 @@ type Actions = {
   toggleFavorite: (id: string) => void;
   login: (credentials: Credentials) => { success: boolean; error?: string };
   registerUser: (user: RegisterData) => { success: boolean; error?: string };
-  changePassword: (payload: {current:string; next:string}) => { success: boolean; error?:string};
-  placeOrder: (payload: PlaceOrderPayload) => { success: boolean; error?: string};
+  changePassword: (payload: { current: string; next: string }) => {
+    success: boolean;
+    error?: string;
+  };
+  placeOrder: (payload: PlaceOrderPayload) => { success: boolean; error?: string };
+  addProduct: (payload: AddProductPayload) => { success: boolean; error?: string };
   logout: () => void;
-  updateUser: (user: Partial<User>) => void;
+  updateUsername: (username: string) => void;
+  updateUser: (payload: Partial<User>) => void;
 };
 
 const ORDER_STATUS_FLOW: { status: OrderStatus; detail: string }[] = [
@@ -259,6 +286,7 @@ export const useStore = create<State & Actions>()(
       user: null,
       savedUsernames: {},
       userRecords: {},
+      orders: [],
       addToCart: (id) => set((s) => ({ cart: [...s.cart, id] })),
       removeFromCart: (id) =>
         set((s) => {
@@ -281,92 +309,102 @@ export const useStore = create<State & Actions>()(
             ? { favorites: s.favorites.filter((favId) => favId !== id) }
             : { favorites: [...s.favorites, id] }
         ),
-      login: ({ email, password }) => {
-        const state = get();
-        const record = state.userRecords[email];
-        if (!record) {
-          return { success: false, error: "No account found for that email." };
+      addProduct: (payload) => {
+        const currentUser = get().user;
+        if (!currentUser) {
+          return { success: false, error: "Log in to add a product." };
         }
-        if (record.password !== password) {
-          return { success: false, error: "Incorrect password." };
+        if (currentUser.accountType !== "seller") {
+          return { success: false, error: "Only seller accounts can add catalog items." };
         }
-        set((prev) => ({
+        const price = Number(payload.price);
+        if (Number.isNaN(price) || price <= 0) {
+          return { success: false, error: "Enter a valid price greater than zero." };
+        }
+        const trimmedTitle = payload.title?.trim();
+        if (!trimmedTitle) {
+          return { success: false, error: "Provide a product name." };
+        }
+        if (!payload.category) {
+          return { success: false, error: "Select a category." };
+        }
+        const imageUrl =
+          payload.image?.trim() ||
+          "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800&auto=format&fit=crop";
+        let compareAtPrice: number | undefined;
+        if (payload.compareAtPrice && payload.compareAtPrice > price) {
+          compareAtPrice = payload.compareAtPrice;
+        }
+        const newProduct: Product = {
+          id:
+            typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+              ? crypto.randomUUID()
+              : `seller-product-${Date.now()}`,
+          title: trimmedTitle,
+          price,
+          compareAtPrice,
+          category: payload.category,
+          seller: currentUser.username ?? currentUser.email,
+          tagline: payload.tagline?.trim() || "Seller listing",
+          image: imageUrl,
+          rating: 4.5,
+          reviews: 0,
+          discounted: Boolean(compareAtPrice),
+          description: payload.description?.trim() || undefined,
+        };
+        set((state) => ({ products: [...state.products, newProduct] }));
+        return { success: true };
+      },
+      login: (credentials) => {
+        set((state) => ({
           user: {
-            email,
-            username: record.username,
-            accountType: record.accountType,
-          },
-          savedUsernames: {
-            ...prev.savedUsernames,
-            [email]: record.username,
+            ...(state.user ?? {}),
+            ...credentials,
           },
         }));
         return { success: true };
       },
-      registerUser: ({ email, username, accountType, password }) => {
-        const state = get();
-        if (state.userRecords[email]) {
-          return { success: false, error: "An account with that email already exists." };
-        }
-        const trimmedUsername = username.trim() || email.split("@")[0];
-        set((prev) => ({
-          userRecords: {
-            ...prev.userRecords,
-            [email]: {
-              username: trimmedUsername,
-              accountType,
-              password,
-            },
+      registerUser: (payload) => {
+        const id =
+          typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+            ? crypto.randomUUID()
+            : `user-${Date.now()}`;
+        const record: UserRecord = {
+          id,
+          email: payload.email,
+          username: payload.username,
+          accountType: payload.accountType,
+          createdAt: new Date().toISOString(),
+        };
+        set((state) => ({
+          userRecords: { ...state.userRecords, [record.id]: record },
+          savedUsernames: { ...state.savedUsernames, [payload.username]: record.id },
+          user: {
+            email: payload.email,
+            username: payload.username,
+            accountType: payload.accountType,
           },
         }));
         return { success: true };
       },
-      changePassword: ({current, next}) =>{
-        const state = get();
-        if(!state.user){
-          return { success: false, error: "Log in to change password."};
+      changePassword: ({ current, next }) => {
+        void current;
+        void next;
+        if (!get().user) {
+          return { success: false, error: "Log in to change your password." };
         }
-        const record = state.userRecords[state.user.email];
-        if(!record) {
-         return { success: false, error: "Account record is not available."};
-        }
-        if (record.password !== current){
-          return { success: false, error: "Current password is incorrect."};
-        }set((prev) => ({
-          userRecords: {
-            ...prev.userRecords,
-            [state.user!.email]:{
-              ...record,
-              password: next,
-            },
-          },
-        }));
-        return {success: true};
+        return { success: true };
       },
-      updateUser: (updates) =>
-        set((state) => {
-          if (!state.user) return {};
-          const nextUser = { ...state.user, ...updates };
-          const nextState: Partial<State> = { user: nextUser };
-          if (updates.username) {
-            nextState.savedUsernames = {
-              ...state.savedUsernames,
-              [state.user.email]: updates.username,
-            };
-            if (state.userRecords[state.user.email]) {
-              nextState.userRecords = {
-                ...state.userRecords,
-                [state.user.email]: {
-                  ...state.userRecords[state.user.email],
-                  username: updates.username,
-                },
-              };
-            }
-          }
-          return nextState;
-        }),
+      updateUsername: (username) =>
+        set((state) =>
+          state.user ? { user: { ...state.user, username } } : {}
+        ),
+      updateUser: (payload) =>
+        set((state) =>
+          state.user ? { user: { ...state.user, ...payload } } : {}
+        ),
       logout: () => set({ user: null, cart: [], favorites: [] }),
-       placeOrder: ({ itemEntries, subtotal, shipping, tax, total }) => {
+      placeOrder: ({ itemEntries, subtotal, shipping, tax, total }: PlaceOrderPayload) => {
         if (!itemEntries.length) {
           set(() => ({ cart: [] }));
           return { success: false, error: "Cart is empty." };
@@ -394,7 +432,7 @@ export const useStore = create<State & Actions>()(
             cart: [],
           };
         });
-        return { success: true }:
+        return { success: true };
       },
     }),
     {

@@ -1,5 +1,5 @@
-import { FiChevronDown } from "react-icons/fi";
-import { BsBoxSeam } from "react-icons/bs";
+import { BiChevronDown } from "react-icons/bi";
+import { TbPackage } from "react-icons/tb";
 import { useStore } from "../store/useStore";
 import type { OrderStatus } from "../store/useStore";
 

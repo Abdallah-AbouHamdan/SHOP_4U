@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useStore } from "../store/useStore";
+import { isUsernameValid, usernameRequirements } from "../utils/formValidation";
 
 
 const perks = [
@@ -11,27 +12,28 @@ const perks = [
 export default function Settings() {
   const user = useStore((state) => state.user);
   const logout = useStore((state) => state.logout);
-  const updateUser = useStore((state) => state.updateUser);
   const changePassword = useStore((state) => state.changePassword);
   const [passwordForm, setPasswordForm] = useState({
     current: "",
     next: "",
     confirm: "",
   });
+  const updateUsername = useStore((state) => state.updateUsername);
   const [usernameInput, setUsernameInput] = useState(user?.username ?? "");
   const [usernameError, setUsernameError] = useState<string | null>(null);
-  const [usernameMessage, setUsernameMessage] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [passwordMessage, setPasswordMessage] = useState<string | null>(null);
+  const [usernameSuccess, setUsernameSuccess] = useState<string | null>(null);
+
+  useEffect(() => {
+    setUsernameInput(user?.username ?? "");
+  }, [user?.username]);
+
   const handlePasswordChange = (field: keyof typeof passwordForm, value: string) => {
     setPasswordForm((prev) => ({ ...prev, [field]: value }));
     setPasswordError(null);
     setPasswordMessage(null);
   };
-
-  useEffect(() => {
-    setUsernameInput(user?.username ?? "");
-  }, [user?.username]);
 
   const handlePasswordSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -48,7 +50,7 @@ export default function Settings() {
       return;
     }
 
-    const result = changePassword({ current: passwordForm.current, next: trimmedNext});
+    const result = changePassword({ current: passwordForm.current, next: trimmedNext });
     if(!result.success){
       setPasswordError(result.error ?? "Failed to change password.");
       return;
@@ -61,22 +63,22 @@ export default function Settings() {
   const handleUsernameSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const trimmed = usernameInput.trim();
-    const usernamePattern = /^[a-zA-Z0-9_]{3,20}$/;
 
     if (!user) {
       setUsernameError("Log in to update your username.");
-      setUsernameMessage(null);
+      setUsernameSuccess(null);
       return;
     }
-    if (!usernamePattern.test(trimmed)) {
-      setUsernameError("Username must be 3-20 characters and can include letters, numbers, or underscores.");
-      setUsernameMessage(null);
+    if (!isUsernameValid(trimmed)) {
+      setUsernameError(`Username must be ${usernameRequirements}.`);
+      setUsernameSuccess(null);
       return;
     }
-    updateUser({ username: trimmed });
-    setUsernameMessage("Username updated.");
+
     setUsernameError(null);
+    setUsernameSuccess("Username updated.");
     setUsernameInput(trimmed);
+    updateUsername(trimmed);
   };
 
   return (
@@ -232,6 +234,53 @@ export default function Settings() {
             <p className="mt-5 text-sm text-slate-500">
               Updating your profile keeps your recommendations and deliveries on point.
             </p>
+            <div className="mt-6 border-t border-slate-100 pt-6">
+              <h3 className="text-sm font-semibold text-slate-900">Update username</h3>
+              <p className="text-xs text-slate-500">
+                Pick something distinctive – username must be {usernameRequirements}.
+              </p>
+              <form className="mt-4 space-y-3 text-sm" onSubmit={handleUsernameSubmit}>
+                <label
+                  htmlFor="settings-username"
+                  className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400 block"
+                >
+                  Username
+                </label>
+                <input
+                  id="settings-username"
+                  type="text"
+                  value={usernameInput}
+                  disabled={!user}
+                  onChange={(event) => {
+                    setUsernameInput(event.target.value);
+                    setUsernameError(null);
+                    setUsernameSuccess(null);
+                  }}
+                  placeholder="shopper123"
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none placeholder:text-slate-400 focus:border-slate-400 focus:bg-white disabled:cursor-not-allowed disabled:bg-slate-100"
+                />
+                <button
+                  type="submit"
+                  disabled={!user}
+                  className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+                >
+                  Save username
+                </button>
+                {usernameError && (
+                  <p
+                    className="text-xs font-semibold uppercase tracking-[0.3em] text-rose-500"
+                    role="alert"
+                  >
+                    {usernameError}
+                  </p>
+                )}
+                {usernameSuccess && (
+                  <p className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-500" role="status">
+                    {usernameSuccess}
+                  </p>
+                )}
+              </form>
+            </div>
           </div>
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:col-span-2">
             <div className="flex items-center justify-between">
@@ -261,7 +310,7 @@ export default function Settings() {
                   onChange={(event) => setUsernameInput(event.target.value)}
                   onInput={() => {
                     setUsernameError(null);
-                    setUsernameMessage(null);
+                    setUsernameSuccess(null);
                   }}
                   placeholder="shopper123"
                   className="rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none focus:border-slate-400"
@@ -270,8 +319,8 @@ export default function Settings() {
               {usernameError ? (
                 <p className="text-sm text-rose-500">{usernameError}</p>
               ) : null}
-              {usernameMessage ? (
-                <p className="text-sm text-emerald-500">{usernameMessage}</p>
+              {usernameSuccess ? (
+                <p className="text-sm text-emerald-500">{usernameSuccess}</p>
               ) : null}
               <button
                 type="submit"

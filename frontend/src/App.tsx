@@ -12,6 +12,7 @@ import { useStore } from "./store/useStore";
 import Cart from "./pages/Cart";
 import Favorites from "./pages/Favorites";
 import Orders from "./pages/Orders";
+import Shop from "./pages/Shop";
 
 function App() {
   return (
@@ -63,6 +64,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route path="/shop/:seller" element={<Shop />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
