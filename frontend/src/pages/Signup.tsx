@@ -17,7 +17,6 @@ const accountTypes = [
 export default function Signup() {
     const [accountType, setAccountType] = useState<"buyer" | "seller">("buyer");
     const [formError, setFormError] = useState<string | null>(null);
-    const login = useStore((s) => s.login);
     const registerUser = useStore((s) => s.registerUser);
     const user = useStore((s) => s.user);
     const [formError, setFormError] = useState<string | null>(null);

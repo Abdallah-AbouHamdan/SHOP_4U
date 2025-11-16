@@ -12,7 +12,6 @@ const perks = [
 export default function Settings() {
   const user = useStore((state) => state.user);
   const logout = useStore((state) => state.logout);
-  const updateUser = useStore((state) => state.updateUser);
   const changePassword = useStore((state) => state.changePassword);
   const [passwordForm, setPasswordForm] = useState({
     current: "",
@@ -34,10 +33,6 @@ export default function Settings() {
     setPasswordMessage(null);
   };
 
-  useEffect(() => {
-    setUsernameInput(user?.username ?? "");
-  }, [user?.username]);
-
   const handlePasswordSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setPasswordError(null);
@@ -53,7 +48,7 @@ export default function Settings() {
       return;
     }
 
-    const result = changePassword({ current: passwordForm.current, next: trimmedNext});
+    const result = changePassword({ current: passwordForm.current, next: trimmedNext });
     if(!result.success){
       setPasswordError(result.error ?? "Failed to change password.");
       return;
@@ -66,22 +61,22 @@ export default function Settings() {
   const handleUsernameSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const trimmed = usernameInput.trim();
-    const usernamePattern = /^[a-zA-Z0-9_]{3,20}$/;
 
     if (!user) {
       setUsernameError("Log in to update your username.");
-      setUsernameMessage(null);
+      setUsernameSuccess(null);
       return;
     }
-    if (!usernamePattern.test(trimmed)) {
-      setUsernameError("Username must be 3-20 characters and can include letters, numbers, or underscores.");
-      setUsernameMessage(null);
+    if (!isUsernameValid(trimmed)) {
+      setUsernameError(`Username must be ${usernameRequirements}.`);
+      setUsernameSuccess(null);
       return;
     }
-    updateUser({ username: trimmed });
-    setUsernameMessage("Username updated.");
+
     setUsernameError(null);
+    setUsernameSuccess("Username updated.");
     setUsernameInput(trimmed);
+    updateUsername(trimmed);
   };
 
   const handleUsernameSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -334,7 +329,7 @@ export default function Settings() {
                   onChange={(event) => setUsernameInput(event.target.value)}
                   onInput={() => {
                     setUsernameError(null);
-                    setUsernameMessage(null);
+                    setUsernameSuccess(null);
                   }}
                   placeholder="shopper123"
                   className="rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none focus:border-slate-400"
@@ -343,8 +338,8 @@ export default function Settings() {
               {usernameError ? (
                 <p className="text-sm text-rose-500">{usernameError}</p>
               ) : null}
-              {usernameMessage ? (
-                <p className="text-sm text-emerald-500">{usernameMessage}</p>
+              {usernameSuccess ? (
+                <p className="text-sm text-emerald-500">{usernameSuccess}</p>
               ) : null}
               <button
                 type="submit"

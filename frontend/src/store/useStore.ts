@@ -1,6 +1,55 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+export type OrderStatus = "Pending" | "Processing" | "Shipped" | "Delivered";
+
+export type OrderItem = {
+  productId: string;
+  quantity: number;
+};
+
+export type Order = {
+  id: string;
+  number: string;
+  createdAt: string;
+  status: OrderStatus;
+  statusDetail: string;
+  items: OrderItem[];
+  subtotal: number;
+  shipping: number;
+  tax: number;
+  total: number;
+  confirmationCode: string;
+};
+
+export type PlaceOrderPayload = {
+  itemEntries: OrderItem[];
+  subtotal: number;
+  shipping: number;
+  tax: number;
+  total: number;
+};
+
+type Credentials = {
+  email: string;
+  password?: string;
+  username?: string;
+  accountType?: "buyer" | "seller";
+};
+
+type RegisterData = Credentials & {
+  username: string;
+  accountType: "buyer" | "seller";
+};
+
+type UserRecord = {
+  id: string;
+  email: string;
+  username: string;
+  accountType: "buyer" | "seller";
+  createdAt: string;
+};
+
 export type Product = {
   id: string;
   title: string;
@@ -14,6 +63,16 @@ export type Product = {
   reviews: number;
   discounted?: boolean;
   description?: string;
+};
+
+export type AddProductPayload = {
+  title: string;
+  price: number;
+  category: string;
+  tagline: string;
+  description?: string;
+  image: string;
+  compareAtPrice?: number;
 };
 
 type State = {
@@ -52,8 +111,12 @@ type Actions = {
   toggleFavorite: (id: string) => void;
   login: (credentials: Credentials) => { success: boolean; error?: string };
   registerUser: (user: RegisterData) => { success: boolean; error?: string };
-  changePassword: (payload: {current:string; next:string}) => { success: boolean; error?:string};
-  placeOrder: (payload: PlaceOrderPayload) => { success: boolean; error?: string};
+  changePassword: (payload: { current: string; next: string }) => {
+    success: boolean;
+    error?: string;
+  };
+  placeOrder: (payload: PlaceOrderPayload) => { success: boolean; error?: string };
+  addProduct: (payload: AddProductPayload) => { success: boolean; error?: string };
   logout: () => void;
   updateUsername: (username: string) => void;
 };
@@ -222,6 +285,7 @@ export const useStore = create<State & Actions>()(
       user: null,
       savedUsernames: {},
       userRecords: {},
+      orders: [],
       addToCart: (id) => set((s) => ({ cart: [...s.cart, id] })),
       removeFromCart: (id) =>
         set((s) => {
@@ -256,7 +320,7 @@ export const useStore = create<State & Actions>()(
           state.user ? { user: { ...state.user, username } } : {}
         ),
       logout: () => set({ user: null, cart: [], favorites: [] }),
-       placeOrder: ({ itemEntries, subtotal, shipping, tax, total }) => {
+      placeOrder: ({ itemEntries, subtotal, shipping, tax, total }: PlaceOrderPayload) => {
         if (!itemEntries.length) {
           set(() => ({ cart: [] }));
           return { success: false, error: "Cart is empty." };
@@ -284,7 +348,7 @@ export const useStore = create<State & Actions>()(
             cart: [],
           };
         });
-        return { success: true }:
+        return { success: true };
       },
     }),
     {
