@@ -4,7 +4,7 @@ import { FaStar } from "react-icons/fa";
 import { GiShoppingCart } from "react-icons/gi";
 import { HiOutlineMinus, HiOutlinePlus } from "react-icons/hi";
 import { IoIosClose, IoIosHome } from "react-icons/io";
-import { useStore } from "../store/useStore";
+import { isOrderDelivered, useStore } from "../store/useStore";
 import { useNavigate } from "react-router-dom";
 
 const currency = new Intl.NumberFormat("en-US", {
@@ -61,7 +61,7 @@ export default function ProductModal() {
     return orders.some(
       (order) =>
         order.userEmail === user.email &&
-        order.status === "Delivered" &&
+        isOrderDelivered(order) &&
         order.items.some((item) => item.productId === product.id)
     );
   }, [orders, product?.id, user]);
@@ -133,6 +133,12 @@ export default function ProductModal() {
     setReviewText("");
   };
 
+  const openProductDetails = () => {
+    if (!product) return;
+    closeProductModal();
+    navigate(`/product/${product.id}`);
+  };
+
   const toggleReviewsPanel = () => {
     setReviewsOpen((prev) => !prev);
     if (reviewMessage) setReviewMessage(null);
@@ -147,6 +153,8 @@ export default function ProductModal() {
   };
 
   const isFavorite = favorites.includes(product.id);
+
+  const outOfStock = product.stock === 0;
 
   return (
     <div
@@ -213,15 +221,26 @@ export default function ProductModal() {
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-baseline gap-3 text-slate-900">
-                <span className="text-2xl font-semibold sm:text-3xl">
-                  {currency.format(product.price)}
-                </span>
-                {hasCompare && (
-                  <span className="text-sm text-slate-400 line-through sm:text-base">
-                    {currency.format(product.compareAtPrice!)}
+              <div className="space-y-1">
+                <div className="flex items-baseline gap-3 text-slate-900">
+                  <span className="text-2xl font-semibold sm:text-3xl">
+                    {currency.format(product.price)}
                   </span>
-                )}
+                  {hasCompare && (
+                    <span className="text-sm text-slate-400 line-through sm:text-base">
+                      {currency.format(product.compareAtPrice!)}
+                    </span>
+                  )}
+                </div>
+                <p
+                  className={`text-xs font-semibold uppercase tracking-[0.3em] ${
+                    outOfStock ? "text-rose-500" : "text-emerald-600"
+                  }`}
+                >
+                  {outOfStock
+                    ? "Out of stock"
+                    : `${product.stock} ${product.stock === 1 ? "unit" : "units"} available`}
+                </p>
               </div>
 
               <div className="space-y-3 sm:space-y-4">
@@ -251,18 +270,19 @@ export default function ProductModal() {
                     >
                       <HiOutlinePlus />
                     </button>
-                  </div>
                 </div>
+              </div>
 
                 <div className="flex flex-wrap gap-2.5 sm:gap-3">
                   <button
                     type="button"
-                    className="inline-flex flex-1 items-center justify-center gap-2 cursor-pointer rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 sm:px-5 sm:py-3"
+                    className="inline-flex flex-1 items-center justify-center gap-2 cursor-pointer rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400 sm:px-5 sm:py-3"
                     onClick={handleAddToCart}
+                    disabled={outOfStock}
                   >
-                    <GiShoppingCart aria-hidden />
-                    Add to cart
-                  </button>
+                      <GiShoppingCart aria-hidden />
+                      Add to cart
+                    </button>
                   <div className="relative">
                     <button
                       type="button"
@@ -298,6 +318,7 @@ export default function ProductModal() {
                   </button>
                   <button
                     type="button"
+                    onClick={openProductDetails}
                     className="rounded-2xl border border-slate-200 px-3 py-2 cursor-pointer text-slate-700 transition hover:border-slate-300 hover:text-slate-900"
                   >
                     Product details

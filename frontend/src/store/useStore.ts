@@ -21,6 +21,7 @@ export type Order = {
   total: number;
   confirmationCode: string;
   userEmail: string;
+  statusTimeline: OrderStatusTimelineEntry[];
 };
 
 export type PlaceOrderPayload = {
@@ -65,6 +66,7 @@ export type Product = {
   reviews: number;
   discounted?: boolean;
   description?: string;
+  stock: number;
 };
 
 export type Review = {
@@ -93,6 +95,7 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "Cooling linen weave",
     image:
       "https://images.unsplash.com/photo-1719473466836-ff9f5ebe0e1b?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    stock: 24,
     discounted: true,
   },
   {
@@ -105,6 +108,7 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "Carbon string bed",
     image:
       "https://plus.unsplash.com/premium_photo-1666913667023-4bfd0f6cff0a?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dGVubmlzJTIwcmFja2V0fGVufDB8fDB8fHww",
+    stock: 12,
     discounted: true,
   },
   {
@@ -116,6 +120,7 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "M3 power for pros",
     image:
       "https://images.unsplash.com/photo-1565443492615-7e3d2324d925?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bWFjJTIwNCUyMHByb3xlbnwwfHwwfHx8MA%3D%3D",
+    stock: 4,
   },
   {
     id: "p4",
@@ -127,6 +132,7 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "Carry-on approved",
     image:
       "https://images.unsplash.com/photo-1650542218150-5e59a58d4312?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8TGVhdGhlciUyMFdlZWtlbmRlcnxlbnwwfHwwfHx8MA%3D%3D",
+    stock: 8,
     discounted: true,
   },
   {
@@ -139,6 +145,7 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "Noise-cancelling comfort",
     image:
       "https://images.unsplash.com/photo-1627989580309-bfaf3e58af6f?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d2lyZWxlc3MlMjBlYXJidWRzfGVufDB8fDB8fHww",
+    stock: 32,
     discounted: true,
   },
   {
@@ -151,6 +158,7 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "Responsive cushioning system",
     image:
       "https://images.unsplash.com/photo-1562183241-b937e95585b6?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cnVubmluZyUyMHNob2VzfGVufDB8fDB8fHww",
+    stock: 18,
     discounted: true,
   },
   {
@@ -163,6 +171,7 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "Timeless everyday layering",
     image:
       "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8amFja2V0fGVufDB8fDB8fHww",
+    stock: 26,
     discounted: true,
   },
   {
@@ -175,6 +184,7 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "Track health & stay connected",
     image:
       "https://images.unsplash.com/photo-1461141346587-763ab02bced9?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8c21hcnQlMjB3YXRjaHxlbnwwfHwwfHx8MA%3D%3D",
+    stock: 14,
     discounted: true,
   },
   {
@@ -187,6 +197,7 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "Relaxing lavender blend",
     image:
       "https://images.unsplash.com/photo-1728897161054-a31928d12a16?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGNhbmRsZSUyMHNlcnxlbnwwfHwwfHx8MA%3D%3D",
+    stock: 40,
     discounted: true,
   },
   {
@@ -199,6 +210,7 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "Non-slip eco material",
     image:
       "https://plus.unsplash.com/premium_photo-1663090241828-1d5f7456b699?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    stock: 20,
     discounted: true,
   },
 ];
@@ -421,23 +433,6 @@ const DEMO_USER_RECORD: UserRecord = {
   password: "demo1234",
 };
 
-const INITIAL_ORDERS: Order[] = [
-  {
-    id: "order-demo-1",
-    number: "order-demo-1",
-    createdAt: "2024-07-01T12:00:00.000Z",
-    status: "Delivered",
-    statusDetail: "Delivered to your doorstep",
-    items: [{ productId: "p5", quantity: 1 }],
-    subtotal: 89.99,
-    shipping: 10,
-    tax: 7.2,
-    total: 107.19,
-    confirmationCode: "CONF-DEM-0001",
-    userEmail: DEMO_USER_RECORD.email,
-  },
-];
-
 export type AddProductPayload = {
   title: string;
   price: number;
@@ -446,6 +441,7 @@ export type AddProductPayload = {
   description?: string;
   image: string;
   compareAtPrice?: number;
+  stock?: number;
 };
 
 type State = {
@@ -500,11 +496,65 @@ type Actions = {
   updateUser: (payload: Partial<User>) => void;
 };
 
-const ORDER_STATUS_FLOW: { status: OrderStatus; detail: string }[] = [
-  { status: "Pending", detail: "Awaiting fulfillment" },
-  { status: "Processing", detail: "Processing" },
-  { status: "Shipped", detail: "Out for delivery" },
-  { status: "Delivered", detail: "Delivered" },
+export type OrderStatusTimelineEntry = {
+  status: OrderStatus;
+  detail: string;
+  startAt: string;
+};
+
+const ORDER_STATUS_SEQUENCE: { status: OrderStatus; detail: string; durationMinutes: number }[] = [
+  { status: "Pending", detail: "Awaiting fulfillment", durationMinutes: 5 },
+  { status: "Processing", detail: "Processing your order", durationMinutes: 10 },
+  { status: "Shipped", detail: "Out for delivery", durationMinutes: 15 },
+  { status: "Delivered", detail: "Delivered to your doorstep", durationMinutes: 0 },
+];
+
+export const buildStatusTimeline = (createdAt: string): OrderStatusTimelineEntry[] => {
+  const timeline: OrderStatusTimelineEntry[] = [];
+  let cursor = new Date(createdAt);
+  ORDER_STATUS_SEQUENCE.forEach(({ status, detail, durationMinutes }) => {
+    timeline.push({ status, detail, startAt: cursor.toISOString() });
+    cursor = new Date(cursor.getTime() + durationMinutes * 60_000);
+  });
+  return timeline;
+};
+
+export const getOrderTimeline = (order: Order): OrderStatusTimelineEntry[] =>
+  order.statusTimeline && order.statusTimeline.length
+    ? order.statusTimeline
+    : buildStatusTimeline(order.createdAt);
+
+export const getActiveOrderStatus = (order: Order, now = Date.now()): OrderStatusTimelineEntry => {
+  const timeline = getOrderTimeline(order);
+  const active =
+    [...timeline]
+      .reverse()
+      .find((entry) => new Date(entry.startAt).getTime() <= now) ?? timeline[0];
+  return active;
+};
+
+export const isOrderDelivered = (order: Order, now = Date.now()): boolean =>
+  getActiveOrderStatus(order, now).status === "Delivered";
+
+const DEMO_ORDER_DATE = "2024-07-01T12:00:00.000Z";
+const DEMO_ORDER_TIMELINE = buildStatusTimeline(DEMO_ORDER_DATE);
+
+const INITIAL_ORDERS: Order[] = [
+  {
+    id: "order-demo-1",
+    number: "order-demo-1",
+    createdAt: DEMO_ORDER_DATE,
+    status: DEMO_ORDER_TIMELINE[0].status,
+    statusDetail: DEMO_ORDER_TIMELINE[0].detail,
+    statusTimeline: DEMO_ORDER_TIMELINE,
+    items: [{ productId: "p5", quantity: 1 }],
+    subtotal: 89.99,
+    shipping: 10,
+    tax: 7.2,
+    total: 107.19,
+    confirmationCode: "CONF-DEM-0001",
+    userEmail: DEMO_USER_RECORD.email,
+  },
 ];
 
 export const useStore = create<State & Actions>()(
@@ -527,7 +577,14 @@ export const useStore = create<State & Actions>()(
       userRecords: { [DEMO_USER_RECORD.id]: DEMO_USER_RECORD },
       reviews: INITIAL_REVIEWS,
       orders: INITIAL_ORDERS,
-      addToCart: (id) => set((s) => ({ cart: [...s.cart, id] })),
+      addToCart: (id) =>
+        set((state) => {
+          const product = state.products.find((p) => p.id === id);
+          if (!product) return {};
+          const inCart = state.cart.filter((itemId) => itemId === id).length;
+          if (inCart >= product.stock) return {};
+          return { cart: [...state.cart, id] };
+        }),
       removeFromCart: (id) =>
         set((s) => {
           const index = s.cart.indexOf(id);
@@ -575,6 +632,10 @@ export const useStore = create<State & Actions>()(
         if (payload.compareAtPrice && payload.compareAtPrice > price) {
           compareAtPrice = payload.compareAtPrice;
         }
+        const stockValue = Number(payload.stock ?? 10);
+        if (Number.isNaN(stockValue) || stockValue < 0) {
+          return { success: false, error: "Specify a valid stock count." };
+        }
         const newProduct: Product = {
           id:
             typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
@@ -590,6 +651,7 @@ export const useStore = create<State & Actions>()(
           rating: 4.5,
           reviews: 0,
           discounted: Boolean(compareAtPrice),
+          stock: Math.floor(stockValue),
           description: payload.description?.trim() || undefined,
         };
         set((state) => ({ products: [...state.products, newProduct] }));
@@ -607,7 +669,7 @@ export const useStore = create<State & Actions>()(
         const eligibleOrder = get().orders.find(
           (order) =>
             order.userEmail === currentUser.email &&
-            order.status === "Delivered" &&
+            isOrderDelivered(order) &&
             order.items.some((item) => item.productId === productId)
         );
         if (!eligibleOrder) {
@@ -778,9 +840,27 @@ export const useStore = create<State & Actions>()(
           set(() => ({ cart: [] }));
           return { success: false, error: "Cart is empty." };
         }
+        const totals = itemEntries.reduce((map, entry) => {
+          map.set(entry.productId, (map.get(entry.productId) ?? 0) + entry.quantity);
+          return map;
+        }, new Map<string, number>());
+        const catalog = get().products;
+        for (const [productId, quantity] of totals.entries()) {
+          const product = catalog.find((p) => p.id === productId);
+          if (!product) {
+            return { success: false, error: "One of the products in your cart is no longer available." };
+          }
+          if (product.stock < quantity) {
+            return {
+              success: false,
+              error: `${product.title} only has ${product.stock} ${
+                product.stock === 1 ? "unit" : "units"
+              } remaining.`,
+            };
+          }
+        }
         set((state) => {
           const customerEmail = state.user?.email ?? "guest@shop4u.com";
-          const flow = ORDER_STATUS_FLOW[state.orders.length % ORDER_STATUS_FLOW.length];
           const newOrder: Order = {
             id:
               typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
@@ -788,8 +868,9 @@ export const useStore = create<State & Actions>()(
                 : `order-${Date.now()}`,
             number: `order${state.orders.length + 1}`,
             createdAt: new Date().toISOString(),
-            status: flow.status,
-            statusDetail: flow.detail,
+            status: "Pending",
+            statusDetail: "Awaiting fulfillment",
+            statusTimeline: [],
             items: itemEntries,
             subtotal,
             shipping,
@@ -798,7 +879,17 @@ export const useStore = create<State & Actions>()(
             confirmationCode: `CONF${Math.floor(100000 + Math.random() * 900000)}`,
             userEmail: customerEmail,
           };
+          const timeline = buildStatusTimeline(newOrder.createdAt);
+          newOrder.statusTimeline = timeline;
+          newOrder.status = timeline[0].status;
+          newOrder.statusDetail = timeline[0].detail;
+          const decrementedProducts = state.products.map((product) => {
+            const quantity = totals.get(product.id);
+            if (!quantity) return product;
+            return { ...product, stock: Math.max(product.stock - quantity, 0) };
+          });
           return {
+            products: decrementedProducts,
             orders: [...state.orders, newOrder],
             cart: [],
           };
@@ -817,6 +908,7 @@ export const useStore = create<State & Actions>()(
         userRecords,
         reviews,
         orders,
+        products,
       }) => ({
         cart,
         filters,
@@ -826,6 +918,7 @@ export const useStore = create<State & Actions>()(
         userRecords,
         reviews,
         orders,
+        products,
       }),
     }
   )

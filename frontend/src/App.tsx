@@ -13,6 +13,7 @@ import Cart from "./pages/Cart";
 import Favorites from "./pages/Favorites";
 import Orders from "./pages/Orders";
 import Shop from "./pages/Shop";
+import ProductDetails from "./pages/ProductDetails";
 
 function App() {
   return (
@@ -65,6 +66,7 @@ function App() {
               }
             />
             <Route path="/shop/:seller" element={<Shop />} />
+            <Route path="/product/:productId" element={<ProductDetails />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
