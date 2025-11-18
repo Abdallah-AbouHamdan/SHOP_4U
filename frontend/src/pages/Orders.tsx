@@ -17,10 +17,14 @@ const statusBadgeStyles: Record<OrderStatus, string> = {
 };
 
 export default function Orders() {
-  const { orders, products } = useStore();
-  const sortedOrders = [...orders].sort(
+  const { orders, products, user } = useStore();
+  const userOrders = user ? orders.filter((order) => order.userEmail === user.email) : [];
+  const sortedOrders = [...userOrders].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
+  const emptyMessage = user
+    ? "You haven't placed any orders yet. Place an order to see it here."
+    : "Log in to track your orders and leave reviews once your purchases deliver.";
 
   return (
     <section className="bg-[#f5f5f5] min-h-screen">
@@ -100,7 +104,7 @@ export default function Orders() {
             })
           ) : (
             <div className="rounded-3xl border border-dashed border-slate-300 bg-white/80 p-6 text-center text-sm text-slate-500">
-              You haven&apos;t placed any orders yet. Place an order to see it here.
+              {emptyMessage}
             </div>
           )}
         </div>

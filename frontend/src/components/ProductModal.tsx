@@ -1,4 +1,4 @@
-import { type MouseEvent, useEffect, useMemo, useState } from "react";
+import { type FormEvent, type MouseEvent, useEffect, useMemo, useState } from "react";
 import { CiHeart } from "react-icons/ci";
 import { FaStar } from "react-icons/fa";
 import { GiShoppingCart } from "react-icons/gi";
@@ -13,6 +13,14 @@ const currency = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 2,
 });
 
+const reviewDateFormatter = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+});
+
+type ReviewFeedback = { type: "success" | "error"; text: string };
+
 export default function ProductModal() {
   const {
     products,
@@ -22,9 +30,16 @@ export default function ProductModal() {
     favorites,
     toggleFavorite,
     user,
+    reviews,
+    orders,
+    addReview,
   } =
     useStore();
   const [quantity, setQuantity] = useState(1);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewText, setReviewText] = useState("");
+  const [reviewMessage, setReviewMessage] = useState<ReviewFeedback | null>(null);
+  const [reviewsOpen, setReviewsOpen] = useState(false);
   const navigate = useNavigate();
 
   const product = useMemo(
@@ -32,8 +47,34 @@ export default function ProductModal() {
     [products, selectedProductId]
   );
 
+  const productReviews = useMemo(() => {
+    if (!product) return [];
+    return reviews
+      .filter((review) => review.productId === product.id)
+      .sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+  }, [product?.id, reviews]);
+
+  const canLeaveReview = useMemo(() => {
+    if (!product || !user) return false;
+    return orders.some(
+      (order) =>
+        order.userEmail === user.email &&
+        order.status === "Delivered" &&
+        order.items.some((item) => item.productId === product.id)
+    );
+  }, [orders, product?.id, user]);
+
   useEffect(() => {
     setQuantity(1);
+  }, [selectedProductId]);
+
+  useEffect(() => {
+    setReviewRating(5);
+    setReviewText("");
+    setReviewMessage(null);
+    setReviewsOpen(false);
   }, [selectedProductId]);
 
   useEffect(() => {
@@ -70,6 +111,31 @@ export default function ProductModal() {
       return;
     }
     for (let i = 0; i < quantity; i += 1) addToCart(product.id);
+  };
+
+  const handleReviewSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!product) return;
+    const result = addReview({
+      productId: product.id,
+      rating: reviewRating,
+      text: reviewText,
+    });
+    if (!result.success) {
+      setReviewMessage({
+        type: "error",
+        text: result.error ?? "Unable to submit your review.",
+      });
+      return;
+    }
+    setReviewMessage({ type: "success", text: "Thanks for sharing your experience!" });
+    setReviewRating(5);
+    setReviewText("");
+  };
+
+  const toggleReviewsPanel = () => {
+    setReviewsOpen((prev) => !prev);
+    if (reviewMessage) setReviewMessage(null);
   };
 
   const handleFavorite = () => {
@@ -221,7 +287,12 @@ export default function ProductModal() {
                 <div className="grid grid-cols-1 gap-1.5 text-xs font-semibold sm:grid-cols-2 sm:gap-2 sm:text-sm">
                   <button
                     type="button"
-                    className="rounded-2xl border border-slate-200 px-3 py-2 cursor-pointer text-slate-700 transition hover:border-slate-300 hover:text-slate-900"
+                    onClick={toggleReviewsPanel}
+                    className={`rounded-2xl border px-3 py-2 transition ${reviewsOpen
+                      ? "border-slate-900 bg-slate-900 text-white"
+                      : "border-slate-200 text-slate-700 hover:border-slate-300 hover:text-slate-900"
+                      }`}
+                    aria-pressed={reviewsOpen}
                   >
                     Reviews
                   </button>
@@ -232,6 +303,128 @@ export default function ProductModal() {
                     Product details
                   </button>
                 </div>
+                {reviewsOpen && (
+                  <div className="mt-6 space-y-4 border-t border-slate-100 pt-4">
+                    <div className="flex items-center justify-between">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-400">
+                        Reviews
+                      </p>
+                      <span className="text-xs text-slate-500">
+                        {product.reviews.toLocaleString()} total
+                      </span>
+                    </div>
+                    <div className="space-y-3">
+                      {productReviews.length ? (
+                        productReviews.slice(0, 3).map((review) => (
+                          <div
+                            key={review.id}
+                            className="rounded-2xl border border-slate-200 bg-slate-50/70 p-3"
+                          >
+                            <div className="flex items-center justify-between text-[11px] text-slate-500">
+                              <span className="font-semibold text-slate-700">
+                                {review.reviewer}
+                              </span>
+                              <span className="text-[10px] uppercase tracking-[0.3em] text-slate-400">
+                                {reviewDateFormatter.format(new Date(review.createdAt))}
+                              </span>
+                            </div>
+                            <div className="mt-1 flex gap-1">
+                              {Array.from({ length: 5 }).map((_, index) => (
+                                <FaStar
+                                  key={index}
+                                  className={`text-sm ${
+                                    index < review.rating ? "text-amber-400" : "text-slate-200"
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                            <p className="mt-2 text-sm text-slate-600">{review.text}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-xs text-slate-500">
+                          Be the first to share what you loved.
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <FaStar className="text-amber-400" />
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-400">
+                          Add your review
+                        </p>
+                      </div>
+                      <p className="text-[10px] text-slate-500">
+                        We limit reviews to two submissions per delivered item so every voice stays meaningful.
+                      </p>
+                      {canLeaveReview ? (
+                        <form onSubmit={handleReviewSubmit} className="space-y-3">
+                          <div className="flex gap-2">
+                            {[5, 4, 3, 2, 1].map((value) => (
+                              <button
+                                key={value}
+                                type="button"
+                                onClick={() => {
+                                  setReviewRating(value);
+                                  setReviewMessage(null);
+                                }}
+                                className={`flex h-9 w-9 items-center justify-center rounded-2xl border text-xs font-semibold transition ${
+                                  value <= reviewRating
+                                    ? "border-amber-300 bg-amber-50 text-amber-600"
+                                    : "border-slate-200 text-slate-500 hover:border-slate-300 hover:text-slate-900"
+                                }`}
+                                aria-label={`Give ${value} star${value > 1 ? "s" : ""}`}
+                              >
+                                <FaStar className="text-base" />
+                              </button>
+                            ))}
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-400">
+                              Share your experience
+                            </label>
+                            <textarea
+                              value={reviewText}
+                              onChange={(event) => {
+                                setReviewText(event.target.value);
+                                if (reviewMessage) setReviewMessage(null);
+                              }}
+                              placeholder="Let other shoppers know what stood out."
+                              className="w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-slate-400 focus:outline-none"
+                              rows={3}
+                            />
+                          </div>
+                          <div className="flex items-center justify-between gap-3">
+                            <button
+                              type="submit"
+                              disabled={!reviewText.trim()}
+                              className="inline-flex items-center justify-center rounded-2xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+                            >
+                              Publish review
+                            </button>
+                            {reviewMessage && (
+                              <p
+                                className={`text-xs font-semibold ${
+                                  reviewMessage.type === "success"
+                                    ? "text-emerald-600"
+                                    : "text-rose-500"
+                                }`}
+                              >
+                                {reviewMessage.text}
+                              </p>
+                            )}
+                          </div>
+                        </form>
+                      ) : (
+                        <p className="text-xs text-slate-500">
+                          {user
+                            ? "Reviews are limited to delivered purchases of this product."
+                            : "Log in to review delivered purchases."}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

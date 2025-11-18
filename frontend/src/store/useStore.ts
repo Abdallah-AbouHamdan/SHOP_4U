@@ -20,6 +20,7 @@ export type Order = {
   tax: number;
   total: number;
   confirmationCode: string;
+  userEmail: string;
 };
 
 export type PlaceOrderPayload = {
@@ -66,6 +67,377 @@ export type Product = {
   description?: string;
 };
 
+export type Review = {
+  id: string;
+  productId: string;
+  reviewer: string;
+  reviewerId: string;
+  rating: number;
+  text: string;
+  createdAt: string;
+};
+
+type ProductSeed = Omit<Product, "rating" | "reviews"> & {
+  rating?: number;
+  reviews?: number;
+};
+
+const PRODUCT_SEEDS: ProductSeed[] = [
+  {
+    id: "p1",
+    title: "Cotton Shorts",
+    price: 29.99,
+    compareAtPrice: 39.99,
+    category: "Fashion",
+    seller: "Fashion",
+    tagline: "Cooling linen weave",
+    image:
+      "https://images.unsplash.com/photo-1719473466836-ff9f5ebe0e1b?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    discounted: true,
+  },
+  {
+    id: "p2",
+    title: "Tennis Racket",
+    price: 199.95,
+    compareAtPrice: 209.95,
+    category: "Sport Zone",
+    seller: "Sport Zone",
+    tagline: "Carbon string bed",
+    image:
+      "https://plus.unsplash.com/premium_photo-1666913667023-4bfd0f6cff0a?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dGVubmlzJTIwcmFja2V0fGVufDB8fDB8fHww",
+    discounted: true,
+  },
+  {
+    id: "p3",
+    title: "Mac 4 Pro",
+    price: 1999.99,
+    category: "Tech Zone",
+    seller: "Tech Zone",
+    tagline: "M3 power for pros",
+    image:
+      "https://images.unsplash.com/photo-1565443492615-7e3d2324d925?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bWFjJTIwNCUyMHByb3xlbnwwfHwwfHx8MA%3D%3D",
+  },
+  {
+    id: "p4",
+    title: "Leather Weekender",
+    price: 159.99,
+    compareAtPrice: 219.99,
+    category: "Lifestyle",
+    seller: "City Luxe",
+    tagline: "Carry-on approved",
+    image:
+      "https://images.unsplash.com/photo-1650542218150-5e59a58d4312?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8TGVhdGhlciUyMFdlZWtlbmRlcnxlbnwwfHwwfHx8MA%3D%3D",
+    discounted: true,
+  },
+  {
+    id: "p5",
+    title: "Wireless Earbuds",
+    price: 89.99,
+    compareAtPrice: 109.99,
+    category: "Tech Zone",
+    seller: "Soundify",
+    tagline: "Noise-cancelling comfort",
+    image:
+      "https://images.unsplash.com/photo-1627989580309-bfaf3e58af6f?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d2lyZWxlc3MlMjBlYXJidWRzfGVufDB8fDB8fHww",
+    discounted: true,
+  },
+  {
+    id: "p6",
+    title: "Running Shoes",
+    price: 120.0,
+    compareAtPrice: 140.0,
+    category: "Sport Zone",
+    seller: "Peak Performance",
+    tagline: "Responsive cushioning system",
+    image:
+      "https://images.unsplash.com/photo-1562183241-b937e95585b6?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cnVubmluZyUyMHNob2VzfGVufDB8fDB8fHww",
+    discounted: true,
+  },
+  {
+    id: "p7",
+    title: "Classic Jacket",
+    price: 89.5,
+    compareAtPrice: 99.99,
+    category: "Fashion",
+    seller: "Urban Stitch",
+    tagline: "Timeless everyday layering",
+    image:
+      "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8amFja2V0fGVufDB8fDB8fHww",
+    discounted: true,
+  },
+  {
+    id: "p8",
+    title: "Smart Watch",
+    price: 399.99,
+    compareAtPrice: 449.99,
+    category: "Tech Zone",
+    seller: "Tech Zone",
+    tagline: "Track health & stay connected",
+    image:
+      "https://images.unsplash.com/photo-1461141346587-763ab02bced9?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8c21hcnQlMjB3YXRjaHxlbnwwfHwwfHx8MA%3D%3D",
+    discounted: true,
+  },
+  {
+    id: "p9",
+    title: "Candle Set",
+    price: 34.99,
+    compareAtPrice: 49.99,
+    category: "Lifestyle",
+    seller: "Calm Home",
+    tagline: "Relaxing lavender blend",
+    image:
+      "https://images.unsplash.com/photo-1728897161054-a31928d12a16?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGNhbmRsZSUyMHNlcnxlbnwwfHwwfHx8MA%3D%3D",
+    discounted: true,
+  },
+  {
+    id: "p10",
+    title: "Yoga Mat",
+    price: 59.99,
+    compareAtPrice: 79.99,
+    category: "Sport Zone",
+    seller: "ZenFit",
+    tagline: "Non-slip eco material",
+    image:
+      "https://plus.unsplash.com/premium_photo-1663090241828-1d5f7456b699?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    discounted: true,
+  },
+];
+
+const INITIAL_REVIEWS: Review[] = [
+  {
+    id: "p1-review-1",
+    productId: "p1",
+    reviewer: "Lena Ortiz",
+    reviewerId: "lena.ortiz@shop4u.com",
+    rating: 5,
+    text: "Soft cotton shorts that stay breathable through long walks.",
+    createdAt: "2024-03-14T12:34:00.000Z",
+  },
+  {
+    id: "p1-review-2",
+    productId: "p1",
+    reviewer: "Miles Chang",
+    reviewerId: "miles.chang@shop4u.com",
+    rating: 4,
+    text: "True to size and the fabric keeps me cool when layering.",
+    createdAt: "2024-03-28T09:17:00.000Z",
+  },
+  {
+    id: "p2-review-1",
+    productId: "p2",
+    reviewer: "Arianna Lee",
+    reviewerId: "arianna.lee@shop4u.com",
+    rating: 5,
+    text: "Lightweight frame with a premium feel and steady power.",
+    createdAt: "2024-04-05T14:21:00.000Z",
+  },
+  {
+    id: "p2-review-2",
+    productId: "p2",
+    reviewer: "Devon Ross",
+    reviewerId: "devon.ross@shop4u.com",
+    rating: 4,
+    text: "Needed a restring sooner than expected but still reliable.",
+    createdAt: "2024-04-20T11:05:00.000Z",
+  },
+  {
+    id: "p3-review-1",
+    productId: "p3",
+    reviewer: "Tasha Moore",
+    reviewerId: "tasha.moore@shop4u.com",
+    rating: 5,
+    text: "Fans stay whisper quiet and battery lasts a full day.",
+    createdAt: "2024-05-02T17:40:00.000Z",
+  },
+  {
+    id: "p3-review-2",
+    productId: "p3",
+    reviewer: "Jonas Reed",
+    reviewerId: "jonas.reed@shop4u.com",
+    rating: 4,
+    text: "Display is stunning but I wish there were more ports.",
+    createdAt: "2024-05-18T08:55:00.000Z",
+  },
+  {
+    id: "p4-review-1",
+    productId: "p4",
+    reviewer: "Mara Winters",
+    reviewerId: "mara.winters@shop4u.com",
+    rating: 5,
+    text: "Leather feels rich and the carry straps are rock solid.",
+    createdAt: "2024-05-25T10:10:00.000Z",
+  },
+  {
+    id: "p4-review-2",
+    productId: "p4",
+    reviewer: "Isaac Chen",
+    reviewerId: "isaac.chen@shop4u.com",
+    rating: 4,
+    text: "Perfect weekend carry but a little heavy when full.",
+    createdAt: "2024-06-03T09:45:00.000Z",
+  },
+  {
+    id: "p5-review-1",
+    productId: "p5",
+    reviewer: "Elina Shah",
+    reviewerId: "elina.shah@shop4u.com",
+    rating: 5,
+    text: "Noise cancellation is top-tier and the fit stays secure.",
+    createdAt: "2024-06-15T16:30:00.000Z",
+  },
+  {
+    id: "p5-review-2",
+    productId: "p5",
+    reviewer: "Carson Bell",
+    reviewerId: "carson.bell@shop4u.com",
+    rating: 4,
+    text: "Sound is bright but the charging case magnet could be stronger.",
+    createdAt: "2024-06-23T13:12:00.000Z",
+  },
+  {
+    id: "p6-review-1",
+    productId: "p6",
+    reviewer: "Nia Powell",
+    reviewerId: "nia.powell@shop4u.com",
+    rating: 5,
+    text: "Responsive cushioning keeps every run feeling light.",
+    createdAt: "2024-06-30T07:05:00.000Z",
+  },
+  {
+    id: "p6-review-2",
+    productId: "p6",
+    reviewer: "Luis Harper",
+    reviewerId: "luis.harper@shop4u.com",
+    rating: 4,
+    text: "Tread held up well but started flattening around 60 miles.",
+    createdAt: "2024-07-09T12:22:00.000Z",
+  },
+  {
+    id: "p7-review-1",
+    productId: "p7",
+    reviewer: "Ryan Koh",
+    reviewerId: "ryan.koh@shop4u.com",
+    rating: 4,
+    text: "Classic look but the fabric is lighter than expected.",
+    createdAt: "2024-07-15T11:50:00.000Z",
+  },
+  {
+    id: "p7-review-2",
+    productId: "p7",
+    reviewer: "Ani Patel",
+    reviewerId: "ani.patel@shop4u.com",
+    rating: 4,
+    text: "Great layering piece, colors softened after washing though.",
+    createdAt: "2024-07-21T09:33:00.000Z",
+  },
+  {
+    id: "p8-review-1",
+    productId: "p8",
+    reviewer: "Sofia Miller",
+    reviewerId: "sofia.miller@shop4u.com",
+    rating: 5,
+    text: "Notifications are crisp and battery lasts holiday trips.",
+    createdAt: "2024-07-29T14:01:00.000Z",
+  },
+  {
+    id: "p8-review-2",
+    productId: "p8",
+    reviewer: "Devin Park",
+    reviewerId: "devin.park@shop4u.com",
+    rating: 5,
+    text: "Comfortable for long workouts and the OLED remains sharp.",
+    createdAt: "2024-08-05T08:48:00.000Z",
+  },
+  {
+    id: "p9-review-1",
+    productId: "p9",
+    reviewer: "Noor Farah",
+    reviewerId: "noor.farah@shop4u.com",
+    rating: 5,
+    text: "Lavender scent actually fills the room without being overpowering.",
+    createdAt: "2024-08-11T10:27:00.000Z",
+  },
+  {
+    id: "p9-review-2",
+    productId: "p9",
+    reviewer: "Carlos Vega",
+    reviewerId: "carlos.vega@shop4u.com",
+    rating: 4,
+    text: "Burn time is long but there was one small wax drip.",
+    createdAt: "2024-08-18T07:59:00.000Z",
+  },
+  {
+    id: "p10-review-1",
+    productId: "p10",
+    reviewer: "Liang Zhao",
+    reviewerId: "liang.zhao@shop4u.com",
+    rating: 4,
+    text: "Great grip though I hoped for more vibrant colors.",
+    createdAt: "2024-09-02T08:12:00.000Z",
+  },
+  {
+    id: "p10-review-2",
+    productId: "p10",
+    reviewer: "Emma Brooks",
+    reviewerId: "emma.brooks@shop4u.com",
+    rating: 5,
+    text: "Durable, cushioned, and the eco materials feel smart.",
+    createdAt: "2024-09-10T09:44:00.000Z",
+  },
+];
+
+const aggregateReviewStats = (reviews: Review[]) => {
+  const stats: Record<string, { sum: number; count: number }> = {};
+  reviews.forEach((review) => {
+    if (!stats[review.productId]) {
+      stats[review.productId] = { sum: 0, count: 0 };
+    }
+    stats[review.productId].sum += review.rating;
+    stats[review.productId].count += 1;
+  });
+  return stats;
+};
+
+const buildProductsFromReviews = (reviews: Review[]) => {
+  const stats = aggregateReviewStats(reviews);
+  return PRODUCT_SEEDS.map((seed) => {
+    const stat = stats[seed.id];
+    const rating = stat
+      ? Number((stat.sum / stat.count).toFixed(1))
+      : seed.rating ?? 0;
+    const reviewCount = stat?.count ?? seed.reviews ?? 0;
+    return { ...seed, rating, reviews: reviewCount };
+  });
+};
+
+const INITIAL_PRODUCTS = buildProductsFromReviews(INITIAL_REVIEWS);
+
+const DEMO_USER_RECORD: UserRecord = {
+  id: "user-demo",
+  email: "demo@shop4u.com",
+  username: "DemoShopper",
+  accountType: "buyer",
+  createdAt: "2024-01-01T08:00:00.000Z",
+  password: "demo1234",
+};
+
+const INITIAL_ORDERS: Order[] = [
+  {
+    id: "order-demo-1",
+    number: "order-demo-1",
+    createdAt: "2024-07-01T12:00:00.000Z",
+    status: "Delivered",
+    statusDetail: "Delivered to your doorstep",
+    items: [{ productId: "p5", quantity: 1 }],
+    subtotal: 89.99,
+    shipping: 10,
+    tax: 7.2,
+    total: 107.19,
+    confirmationCode: "CONF-DEM-0001",
+    userEmail: DEMO_USER_RECORD.email,
+  },
+];
+
 export type AddProductPayload = {
   title: string;
   price: number;
@@ -92,6 +464,7 @@ type State = {
   user: User | null;
   savedUsernames: Record<string, string>;
   userRecords: Record<string, UserRecord>;
+  reviews: Review[];
   orders: Order[];
 };
 
@@ -118,6 +491,10 @@ type Actions = {
   };
   placeOrder: (payload: PlaceOrderPayload) => { success: boolean; error?: string };
   addProduct: (payload: AddProductPayload) => { success: boolean; error?: string };
+  addReview: (payload: { productId: string; rating: number; text: string }) => {
+    success: boolean;
+    error?: string;
+  };
   logout: () => void;
   updateUsername: (username: string) => void;
   updateUser: (payload: Partial<User>) => void;
@@ -133,146 +510,7 @@ const ORDER_STATUS_FLOW: { status: OrderStatus; detail: string }[] = [
 export const useStore = create<State & Actions>()(
   persist(
     (set, get) => ({
-      products: [
-        {
-          id: "p1",
-          title: "Cotton Shorts",
-          price: 29.99,
-          compareAtPrice: 39.99,
-          category: "Fashion",
-          seller: "Fashion",
-          tagline: "Cooling linen weave",
-          image:
-            "https://images.unsplash.com/photo-1719473466836-ff9f5ebe0e1b?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          rating: 4.1,
-          reviews: 132,
-          discounted: true,
-        },
-        {
-          id: "p2",
-          title: "Tennis Racket",
-          price: 199.95,
-          compareAtPrice: 209.95,
-          category: "Sport Zone",
-          seller: "Sport Zone",
-          tagline: "Carbon string bed",
-          image:
-            "https://plus.unsplash.com/premium_photo-1666913667023-4bfd0f6cff0a?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dGVubmlzJTIwcmFja2V0fGVufDB8fDB8fHww",
-          rating: 4.5,
-          reviews: 254,
-          discounted: true,
-        },
-        {
-          id: "p3",
-          title: "Mac 4 Pro",
-          price: 1999.99,
-          category: "Tech Zone",
-          seller: "Tech Zone",
-          tagline: "M3 power for pros",
-          image:
-            "https://images.unsplash.com/photo-1565443492615-7e3d2324d925?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bWFjJTIwNCUyMHByb3xlbnwwfHwwfHx8MA%3D%3D",
-          rating: 4.7,
-          reviews: 982,
-        },
-        {
-          id: "p4",
-          title: "Leather Weekender",
-          price: 159.99,
-          compareAtPrice: 219.99,
-          category: "Lifestyle",
-          seller: "City Luxe",
-          tagline: "Carry-on approved",
-          image:
-            "https://images.unsplash.com/photo-1650542218150-5e59a58d4312?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8TGVhdGhlciUyMFdlZWtlbmRlcnxlbnwwfHwwfHx8MA%3D%3D",
-          rating: 4.4,
-          reviews: 88,
-          discounted: true,
-        },
-        {
-          id: "p5",
-          title: "Wireless Earbuds",
-          price: 89.99,
-          compareAtPrice: 109.99,
-          category: "Tech Zone",
-          seller: "Soundify",
-          tagline: "Noise-cancelling comfort",
-          image:
-            "https://images.unsplash.com/photo-1627989580309-bfaf3e58af6f?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d2lyZWxlc3MlMjBlYXJidWRzfGVufDB8fDB8fHww",
-          rating: 4.6,
-          reviews: 641,
-          discounted: true,
-        },
-        {
-          id: "p6",
-          title: "Running Shoes",
-          price: 120.0,
-          compareAtPrice: 140.0,
-          category: "Sport Zone",
-          seller: "Peak Performance",
-          tagline: "Responsive cushioning system",
-          image:
-            "https://images.unsplash.com/photo-1562183241-b937e95585b6?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cnVubmluZyUyMHNob2VzfGVufDB8fDB8fHww",
-          rating: 4.8,
-          reviews: 1194,
-          discounted: true,
-        },
-        {
-          id: "p7",
-          title: "Classic Jacket",
-          price: 89.5,
-          compareAtPrice: 99.99,
-          category: "Fashion",
-          seller: "Urban Stitch",
-          tagline: "Timeless everyday layering",
-          image:
-            "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8amFja2V0fGVufDB8fDB8fHww",
-          rating: 4.3,
-          reviews: 321,
-          discounted: true,
-        },
-        {
-          id: "p8",
-          title: "Smart Watch",
-          price: 399.99,
-          compareAtPrice: 449.99,
-          category: "Tech Zone",
-          seller: "Tech Zone",
-          tagline: "Track health & stay connected",
-          image:
-            "https://images.unsplash.com/photo-1461141346587-763ab02bced9?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8c21hcnQlMjB3YXRjaHxlbnwwfHwwfHx8MA%3D%3D",
-          rating: 4.6,
-          reviews: 784,
-          discounted: true,
-        },
-        {
-          id: "p9",
-          title: "Candle Set",
-          price: 34.99,
-          compareAtPrice: 49.99,
-          category: "Lifestyle",
-          seller: "Calm Home",
-          tagline: "Relaxing lavender blend",
-          image:
-            "https://images.unsplash.com/photo-1728897161054-a31928d12a16?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGNhbmRsZSUyMHNlcnxlbnwwfHwwfHx8MA%3D%3D",
-          rating: 4.9,
-          reviews: 205,
-          discounted: true,
-        },
-        {
-          id: "p10",
-          title: "Yoga Mat",
-          price: 59.99,
-          compareAtPrice: 79.99,
-          category: "Sport Zone",
-          seller: "ZenFit",
-          tagline: "Non-slip eco material",
-          image:
-            "https://plus.unsplash.com/premium_photo-1663090241828-1d5f7456b699?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          rating: 4.5,
-          reviews: 420,
-          discounted: true,
-        },
-      ],
+      products: INITIAL_PRODUCTS,
       cart: [],
       favorites: [],
       selectedProductId: null,
@@ -285,9 +523,10 @@ export const useStore = create<State & Actions>()(
         search: "",
       },
       user: null,
-      savedUsernames: {},
-      userRecords: {},
-      orders: [],
+      savedUsernames: { [DEMO_USER_RECORD.username]: DEMO_USER_RECORD.id },
+      userRecords: { [DEMO_USER_RECORD.id]: DEMO_USER_RECORD },
+      reviews: INITIAL_REVIEWS,
+      orders: INITIAL_ORDERS,
       addToCart: (id) => set((s) => ({ cart: [...s.cart, id] })),
       removeFromCart: (id) =>
         set((s) => {
@@ -354,6 +593,67 @@ export const useStore = create<State & Actions>()(
           description: payload.description?.trim() || undefined,
         };
         set((state) => ({ products: [...state.products, newProduct] }));
+        return { success: true };
+      },
+      addReview: ({ productId, rating, text }) => {
+        const currentUser = get().user;
+        if (!currentUser) {
+          return { success: false, error: "Log in to leave a review." };
+        }
+        const trimmedText = text.trim();
+        if (!trimmedText) {
+          return { success: false, error: "Share what you liked about the product." };
+        }
+        const eligibleOrder = get().orders.find(
+          (order) =>
+            order.userEmail === currentUser.email &&
+            order.status === "Delivered" &&
+            order.items.some((item) => item.productId === productId)
+        );
+        if (!eligibleOrder) {
+          return {
+            success: false,
+            error: "You can only review items that have been delivered to you.",
+          };
+        }
+        const userReviewCount = get().reviews.filter(
+          (review) =>
+            review.productId === productId && review.reviewerId === currentUser.email
+        ).length;
+        if (userReviewCount >= 2) {
+          return {
+            success: false,
+            error: "Two reviews per delivered item are allowed—feel free to update the existing one.",
+          };
+        }
+        const safeRating = Math.min(5, Math.max(1, Math.round(rating)));
+        const newReview: Review = {
+          id:
+            typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+              ? crypto.randomUUID()
+              : `review-${Date.now()}`,
+          productId,
+          reviewer: currentUser.username ?? currentUser.email,
+          reviewerId: currentUser.email,
+          rating: safeRating,
+          text: trimmedText,
+          createdAt: new Date().toISOString(),
+        };
+        set((state) => {
+          const nextReviews = [...state.reviews, newReview];
+          const productReviews = nextReviews.filter((review) => review.productId === productId);
+          const average =
+            productReviews.reduce((sum, review) => sum + review.rating, 0) / productReviews.length;
+          const roundedAverage = Number(average.toFixed(1));
+          return {
+            reviews: nextReviews,
+            products: state.products.map((product) =>
+              product.id === productId
+                ? { ...product, rating: roundedAverage, reviews: productReviews.length }
+                : product
+            ),
+          };
+        });
         return { success: true };
       },
       login: (credentials) => {
@@ -479,6 +779,7 @@ export const useStore = create<State & Actions>()(
           return { success: false, error: "Cart is empty." };
         }
         set((state) => {
+          const customerEmail = state.user?.email ?? "guest@shop4u.com";
           const flow = ORDER_STATUS_FLOW[state.orders.length % ORDER_STATUS_FLOW.length];
           const newOrder: Order = {
             id:
@@ -495,6 +796,7 @@ export const useStore = create<State & Actions>()(
             tax,
             total,
             confirmationCode: `CONF${Math.floor(100000 + Math.random() * 900000)}`,
+            userEmail: customerEmail,
           };
           return {
             orders: [...state.orders, newOrder],
@@ -506,13 +808,23 @@ export const useStore = create<State & Actions>()(
     }),
     {
       name: "shop4u-storage",
-      partialize: ({ cart, filters, user, favorites, savedUsernames, userRecords, orders }) => ({
+      partialize: ({
         cart,
         filters,
         user,
         favorites,
         savedUsernames,
         userRecords,
+        reviews,
+        orders,
+      }) => ({
+        cart,
+        filters,
+        user,
+        favorites,
+        savedUsernames,
+        userRecords,
+        reviews,
         orders,
       }),
     }
