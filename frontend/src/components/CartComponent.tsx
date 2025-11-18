@@ -84,12 +84,12 @@ export default function CartDrawer({ open, onClose }: Props) {
             {items.map(({ product, quantity }) => (
               <div
                 key={product.id}
-                className="relative flex items-center gap-3 rounded-2xl border border-slate-200 p-3"
+                className="relative flex items-center gap-3 rounded-2xl border border-slate-200 p-3 pl-30"
               >
                 <img
                   src={product.image}
                   alt={product.title}
-                  className="h-16 w-16 rounded-2xl object-cover"
+                  className="h-26 w-26 rounded-2xl absolute top-0.5 left-0.5 object-cover"
                 />
                 <button
                   type="button"
@@ -99,31 +99,33 @@ export default function CartDrawer({ open, onClose }: Props) {
                 >
                   <FiX className="h-5 w-5 cursor-pointer" aria-hidden="true" />
                 </button>
-                <div className="flex flex-1 min-w-0 flex-col gap-1">
-                  <div className="flex items-center justify-between">
+                <div className="flex flex-1 min-w-0 flex-col gap-3">
+                  <div className="space-y-1">
                     <p className="font-semibold text-slate-900">{product.title}</p>
+                    <p className="text-xs text-slate-500">{product.seller}</p>
                   </div>
-                  <p className="text-xs text-slate-500">{product.seller}</p>
-                  <div className="flex items-center gap-2 text-xs text-slate-500">
-                    <button
-                      type="button"
-                      onClick={() => removeFromCart(product.id)}
-                      className="inline-flex h-7 w-7 items-center cursor-pointer justify-center rounded-full border border-slate-200"
-                    >
-                      <FaMinus className="text-2l text-black" />
-                    </button>
-                    <span className="font-semibold text-slate-900">{quantity}</span>
-                    <button
-                      type="button"
-                      onClick={() => addToCart(product.id)}
-                      className="inline-flex h-7 w-7 items-center cursor-pointer justify-center rounded-full border border-slate-200"
-                    >
-                      <FaPlus className="text-2l text-black"/>
-                    </button>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                      <button
+                        type="button"
+                        onClick={() => removeFromCart(product.id)}
+                        className="inline-flex h-7 w-7 items-center cursor-pointer justify-center rounded-full border border-slate-200"
+                      >
+                        <FaMinus className="text-2l text-black" />
+                      </button>
+                      <span className="font-semibold text-slate-900">{quantity}</span>
+                      <button
+                        type="button"
+                        onClick={() => addToCart(product.id)}
+                        className="inline-flex h-7 w-7 items-center cursor-pointer justify-center rounded-full border border-slate-200"
+                      >
+                        <FaPlus className="text-2l text-black" />
+                      </button>
+                    </div>
+                    <div className="text-sm font-semibold text-slate-900">
+                      {currency.format(product.price * quantity)}
+                    </div>
                   </div>
-                </div>
-                <div className="text-sm font-semibold text-slate-900">
-                  {currency.format(product.price * quantity)}
                 </div>
               </div>
             ))}

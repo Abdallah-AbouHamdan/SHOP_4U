@@ -71,7 +71,7 @@ export default function Filters() {
               value={filters.minPrice}
               onChange={(e) => handleMinRangeChange(Number(e.target.value))}
               aria-label="Minimum price"
-              className="range-input range-input--handle z-20"
+            className="range-input range-input--handle z-10"
             />
             <input
               type="range"
@@ -81,7 +81,7 @@ export default function Filters() {
               value={filters.maxPrice}
               onChange={(e) => handleMaxRangeChange(Number(e.target.value))}
               aria-label="Maximum price"
-              className="range-input range-input--handle z-10"
+              className="range-input range-input--handle z-20"
             />
           </div>
         </div>

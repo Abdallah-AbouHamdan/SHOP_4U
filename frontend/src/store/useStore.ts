@@ -32,7 +32,7 @@ export type PlaceOrderPayload = {
 
 type Credentials = {
   email: string;
-  password?: string;
+  password: string;
   username?: string;
   accountType?: "buyer" | "seller";
 };
@@ -48,6 +48,7 @@ type UserRecord = {
   username: string;
   accountType: "buyer" | "seller";
   createdAt: string;
+  password: string;
 };
 
 export type Product = {
@@ -308,16 +309,167 @@ export const useStore = create<State & Actions>()(
             ? { favorites: s.favorites.filter((favId) => favId !== id) }
             : { favorites: [...s.favorites, id] }
         ),
-      login: (user) =>
-        set((state) => ({
+      addProduct: (payload) => {
+        const currentUser = get().user;
+        if (!currentUser) {
+          return { success: false, error: "Log in to add a product." };
+        }
+        if (currentUser.accountType !== "seller") {
+          return { success: false, error: "Only seller accounts can add catalog items." };
+        }
+        const price = Number(payload.price);
+        if (Number.isNaN(price) || price <= 0) {
+          return { success: false, error: "Enter a valid price greater than zero." };
+        }
+        const trimmedTitle = payload.title?.trim();
+        if (!trimmedTitle) {
+          return { success: false, error: "Provide a product name." };
+        }
+        if (!payload.category) {
+          return { success: false, error: "Select a category." };
+        }
+        const imageUrl =
+          payload.image?.trim() ||
+          "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800&auto=format&fit=crop";
+        let compareAtPrice: number | undefined;
+        if (payload.compareAtPrice && payload.compareAtPrice > price) {
+          compareAtPrice = payload.compareAtPrice;
+        }
+        const newProduct: Product = {
+          id:
+            typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+              ? crypto.randomUUID()
+              : `seller-product-${Date.now()}`,
+          title: trimmedTitle,
+          price,
+          compareAtPrice,
+          category: payload.category,
+          seller: currentUser.username ?? currentUser.email,
+          tagline: payload.tagline?.trim() || "Seller listing",
+          image: imageUrl,
+          rating: 4.5,
+          reviews: 0,
+          discounted: Boolean(compareAtPrice),
+          description: payload.description?.trim() || undefined,
+        };
+        set((state) => ({ products: [...state.products, newProduct] }));
+        return { success: true };
+      },
+      login: (credentials) => {
+        const email = credentials.email.trim();
+        const password = credentials.password.trim();
+        const record = Object.values(get().userRecords).find(
+          (entry) => entry.email === email
+        );
+        if (!record) {
+          return { success: false, error: "No account matches that email address." };
+        }
+        if (record.password !== password) {
+          return { success: false, error: "Incorrect password." };
+        }
+        set({
           user: {
-            ...(state.user ?? {}),
-            ...user,
+            email: record.email,
+            username: record.username,
+            accountType: record.accountType,
           },
-        })),
+        });
+        return { success: true };
+      },
+      registerUser: (payload) => {
+        const normalizedEmail = payload.email.trim();
+        const normalizedUsername = payload.username.trim();
+        const existingEmail = Object.values(get().userRecords).find(
+          (entry) => entry.email === normalizedEmail
+        );
+        if (existingEmail) {
+          return { success: false, error: "An account already exists with that email address." };
+        }
+        if (normalizedUsername && get().savedUsernames[normalizedUsername]) {
+          return { success: false, error: "That username is already taken." };
+        }
+        const id =
+          typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+            ? crypto.randomUUID()
+            : `user-${Date.now()}`;
+        const record: UserRecord = {
+          id,
+          email: normalizedEmail,
+          username: normalizedUsername,
+          accountType: payload.accountType,
+          createdAt: new Date().toISOString(),
+          password: payload.password.trim(),
+        };
+        set((state) => ({
+          userRecords: { ...state.userRecords, [record.id]: record },
+          savedUsernames: { ...state.savedUsernames, [normalizedUsername]: record.id },
+          user: {
+            email: normalizedEmail,
+            username: normalizedUsername,
+            accountType: payload.accountType,
+          },
+        }));
+        return { success: true };
+      },
+      changePassword: ({ current, next }) => {
+        const currentUser = get().user;
+        if (!currentUser) {
+          return { success: false, error: "Log in to change your password." };
+        }
+        const recordEntry = Object.entries(get().userRecords).find(
+          ([, record]) => record.email === currentUser.email
+        );
+        if (!recordEntry) {
+          return { success: false, error: "Account record not found." };
+        }
+        const [recordId, record] = recordEntry;
+        const trimmedCurrent = current.trim();
+        const trimmedNext = next.trim();
+        if (record.password !== trimmedCurrent) {
+          return { success: false, error: "Current password is incorrect." };
+        }
+        if (trimmedNext.length < 8) {
+          return { success: false, error: "New password must be at least 8 characters long." };
+        }
+        if (record.password === trimmedNext) {
+          return { success: false, error: "New password must differ from the current password." };
+        }
+        const updatedRecord = { ...record, password: trimmedNext };
+        set((state) => ({
+          userRecords: { ...state.userRecords, [recordId]: updatedRecord },
+        }));
+        return { success: true };
+      },
       updateUsername: (username) =>
+        set((state) => {
+          if (!state.user) return {};
+          const email = state.user.email;
+          const userRecordEntry = Object.entries(state.userRecords).find(
+            ([, record]) => record.email === email
+          );
+          if (!userRecordEntry) {
+            return { user: { ...state.user, username } };
+          }
+          const [recordId, record] = userRecordEntry;
+          const prevUsername = record.username;
+          const updatedRecords = {
+            ...state.userRecords,
+            [recordId]: { ...record, username },
+          };
+          const updatedSavedUsernames = { ...state.savedUsernames };
+          if (prevUsername) {
+            delete updatedSavedUsernames[prevUsername];
+          }
+          updatedSavedUsernames[username] = recordId;
+          return {
+            user: { ...state.user, username },
+            userRecords: updatedRecords,
+            savedUsernames: updatedSavedUsernames,
+          };
+        }),
+      updateUser: (payload) =>
         set((state) =>
-          state.user ? { user: { ...state.user, username } } : {}
+          state.user ? { user: { ...state.user, ...payload } } : {}
         ),
       logout: () => set({ user: null, cart: [], favorites: [] }),
       placeOrder: ({ itemEntries, subtotal, shipping, tax, total }: PlaceOrderPayload) => {
