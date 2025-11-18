@@ -120,7 +120,6 @@ type Actions = {
   addProduct: (payload: AddProductPayload) => { success: boolean; error?: string };
   logout: () => void;
   updateUsername: (username: string) => void;
-  updateUser: (payload: Partial<User>) => void;
 };
 
 const ORDER_STATUS_FLOW: { status: OrderStatus; detail: string }[] = [
