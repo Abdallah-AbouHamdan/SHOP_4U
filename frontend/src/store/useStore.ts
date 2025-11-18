@@ -32,7 +32,7 @@ export type PlaceOrderPayload = {
 
 type Credentials = {
   email: string;
-  password?: string;
+  password: string;
   username?: string;
   accountType?: "buyer" | "seller";
 };
@@ -48,6 +48,7 @@ type UserRecord = {
   username: string;
   accountType: "buyer" | "seller";
   createdAt: string;
+  password: string;
 };
 
 export type Product = {
@@ -356,50 +357,88 @@ export const useStore = create<State & Actions>()(
         return { success: true };
       },
       login: (credentials) => {
+        const email = credentials.email.trim();
+        const password = credentials.password.trim();
         const record = Object.values(get().userRecords).find(
-          (entry) => entry.email === credentials.email
+          (entry) => entry.email === email
         );
-        if (record) {
-          set({ user: { email: record.email, username: record.username, accountType: record.accountType } });
-          return { success: true };
+        if (!record) {
+          return { success: false, error: "No account matches that email address." };
         }
-        set((state) => ({
+        if (record.password !== password) {
+          return { success: false, error: "Incorrect password." };
+        }
+        set({
           user: {
-            ...(state.user ?? {}),
-            ...credentials,
+            email: record.email,
+            username: record.username,
+            accountType: record.accountType,
           },
-        }));
+        });
         return { success: true };
       },
       registerUser: (payload) => {
+        const normalizedEmail = payload.email.trim();
+        const normalizedUsername = payload.username.trim();
+        const existingEmail = Object.values(get().userRecords).find(
+          (entry) => entry.email === normalizedEmail
+        );
+        if (existingEmail) {
+          return { success: false, error: "An account already exists with that email address." };
+        }
+        if (normalizedUsername && get().savedUsernames[normalizedUsername]) {
+          return { success: false, error: "That username is already taken." };
+        }
         const id =
           typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
             ? crypto.randomUUID()
             : `user-${Date.now()}`;
         const record: UserRecord = {
           id,
-          email: payload.email,
-          username: payload.username,
+          email: normalizedEmail,
+          username: normalizedUsername,
           accountType: payload.accountType,
           createdAt: new Date().toISOString(),
+          password: payload.password.trim(),
         };
         set((state) => ({
           userRecords: { ...state.userRecords, [record.id]: record },
-          savedUsernames: { ...state.savedUsernames, [payload.username]: record.id },
+          savedUsernames: { ...state.savedUsernames, [normalizedUsername]: record.id },
           user: {
-            email: payload.email,
-            username: payload.username,
+            email: normalizedEmail,
+            username: normalizedUsername,
             accountType: payload.accountType,
           },
         }));
         return { success: true };
       },
       changePassword: ({ current, next }) => {
-        void current;
-        void next;
-        if (!get().user) {
+        const currentUser = get().user;
+        if (!currentUser) {
           return { success: false, error: "Log in to change your password." };
         }
+        const recordEntry = Object.entries(get().userRecords).find(
+          ([, record]) => record.email === currentUser.email
+        );
+        if (!recordEntry) {
+          return { success: false, error: "Account record not found." };
+        }
+        const [recordId, record] = recordEntry;
+        const trimmedCurrent = current.trim();
+        const trimmedNext = next.trim();
+        if (record.password !== trimmedCurrent) {
+          return { success: false, error: "Current password is incorrect." };
+        }
+        if (trimmedNext.length < 8) {
+          return { success: false, error: "New password must be at least 8 characters long." };
+        }
+        if (record.password === trimmedNext) {
+          return { success: false, error: "New password must differ from the current password." };
+        }
+        const updatedRecord = { ...record, password: trimmedNext };
+        set((state) => ({
+          userRecords: { ...state.userRecords, [recordId]: updatedRecord },
+        }));
         return { success: true };
       },
       updateUsername: (username) =>

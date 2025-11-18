@@ -21,20 +21,26 @@ export default function Login() {
         const formData = new FormData(event.currentTarget);
         const email = (formData.get("email") as string) ?? "";
         const password = (formData.get("password") as string) ?? "";
+        const trimmedPassword = password.trim();
 
         if (!isEmailValid(email)) {
             setFormError("Please enter a valid email address.");
             return;
         }
-        if (!isPasswordValid(password)) {
+        if (!isPasswordValid(trimmedPassword)) {
             setFormError(`Password must be ${passwordRequirements}.`);
             return;
         }
 
         setFormError(null);
-        login({
+        const result = login({
             email: email.trim(),
+            password: trimmedPassword,
         });
+        if (!result.success) {
+            setFormError(result.error ?? "Unable to sign in.");
+            return;
+        }
         navigate(redirectPath, { replace: true });
     };
     return (
