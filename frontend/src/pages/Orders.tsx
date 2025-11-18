@@ -1,6 +1,6 @@
 import { BiChevronDown } from "react-icons/bi";
 import { TbPackage } from "react-icons/tb";
-import { useStore } from "../store/useStore";
+import { getActiveOrderStatus, getOrderTimeline, useStore } from "../store/useStore";
 import type { OrderStatus } from "../store/useStore";
 
 const currency = new Intl.NumberFormat("en-US", {
@@ -16,11 +16,22 @@ const statusBadgeStyles: Record<OrderStatus, string> = {
   Delivered: "bg-emerald-100 text-emerald-900",
 };
 
+const statusTimeFormatter = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  hour: "numeric",
+  minute: "2-digit",
+});
+
 export default function Orders() {
-  const { orders, products } = useStore();
-  const sortedOrders = [...orders].sort(
+  const { orders, products, user } = useStore();
+  const userOrders = user ? orders.filter((order) => order.userEmail === user.email) : [];
+  const sortedOrders = [...userOrders].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
+  const emptyMessage = user
+    ? "You haven't placed any orders yet. Place an order to see it here."
+    : "Log in to track your orders and leave reviews once your purchases deliver.";
 
   return (
     <section className="bg-[#f5f5f5] min-h-screen">
@@ -40,6 +51,8 @@ export default function Orders() {
                 day: "numeric",
                 year: "numeric",
               }).format(new Date(order.createdAt));
+              const timeline = getOrderTimeline(order);
+              const activeStatus = getActiveOrderStatus(order);
               return (
                 <article
                   key={order.id}
@@ -66,14 +79,14 @@ export default function Orders() {
                           {orderDate}
                         </p>
                         <p className="text-sm font-semibold text-slate-500">
-                          {order.statusDetail}
+                          {activeStatus.detail}
                         </p>
                       </div>
                       <div className="ml-auto flex flex-col items-end gap-2">
                         <span
-                          className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider ${statusBadgeStyles[order.status]}`}
+                          className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider ${statusBadgeStyles[activeStatus.status]}`}
                         >
-                          {order.status}
+                          {activeStatus.status}
                         </span>
                         <BiChevronDown className="text-lg text-slate-300" />
                       </div>
@@ -94,13 +107,36 @@ export default function Orders() {
                         <dd className="text-slate-900">{order.confirmationCode}</dd>
                       </div>
                     </dl>
+                    <div className="mt-4 grid gap-3 text-[11px] sm:grid-cols-4">
+                      {timeline.map((entry) => {
+                        const isCurrent = entry.status === activeStatus.status;
+                        return (
+                          <div
+                            key={entry.status}
+                            className={`rounded-2xl border px-3 py-2 ${
+                              isCurrent
+                                ? "border-slate-900 bg-slate-50 text-slate-900"
+                                : "border-slate-200 bg-white text-slate-500"
+                            }`}
+                          >
+                            <p className="font-semibold uppercase tracking-[0.3em]">
+                              {entry.status}
+                            </p>
+                            <p className="mt-1 text-[10px] font-semibold text-slate-600">
+                              {statusTimeFormatter.format(new Date(entry.startAt))}
+                            </p>
+                            <p className="text-[10px] text-slate-500">{entry.detail}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </article>
               );
             })
           ) : (
             <div className="rounded-3xl border border-dashed border-slate-300 bg-white/80 p-6 text-center text-sm text-slate-500">
-              You haven&apos;t placed any orders yet. Place an order to see it here.
+              {emptyMessage}
             </div>
           )}
         </div>
