@@ -282,53 +282,6 @@ export default function Settings() {
               </form>
             </div>
           </div>
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:col-span-2">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
-                  Profile
-                </p>
-                <h3 className="text-lg font-semibold text-slate-900">Update username</h3>
-              </div>
-              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
-                {user?.accountType ?? "buyer"}
-              </span>
-            </div>
-            <p className="mt-3 text-sm text-slate-600">
-              Swap in a fresh username to refresh your storefront badges and order receipts.
-            </p>
-            <form
-              className="mt-6 space-y-4 text-sm text-slate-600"
-              onSubmit={handleUsernameSubmit}>
-              <label className="flex flex-col gap-1">
-                <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
-                  Username
-                </span>
-                <input
-                  type="text"
-                  value={usernameInput}
-                  onChange={(event) => setUsernameInput(event.target.value)}
-                  onInput={() => {
-                    setUsernameError(null);
-                    setUsernameSuccess(null);
-                  }}
-                  placeholder="shopper123"
-                  className="rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none focus:border-slate-400"
-                />
-              </label>
-              {usernameError ? (
-                <p className="text-sm text-rose-500">{usernameError}</p>
-              ) : null}
-              {usernameSuccess ? (
-                <p className="text-sm text-emerald-500">{usernameSuccess}</p>
-              ) : null}
-              <button
-                type="submit"
-                className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
-                Save username
-              </button>
-            </form>
-          </div>
         </section>
       </div>
     </section>

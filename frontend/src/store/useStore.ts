@@ -356,6 +356,13 @@ export const useStore = create<State & Actions>()(
         return { success: true };
       },
       login: (credentials) => {
+        const record = Object.values(get().userRecords).find(
+          (entry) => entry.email === credentials.email
+        );
+        if (record) {
+          set({ user: { email: record.email, username: record.username, accountType: record.accountType } });
+          return { success: true };
+        }
         set((state) => ({
           user: {
             ...(state.user ?? {}),
@@ -396,9 +403,32 @@ export const useStore = create<State & Actions>()(
         return { success: true };
       },
       updateUsername: (username) =>
-        set((state) =>
-          state.user ? { user: { ...state.user, username } } : {}
-        ),
+        set((state) => {
+          if (!state.user) return {};
+          const email = state.user.email;
+          const userRecordEntry = Object.entries(state.userRecords).find(
+            ([, record]) => record.email === email
+          );
+          if (!userRecordEntry) {
+            return { user: { ...state.user, username } };
+          }
+          const [recordId, record] = userRecordEntry;
+          const prevUsername = record.username;
+          const updatedRecords = {
+            ...state.userRecords,
+            [recordId]: { ...record, username },
+          };
+          const updatedSavedUsernames = { ...state.savedUsernames };
+          if (prevUsername) {
+            delete updatedSavedUsernames[prevUsername];
+          }
+          updatedSavedUsernames[username] = recordId;
+          return {
+            user: { ...state.user, username },
+            userRecords: updatedRecords,
+            savedUsernames: updatedSavedUsernames,
+          };
+        }),
       updateUser: (payload) =>
         set((state) =>
           state.user ? { user: { ...state.user, ...payload } } : {}
