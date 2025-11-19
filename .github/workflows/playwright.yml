@@ -2,12 +2,15 @@ name: Playwright Tests
 
 on:
   pull_request:
-    branches: [ main]
+    branches:
+      - main
 
 jobs:
   test:
-    timeout-minutes: 60
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend 
 
     steps:
       - name: Checkout repository
@@ -16,26 +19,25 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18
 
       - name: Install dependencies
         run: npm install
 
-      - name: Install Playwright Browsers
+      - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
       - name: Start frontend server
         run: npm run dev &
       
-      - name: Wait for server startup
+      - name: Wait for server
         run: npx wait-on http://localhost:5173
 
       - name: Run Playwright tests
-        run: npx playwright test --reporter=line
+        run: npx playwright test --reporter=html
 
-      - name: Upload Playwright HTML report
-        if: always()
+      - name: Upload Playwright report
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
-          path: playwright-report/
+          path: frontend/playwright-report/
