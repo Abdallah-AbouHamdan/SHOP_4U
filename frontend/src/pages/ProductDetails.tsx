@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { FaStar } from "react-icons/fa";
 import { GiShoppingCart } from "react-icons/gi";
 import { useNavigate, useParams } from "react-router-dom";
+import ImageGallery from "../components/ImageGallery";
 import { useStore } from "../store/useStore";
 
 const currency = new Intl.NumberFormat("en-US", {
@@ -48,6 +49,8 @@ export default function ProductDetails() {
     );
   }
 
+  const galleryImages = product.images?.length ? product.images : [product.image];
+
   const inStock = product.stock > 0;
   const handleAdd = () => {
     if (!user) {
@@ -69,10 +72,11 @@ export default function ProductDetails() {
         </button>
         <div className="mt-6 grid gap-8 lg:grid-cols-[1.1fr,1fr]">
           <div className="rounded-[32px] border border-slate-100 bg-slate-50 p-6 shadow-[0_25px_40px_rgba(15,23,42,0.15)]">
-            <img
-              src={product.image}
+            <ImageGallery
+              images={galleryImages}
               alt={product.title}
-              className="h-[360px] w-full rounded-[28px] object-cover"
+              className="space-y-3"
+              mainImageClassName="h-[360px] w-full rounded-[28px] object-cover"
             />
             <div className="mt-6 flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-slate-500">
               <span className="rounded-full bg-white px-3 py-1 text-[10px] font-semibold text-slate-400">
