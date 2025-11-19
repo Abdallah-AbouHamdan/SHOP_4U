@@ -25,6 +25,10 @@ const initialFormState = {
   price: "",
   compareAtPrice: "",
   image: "",
+  galleryImage1: "",
+  galleryImage2: "",
+  galleryImage3: "",
+  stock: "10",
   description: "",
   discountActive: false,
 };
@@ -86,6 +90,10 @@ export default function SellerDashboard() {
       compareAtPrice = parsed;
     }
 
+    const galleryImages = [formState.galleryImage1, formState.galleryImage2, formState.galleryImage3]
+      .map((url) => url.trim())
+      .filter(Boolean);
+
     const result = addProduct({
       title: trimmedTitle,
       tagline: formState.tagline.trim() || "Fresh seller listing",
@@ -93,6 +101,8 @@ export default function SellerDashboard() {
       price,
       compareAtPrice,
       image: formState.image.trim() || "",
+      images: galleryImages,
+      stock: Number(formState.stock),
       description: formState.description.trim() || undefined,
     });
 
@@ -208,7 +218,54 @@ export default function SellerDashboard() {
               </label>
             </div>
 
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            <div className="space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+                Carousel images
+              </p>
+              <p className="text-sm text-slate-500">
+                Provide up to three additional images that rotate in the carousel.
+              </p>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <label className="space-y-1 text-sm font-semibold text-slate-600">
+                  Image 1
+                  <input
+                    type="url"
+                    value={formState.galleryImage1}
+                    onChange={(event) =>
+                      handleInputChange("galleryImage1", event.target.value)
+                    }
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-slate-400 focus:bg-white"
+                    placeholder="https://images.unsplash.com/..."
+                  />
+                </label>
+                <label className="space-y-1 text-sm font-semibold text-slate-600">
+                  Image 2
+                  <input
+                    type="url"
+                    value={formState.galleryImage2}
+                    onChange={(event) =>
+                      handleInputChange("galleryImage2", event.target.value)
+                    }
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-slate-400 focus:bg-white"
+                    placeholder="https://images.unsplash.com/..."
+                  />
+                </label>
+                <label className="space-y-1 text-sm font-semibold text-slate-600">
+                  Image 3
+                  <input
+                    type="url"
+                    value={formState.galleryImage3}
+                    onChange={(event) =>
+                      handleInputChange("galleryImage3", event.target.value)
+                    }
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-slate-400 focus:bg-white"
+                    placeholder="https://images.unsplash.com/..."
+                  />
+                </label>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
               <label className="space-y-1 text-sm font-semibold text-slate-600">
                 Price
                 <input
@@ -222,26 +279,39 @@ export default function SellerDashboard() {
                   required
                 />
               </label>
-              <label className="space-y-1 text-sm font-semibold text-slate-600 md:col-span-2">
-                Discount option
-                <div className="flex items-center gap-3">
-                  <label className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600">
-                    <input
-                      type="checkbox"
-                      checked={formState.discountActive}
-                      onChange={(event) =>
-                        handleInputChange("discountActive", event.target.checked)
-                      }
-                      className="h-4 w-4 rounded border border-slate-300 accent-slate-900"
-                    />
-                    Offer a compare price
-                  </label>
-                  <span className="text-xs text-slate-400">
-                    Show savings across the catalog.
-                  </span>
-                </div>
+              <label className="space-y-1 text-sm font-semibold text-slate-600">
+                Stock
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={formState.stock}
+                  onChange={(event) => handleInputChange("stock", event.target.value)}
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-slate-400 focus:bg-white"
+                  placeholder="10"
+                  required
+                />
               </label>
             </div>
+            <label className="space-y-1 text-sm font-semibold text-slate-600">
+              Discount option
+              <div className="flex items-center gap-3">
+                <label className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600">
+                  <input
+                    type="checkbox"
+                    checked={formState.discountActive}
+                    onChange={(event) =>
+                      handleInputChange("discountActive", event.target.checked)
+                    }
+                    className="h-4 w-4 rounded border border-slate-300 accent-slate-900"
+                  />
+                  Offer a compare price
+                </label>
+                <span className="text-xs text-slate-400">
+                  Show savings across the catalog.
+                </span>
+              </div>
+            </label>
 
             {formState.discountActive && (
               <label className="space-y-1 text-sm font-semibold text-slate-600">

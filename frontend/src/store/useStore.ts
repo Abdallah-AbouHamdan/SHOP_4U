@@ -62,6 +62,7 @@ export type Product = {
   seller: string;
   tagline: string;
   image: string;
+  images: string[];
   rating: number;
   reviews: number;
   discounted?: boolean;
@@ -79,9 +80,10 @@ export type Review = {
   createdAt: string;
 };
 
-type ProductSeed = Omit<Product, "rating" | "reviews"> & {
+type ProductSeed = Omit<Product, "rating" | "reviews" | "images"> & {
   rating?: number;
   reviews?: number;
+  images?: string[];
 };
 
 const PRODUCT_SEEDS: ProductSeed[] = [
@@ -95,6 +97,11 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "Cooling linen weave",
     image:
       "https://images.unsplash.com/photo-1719473466836-ff9f5ebe0e1b?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    images: [
+      "https://images.unsplash.com/photo-1719473466836-ff9f5ebe0e1b?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1566392722006-b3ccec017bec?q=80&w=2166&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1719473442915-016f3ebda79a?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    ],
     stock: 24,
     discounted: true,
   },
@@ -108,6 +115,11 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "Carbon string bed",
     image:
       "https://plus.unsplash.com/premium_photo-1666913667023-4bfd0f6cff0a?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dGVubmlzJTIwcmFja2V0fGVufDB8fDB8fHww",
+    images: [
+      "https://plus.unsplash.com/premium_photo-1666913667023-4bfd0f6cff0a?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dGVubmlzJTIwcmFja2V0fGVufDB8fDB8fHww",
+      "https://plus.unsplash.com/premium_photo-1666913667082-c1fecc45275d?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dGVubmlzfGVufDB8fDB8fHww",
+      "https://plus.unsplash.com/premium_photo-1666913667081-1d6c8ccb5143?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHRlbm5pc3xlbnwwfHwwfHx8MA%3D%3D",
+    ],
     stock: 12,
     discounted: true,
   },
@@ -120,6 +132,11 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "M3 power for pros",
     image:
       "https://images.unsplash.com/photo-1565443492615-7e3d2324d925?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bWFjJTIwNCUyMHByb3xlbnwwfHwwfHx8MA%3D%3D",
+    images: [
+      "https://images.unsplash.com/photo-1565443492615-7e3d2324d925?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bWFjJTIwNCUyMHByb3xlbnwwfHwwfHx8MA%3D%3D",
+      "https://images.unsplash.com/photo-1732310964074-2d425d1f8e78?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bWFjYm9vayUyMG00JTIwcHJvfGVufDB8fDB8fHww",
+      "https://plus.unsplash.com/premium_photo-1681566925324-ee1e65d9d53e?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFjYm9vayUyMG00JTIwcHJvfGVufDB8fDB8fHww",
+    ],
     stock: 4,
   },
   {
@@ -132,6 +149,11 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "Carry-on approved",
     image:
       "https://images.unsplash.com/photo-1650542218150-5e59a58d4312?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8TGVhdGhlciUyMFdlZWtlbmRlcnxlbnwwfHwwfHx8MA%3D%3D",
+    images: [
+      "https://images.unsplash.com/photo-1650542218150-5e59a58d4312?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8TGVhdGhlciUyMFdlZWtlbmRlcnxlbnwwfHwwfHx8MA%3D%3D",
+      "https://images.unsplash.com/photo-1630071635402-0f7bf751f646?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bGVhdGhlciUyMHdlZWtpbmRlcnxlbnwwfHwwfHx8MA%3D%3D",
+      "https://media.istockphoto.com/id/1493644514/photo/brown-duffel-bag-on-mens-shoulder.webp?a=1&b=1&s=612x612&w=0&k=20&c=DkUvHcLYDF8vM-qTyyAXrvjSzxvl2WwHQiTx0nFcpyc=",
+    ],
     stock: 8,
     discounted: true,
   },
@@ -145,6 +167,11 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "Noise-cancelling comfort",
     image:
       "https://images.unsplash.com/photo-1627989580309-bfaf3e58af6f?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d2lyZWxlc3MlMjBlYXJidWRzfGVufDB8fDB8fHww",
+    images: [
+      "https://images.unsplash.com/photo-1627989580309-bfaf3e58af6f?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d2lyZWxlc3MlMjBlYXJidWRzfGVufDB8fDB8fHww",
+      "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8ZWFyYnVkc3xlbnwwfHwwfHx8MA%3D%3D",
+      "https://images.unsplash.com/photo-1615281612781-4b972bd4e3fe?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8ZWFyYnVkc3xlbnwwfHwwfHx8MA%3D%3D",
+    ],
     stock: 32,
     discounted: true,
   },
@@ -158,6 +185,11 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "Responsive cushioning system",
     image:
       "https://images.unsplash.com/photo-1562183241-b937e95585b6?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cnVubmluZyUyMHNob2VzfGVufDB8fDB8fHww",
+    images: [
+      "https://images.unsplash.com/photo-1562183241-b937e95585b6?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cnVubmluZyUyMHNob2VzfGVufDB8fDB8fHww",
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8fDA%3D",
+      "https://images.unsplash.com/photo-1595341888016-a392ef81b7de?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHNob2VzfGVufDB8fDB8fHww",
+    ],
     stock: 18,
     discounted: true,
   },
@@ -171,6 +203,11 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "Timeless everyday layering",
     image:
       "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8amFja2V0fGVufDB8fDB8fHww",
+    images: [
+      "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8amFja2V0fGVufDB8fDB8fHww",
+      "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8amFja2V0fGVufDB8fDB8fHww",
+      "https://images.unsplash.com/photo-1627637454030-5ddd536e06e5?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8amFja2V0fGVufDB8fDB8fHww",
+    ],
     stock: 26,
     discounted: true,
   },
@@ -184,6 +221,11 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "Track health & stay connected",
     image:
       "https://images.unsplash.com/photo-1461141346587-763ab02bced9?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8c21hcnQlMjB3YXRjaHxlbnwwfHwwfHx8MA%3D%3D",
+    images: [
+      "https://images.unsplash.com/photo-1461141346587-763ab02bced9?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8c21hcnQlMjB3YXRjaHxlbnwwfHwwfHx8MA%3D%3D",
+      "https://images.unsplash.com/photo-1637160151663-a410315e4e75?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1551816230-ef5deaed4a26?q=80&w=1065&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    ],
     stock: 14,
     discounted: true,
   },
@@ -197,6 +239,11 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "Relaxing lavender blend",
     image:
       "https://images.unsplash.com/photo-1728897161054-a31928d12a16?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGNhbmRsZSUyMHNlcnxlbnwwfHwwfHx8MA%3D%3D",
+    images: [
+      "https://images.unsplash.com/photo-1728897161054-a31928d12a16?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGNhbmRsZSUyMHNlcnxlbnwwfHwwfHx8MA%3D%3D",
+      "https://plus.unsplash.com/premium_photo-1680098056984-0c397d284e74?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y2FuZGxlc3xlbnwwfHwwfHx8MA%3D%3D",
+      "https://images.unsplash.com/photo-1613068431228-8cb6a1e92573?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2FuZGxlc3xlbnwwfHwwfHx8MA%3D%3D",
+    ],
     stock: 40,
     discounted: true,
   },
@@ -210,6 +257,11 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     tagline: "Non-slip eco material",
     image:
       "https://plus.unsplash.com/premium_photo-1663090241828-1d5f7456b699?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    images: [
+      "https://plus.unsplash.com/premium_photo-1663090241828-1d5f7456b699?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1646239646963-b0b9be56d6b5?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8eW9nYSUyMG1hdHxlbnwwfHwwfHx8MA%3D%3D",
+      "https://images.unsplash.com/photo-1718862403436-616232ec6005?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8eW9nYSUyMG1hdHxlbnwwfHwwfHx8MA%3D%3D",
+    ],
     stock: 20,
     discounted: true,
   },
@@ -418,7 +470,10 @@ const buildProductsFromReviews = (reviews: Review[]) => {
       ? Number((stat.sum / stat.count).toFixed(1))
       : seed.rating ?? 0;
     const reviewCount = stat?.count ?? seed.reviews ?? 0;
-    return { ...seed, rating, reviews: reviewCount };
+    const galleryImages = seed.images?.length
+      ? seed.images
+      : [seed.image];
+    return { ...seed, rating, reviews: reviewCount, images: galleryImages };
   });
 };
 
@@ -440,6 +495,7 @@ export type AddProductPayload = {
   tagline: string;
   description?: string;
   image: string;
+  images?: string[];
   compareAtPrice?: number;
   stock?: number;
 };
@@ -627,6 +683,10 @@ export const useStore = create<State & Actions>()(
         const imageUrl =
           payload.image?.trim() ||
           "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800&auto=format&fit=crop";
+        const normalizedGallery =
+          payload.images?.map((img) => img.trim()).filter(Boolean) ?? [];
+        const extraGallery = normalizedGallery.filter((img) => img !== imageUrl);
+        const galleryImages = [imageUrl, ...extraGallery];
         let compareAtPrice: number | undefined;
         if (payload.compareAtPrice && payload.compareAtPrice > price) {
           compareAtPrice = payload.compareAtPrice;
@@ -647,7 +707,8 @@ export const useStore = create<State & Actions>()(
           seller: currentUser.username ?? currentUser.email,
           tagline: payload.tagline?.trim() || "Seller listing",
           image: imageUrl,
-          rating: 4.5,
+          images: galleryImages,
+          rating: 0,
           reviews: 0,
           discounted: Boolean(compareAtPrice),
           stock: Math.floor(stockValue),

@@ -6,6 +6,7 @@ import { HiOutlineMinus, HiOutlinePlus } from "react-icons/hi";
 import { IoIosClose, IoIosHome } from "react-icons/io";
 import { isOrderDelivered, useStore } from "../store/useStore";
 import { useNavigate } from "react-router-dom";
+import ImageGallery from "./ImageGallery";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -46,6 +47,8 @@ export default function ProductModal() {
     () => products.find((p) => p.id === selectedProductId),
     [products, selectedProductId]
   );
+
+  const galleryImages = product?.images?.length ? product.images : product ? [product.image] : [];
 
   const productReviews = useMemo(() => {
     if (!product) return [];
@@ -178,10 +181,11 @@ export default function ProductModal() {
           <div className="grid gap-4 grid-cols-[minmax(120px,150px)_minmax(0,1fr)] sm:grid-cols-[230px_minmax(0,1fr)] sm:items-start sm:gap-6">
             <div className="space-y-2 sm:space-y-3">
               <div className="overflow-hidden rounded-3xl border border-slate-100 bg-slate-50 shadow-inner sm:rounded-[28px]">
-                <img
-                  src={product.image}
+                <ImageGallery
+                  images={galleryImages}
                   alt={product.title}
-                  className="h-[150px] w-full object-cover sm:h-[200px]"
+                  className="space-y-3 p-3 sm:p-4"
+                  mainImageClassName="h-[150px] w-full object-cover rounded-2xl sm:h-[200px]"
                 />
               </div>
             </div>

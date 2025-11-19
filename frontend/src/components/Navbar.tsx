@@ -7,6 +7,7 @@ import { FiMenu, FiMoon, FiX } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { useStore } from "../store/useStore";
 import CartComponent from "./CartComponent";
+import { RiStoreLine } from "react-icons/ri";
 
 export default function Navbar() {
   const search = useStore((s) => s.filters.search ?? "");
@@ -58,6 +59,14 @@ export default function Navbar() {
       return;
     }
     navigate("/settings");
+    setIsMenuOpen(false);
+  };
+  const handleSellerDashboardNav = () => {
+    if (!user) {
+      navigate("/login", { state: { from: "/dashboard" } });
+      return;
+    }
+    navigate("/dashboard");
     setIsMenuOpen(false);
   };
 
@@ -255,16 +264,26 @@ export default function Navbar() {
                 </span>
               )}
             </button>
-            <button
-              type="button"
-              aria-label="Settings"
-              onClick={handleSettingsNav}
-              className="inline-flex h-12 w-12 items-center cursor-pointer justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
-            >
-              <IoPersonOutline />
-            </button>
+              <button
+                type="button"
+                aria-label="Settings"
+                onClick={handleSettingsNav}
+                className="inline-flex h-12 w-12 items-center cursor-pointer justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+              >
+                <IoPersonOutline />
+              </button>
+              {user?.accountType === "seller" && (
+                <button
+                  type="button"
+                  aria-label="Seller dashboard"
+                  onClick={handleSellerDashboardNav}
+                  className="inline-flex h-12 w-12 items-center cursor-pointer justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+                >
+                  <RiStoreLine className="h-5 w-5" />
+                </button>
+              )}
+            </div>
           </div>
-        </div>
       </div>
 
       {isMenuOpen && (
@@ -320,6 +339,15 @@ export default function Navbar() {
                 >
                   Settings
                 </button>
+                {user?.accountType === "seller" && (
+                  <button
+                    type="button"
+                    onClick={handleSellerDashboardNav}
+                    className="rounded-2xl border cursor-pointer border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-900"
+                  >
+                    Seller dashboard
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={handleLogout}
