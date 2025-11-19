@@ -21,8 +21,6 @@ export default function Settings() {
   const updateUsername = useStore((state) => state.updateUsername);
   const [usernameInput, setUsernameInput] = useState(user?.username ?? "");
   const [usernameError, setUsernameError] = useState<string | null>(null);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [passwordMessage, setPasswordMessage] = useState<string | null>(null);
   const [usernameSuccess, setUsernameSuccess] = useState<string | null>(null);
 
   useEffect(() => {
@@ -58,6 +56,27 @@ export default function Settings() {
     setPasswordForm({ current: "", next: "", confirm: "" });
     setPasswordMessage("Password updated.");
     setPasswordError(null);
+  };
+
+  const handleUsernameSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const trimmed = usernameInput.trim();
+
+    if (!user) {
+      setUsernameError("Log in to update your username.");
+      setUsernameSuccess(null);
+      return;
+    }
+    if (!isUsernameValid(trimmed)) {
+      setUsernameError(`Username must be ${usernameRequirements}.`);
+      setUsernameSuccess(null);
+      return;
+    }
+
+    setUsernameError(null);
+    setUsernameSuccess("Username updated.");
+    setUsernameInput(trimmed);
+    updateUsername(trimmed);
   };
 
   const handleUsernameSubmit = (event: FormEvent<HTMLFormElement>) => {
