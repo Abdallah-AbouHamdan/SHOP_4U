@@ -8,6 +8,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
     defaults:
       run:
         working-directory: frontend 
@@ -24,19 +25,20 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install Playwright browsers
+      - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
       - name: Start frontend server
-        run: npm run dev &
-      
-      - name: Wait for server
-        run: npx wait-on http://localhost:5173
+        run: npm run dev -- --host 0.0.0.0 &
+        
+      - name: Wait for Vite server
+        run: npx wait-on http://127.0.0.1:5173
 
       - name: Run Playwright tests
         run: npx playwright test --reporter=html
 
-      - name: Upload Playwright report
+      - name: Upload Playwright HTML report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
