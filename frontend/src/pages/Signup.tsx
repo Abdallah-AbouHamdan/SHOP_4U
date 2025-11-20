@@ -78,6 +78,14 @@ export default function Signup() {
                     onSubmit={handleSubmit}
                     className="w-full max-w-md rounded-4xl border border-slate-200 bg-white px-6 py-8 text-slate-900 shadow-[0_25px_80px_rgba(15,23,42,0.08)]">
                     <div className="space-y-6">
+                        {formError && (
+                            <p
+                                className="text-sm font-semibold text-rose-500"
+                                role="alert"
+                            >
+                                {formError}
+                            </p>
+                        )}
                         <div className="space-y-1">
                             <h2 className="text-xl font-semibold text-slate-900">Sign Up</h2>
                             <p className="text-sm text-slate-500">
@@ -141,22 +149,11 @@ export default function Signup() {
                             </div>
                         </div>
 
-                        {formError ? (
-                            <p className="text-sm text-rose-500">{formError}</p>
-                        ) : null}
                         <button
                             type="submit"
                             className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
                             Create account
                         </button>
-                        {formError && (
-                            <p
-                                className="text-center text-xs font-semibold uppercase tracking-[0.3em] text-rose-500"
-                                role="alert"
-                            >
-                                {formError}
-                            </p>
-                        )}
                         <p className="text-center text-sm text-slate-600">
                             Already have an account?{" "}
                             <Link
