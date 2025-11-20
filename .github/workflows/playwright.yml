@@ -1,45 +1,32 @@
 name: Playwright Tests
 
 on:
+  push:
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: frontend 
-
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install dependencies
+      - name: Install frontend deps
+        working-directory: ./frontend
         run: npm install
 
       - name: Install Playwright Browsers
+        working-directory: ./frontend
         run: npx playwright install --with-deps
 
-      - name: Start frontend server
-        run: npm run dev -- --host 0.0.0.0 &
-        
-      - name: Wait for Vite server
-        run: npx wait-on http://127.0.0.1:5173
-
       - name: Run Playwright tests
-        run: npx playwright test --reporter=html
-
-      - name: Upload Playwright HTML report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: frontend/playwright-report/
+        working-directory: ./frontend
+        run: npx playwright test
