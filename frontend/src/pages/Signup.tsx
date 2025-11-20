@@ -16,7 +16,7 @@ const accountTypes = [
 ];
 export default function Signup() {
     const [accountType, setAccountType] = useState<"buyer" | "seller">("buyer");
-    const [formError, setFormError] = useState<string | null>(null);
+    const [signupError, setSignupError] = useState<string | null>(null);
     const registerUser = useStore((s) => s.registerUser);
     const user = useStore((s) => s.user);
     const [formError, setFormError] = useState<string | null>(null);
@@ -34,27 +34,27 @@ export default function Signup() {
         const password = (formData.get("password") as string) ?? "";
 
         if (!isUsernameValid(username)) {
-            setFormError(`Username must be ${usernameRequirements}.`);
+            setSignupError(`Username must be ${usernameRequirements}.`);
             return;
         }
         if (!isEmailValid(email)) {
-            setFormError("Please enter a valid email address.");
+            setSignupError("Please enter a valid email address.");
             return;
         }
         if (!isPasswordValid(password)) {
-            setFormError(`Password must be ${passwordRequirements}.`);
+            setSignupError(`Password must be ${passwordRequirements}.`);
             return;
         }
 
-        setFormError(null);
-        login({
+        setSignupError(null);
+        const result = registerUser({
             email: email.trim(),
             username: username.trim(),
             accountType,
             password,
         });
         if (!result.success) {
-            setFormError(result.error ?? "Unable to create an account.");
+            setSignupError(result.error ?? "Unable to create an account.");
             return;
         }
         navigate(redirectPath, { replace: true });
@@ -78,12 +78,12 @@ export default function Signup() {
                     onSubmit={handleSubmit}
                     className="w-full max-w-md rounded-4xl border border-slate-200 bg-white px-6 py-8 text-slate-900 shadow-[0_25px_80px_rgba(15,23,42,0.08)]">
                     <div className="space-y-6">
-                        {formError && (
+                        {signupError && (
                             <p
                                 className="text-sm font-semibold text-rose-500"
                                 role="alert"
                             >
-                                {formError}
+                                {signupError}
                             </p>
                         )}
                         <div className="space-y-1">
@@ -102,7 +102,7 @@ export default function Signup() {
                                 placeholder="shopper123"
                                 className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
                                 required
-                                onInput={() => setFormError(null)} />
+                                onInput={() => setSignupError(null)} />
                         </label>
 
                         <label className="space-y-2 text-sm font-semibold text-slate-700">
@@ -113,7 +113,7 @@ export default function Signup() {
                                 placeholder="you@example.com"
                                 className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
                                 required
-                                onInput={() => setFormError(null)} />
+                                onInput={() => setSignupError(null)} />
                         </label>
 
                         <label className="space-y-2 text-sm font-semibold text-slate-700">
@@ -124,7 +124,7 @@ export default function Signup() {
                                 placeholder="**********"
                                 className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-400 focus:bg-white "
                                 required
-                                onInput={() => setFormError(null)} />
+                                onInput={() => setSignupError(null)} />
                         </label>
 
                         <div className="space-y-3">

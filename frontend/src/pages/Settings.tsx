@@ -60,7 +60,7 @@ export default function Settings() {
     setPasswordError(null);
   };
 
-  const handleUsernameSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleUsernameSave = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const trimmed = usernameInput.trim();
 
@@ -260,7 +260,7 @@ export default function Settings() {
               <p className="text-xs text-slate-500">
                 Pick something distinctive – username must be {usernameRequirements}.
               </p>
-              <form className="mt-4 space-y-3 text-sm" onSubmit={handleUsernameSubmit}>
+              <form className="mt-4 space-y-3 text-sm" onSubmit={handleUsernameSave}>
                 <label
                   htmlFor="settings-username"
                   className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400 block"
