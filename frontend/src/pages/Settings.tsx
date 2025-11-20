@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useStore } from "../store/useStore";
 import { isUsernameValid, usernameRequirements } from "../utils/formValidation";
 
+
 const perks = [
   "Curated sellers with verified reviews so you shop with confidence.",
   "Fast checkout, transparent tracking, and 24/7 customer support.",
@@ -12,29 +13,23 @@ export default function Settings() {
   const user = useStore((state) => state.user);
   const logout = useStore((state) => state.logout);
   const changePassword = useStore((state) => state.changePassword);
-  const updateUsername = useStore((state) => state.updateUsername);
-
   const [passwordForm, setPasswordForm] = useState({
     current: "",
     next: "",
     confirm: "",
   });
-
-  const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [passwordMessage, setPasswordMessage] = useState<string | null>(null);
-
+  const updateUsername = useStore((state) => state.updateUsername);
   const [usernameInput, setUsernameInput] = useState(user?.username ?? "");
   const [usernameError, setUsernameError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordMessage, setPasswordMessage] = useState<string | null>(null);
   const [usernameSuccess, setUsernameSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     setUsernameInput(user?.username ?? "");
   }, [user?.username]);
 
-  const handlePasswordChange = (
-    field: keyof typeof passwordForm,
-    value: string
-  ) => {
+  const handlePasswordChange = (field: keyof typeof passwordForm, value: string) => {
     setPasswordForm((prev) => ({ ...prev, [field]: value }));
     setPasswordError(null);
     setPasswordMessage(null);
@@ -44,53 +39,46 @@ export default function Settings() {
     event.preventDefault();
     setPasswordError(null);
     setPasswordMessage(null);
+    const trimmedNext = passwordForm.next.trim();
 
-    const trimmed = passwordForm.next.trim();
-
-    if (trimmed.length < 8) {
+    if (trimmedNext.length < 8) {
       setPasswordError("New password must be at least 8 characters long.");
       return;
     }
-    if (trimmed !== passwordForm.confirm) {
+    if (trimmedNext !== passwordForm.confirm) {
       setPasswordError("New password and confirmation do not match.");
       return;
     }
 
-    const result = changePassword({
-      current: passwordForm.current,
-      next: trimmed,
-    });
-
-    if (!result.success) {
+    const result = changePassword({ current: passwordForm.current, next: trimmedNext });
+    if(!result.success){
       setPasswordError(result.error ?? "Failed to change password.");
       return;
     }
-
     setPasswordForm({ current: "", next: "", confirm: "" });
     setPasswordMessage("Password updated.");
+    setPasswordError(null);
   };
 
   const handleUsernameSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const trimmed = usernameInput.trim();
 
     if (!user) {
       setUsernameError("Log in to update your username.");
       setUsernameSuccess(null);
       return;
     }
-
-    const trimmed = usernameInput.trim();
-
     if (!isUsernameValid(trimmed)) {
       setUsernameError(`Username must be ${usernameRequirements}.`);
       setUsernameSuccess(null);
       return;
     }
 
-    updateUsername(trimmed);
-    setUsernameInput(trimmed);
     setUsernameError(null);
     setUsernameSuccess("Username updated.");
+    setUsernameInput(trimmed);
+    updateUsername(trimmed);
   };
 
   const handleUsernameSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -123,8 +111,8 @@ export default function Settings() {
           </p>
           <h1 className="text-3xl font-semibold text-slate-900">Settings</h1>
           <p className="text-sm text-slate-500">
-            Manage your profile, reset your password, and learn why SHOP_4U delivers
-            a modern retail experience.
+            Manage your profile, reset your password, and learn why SHOP_4U delivers a
+            modern retail experience.
           </p>
         </header>
 
@@ -146,12 +134,11 @@ export default function Settings() {
                 {user?.accountType ?? "buyer"}
               </span>
             </div>
-
             <p className="text-sm text-slate-600">
               Keep your profile secure, control your preferences, and enjoy a tailored
-              shopping experience.
+              shopping experience. Update your details as needed and log out when you're
+              done.
             </p>
-
             <button
               type="button"
               onClick={logout}
@@ -179,9 +166,7 @@ export default function Settings() {
           </div>
         </div>
 
-        {/* PASSWORD + USERNAME FORMS */}
         <section className="grid gap-6 md:grid-cols-2">
-          {/* RESET PASSWORD */}
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm h-full">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-slate-900">Reset password</h3>
@@ -189,7 +174,6 @@ export default function Settings() {
                 secure
               </p>
             </div>
-
             <form
               className="mt-6 space-y-4 text-sm text-slate-600"
               onSubmit={handlePasswordSubmit}
@@ -202,13 +186,10 @@ export default function Settings() {
                   type="password"
                   value={passwordForm.current}
                   required
-                  onChange={(e) =>
-                    handlePasswordChange("current", e.target.value)
-                  }
+                  onChange={(event) => handlePasswordChange("current", event.target.value)}
                   className="rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none focus:border-slate-400"
                 />
               </label>
-
               <label className="flex flex-col gap-1">
                 <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
                   New password
@@ -217,11 +198,10 @@ export default function Settings() {
                   type="password"
                   value={passwordForm.next}
                   required
-                  onChange={(e) => handlePasswordChange("next", e.target.value)}
+                  onChange={(event) => handlePasswordChange("next", event.target.value)}
                   className="rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none focus:border-slate-400"
                 />
               </label>
-
               <label className="flex flex-col gap-1">
                 <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
                   Confirm password
@@ -230,51 +210,39 @@ export default function Settings() {
                   type="password"
                   value={passwordForm.confirm}
                   required
-                  onChange={(e) =>
-                    handlePasswordChange("confirm", e.target.value)
-                  }
+                  onChange={(event) => handlePasswordChange("confirm", event.target.value)}
                   className="rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none focus:border-slate-400"
                 />
               </label>
-
-              {passwordError && (
+              {passwordError ? (
                 <p className="text-sm text-rose-500">{passwordError}</p>
-              )}
-
-              {passwordMessage && (
+              ) : null}
+              {passwordMessage ? (
                 <p className="text-sm text-emerald-500">{passwordMessage}</p>
-              )}
-
+              ) : null}
               <button
                 type="submit"
-                className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-slate-800"
+                className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-500/20 transition hover:bg-slate-800"
               >
                 Save password
               </button>
             </form>
           </div>
-
-          {/* UPDATE USERNAME */}
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm h-full">
             <h3 className="text-lg font-semibold text-slate-900">Profile snapshot</h3>
-
             <dl className="mt-6 grid gap-4 text-sm text-slate-600">
               <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
                 <dt className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
                   Email
                 </dt>
-                <dd className="font-semibold text-slate-900">
-                  {user?.email ?? "guest@shop4u.com"}
-                </dd>
+                <dd className="font-semibold text-slate-900">{user?.email ?? "guest@shop4u.com"}</dd>
               </div>
-
               <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
                 <dt className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
                   Member since
                 </dt>
                 <dd className="font-semibold text-slate-900">2025</dd>
               </div>
-
               <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
                 <dt className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
                   Preferred
@@ -284,55 +252,51 @@ export default function Settings() {
                 </dd>
               </div>
             </dl>
-
             <p className="mt-5 text-sm text-slate-500">
               Updating your profile keeps your recommendations and deliveries on point.
             </p>
-
             <div className="mt-6 border-t border-slate-100 pt-6">
               <h3 className="text-sm font-semibold text-slate-900">Update username</h3>
               <p className="text-xs text-slate-500">
-                Username must be {usernameRequirements}.
+                Pick something distinctive – username must be {usernameRequirements}.
               </p>
-
               <form className="mt-4 space-y-3 text-sm" onSubmit={handleUsernameSubmit}>
                 <label
                   htmlFor="settings-username"
-                  className="block text-xs font-semibold uppercase tracking-[0.3em] text-slate-400"
+                  className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400 block"
                 >
                   Username
                 </label>
-
                 <input
                   id="settings-username"
                   type="text"
                   value={usernameInput}
                   disabled={!user}
-                  onChange={(e) => {
-                    setUsernameInput(e.target.value);
+                  onChange={(event) => {
+                    setUsernameInput(event.target.value);
                     setUsernameError(null);
                     setUsernameSuccess(null);
                   }}
                   placeholder="shopper123"
                   className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none placeholder:text-slate-400 focus:border-slate-400 focus:bg-white disabled:cursor-not-allowed disabled:bg-slate-100"
                 />
-
                 <button
                   type="submit"
                   disabled={!user}
-                  className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:bg-slate-400 disabled:cursor-not-allowed"
+                  className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
                 >
                   Save username
                 </button>
-
                 {usernameError && (
-                  <p className="text-xs font-semibold uppercase tracking-[0.3em] text-rose-500">
+                  <p
+                    className="text-xs font-semibold uppercase tracking-[0.3em] text-rose-500"
+                    role="alert"
+                  >
                     {usernameError}
                   </p>
                 )}
-
                 {usernameSuccess && (
-                  <p className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-500">
+                  <p className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-500" role="status">
                     {usernameSuccess}
                   </p>
                 )}
@@ -342,5 +306,6 @@ export default function Settings() {
         </section>
       </div>
     </section>
+
   );
 }
