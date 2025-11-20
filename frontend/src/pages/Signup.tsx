@@ -13,13 +13,13 @@ const accountTypes = [
     { value: "buyer", label: "Buyer - Shop for products" },
     { value: "seller", label: "Seller - Sell your products" }
 ];
-
 export default function Signup() {
     const [accountType, setAccountType] = useState<"buyer" | "seller">("buyer");
     const [formError, setFormError] = useState<string | null>(null);
 
     const registerUser = useStore((s) => s.registerUser);
     const user = useStore((s) => s.user);
+    const [formError, setFormError] = useState<string | null>(null);
     const navigate = useNavigate();
     const location = useLocation();
     const state = location.state as { from?: string } | null;
@@ -48,7 +48,7 @@ export default function Signup() {
         }
 
         setFormError(null);
-        const result = registerUser({
+        login({
             email: email.trim(),
             username: username.trim(),
             accountType,

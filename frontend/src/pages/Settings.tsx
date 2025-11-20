@@ -93,6 +93,27 @@ export default function Settings() {
     setUsernameSuccess("Username updated.");
   };
 
+  const handleUsernameSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const trimmed = usernameInput.trim();
+
+    if (!user) {
+      setUsernameError("Log in to update your username.");
+      setUsernameSuccess(null);
+      return;
+    }
+    if (!isUsernameValid(trimmed)) {
+      setUsernameError(`Username must be ${usernameRequirements}.`);
+      setUsernameSuccess(null);
+      return;
+    }
+
+    setUsernameError(null);
+    setUsernameSuccess("Username updated.");
+    setUsernameInput(trimmed);
+    updateUsername(trimmed);
+  };
+
   return (
     <section className="bg-[#f8fafc] py-12">
       <div className="mx-auto w-11/12 max-w-6xl space-y-8">
