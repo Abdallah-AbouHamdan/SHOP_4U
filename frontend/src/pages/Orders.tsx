@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 import { TbPackage } from "react-icons/tb";
 import { getActiveOrderStatus, getOrderTimeline, useStore } from "../store/useStore";
@@ -25,6 +26,11 @@ const statusTimeFormatter = new Intl.DateTimeFormat("en-US", {
 
 export default function Orders() {
   const { orders, products, user } = useStore();
+  const [openOrderId, setOpenOrderId] = useState<string | null>(null);
+  const productLookup = useMemo(
+    () => new Map(products.map((product) => [product.id, product])),
+    [products]
+  );
   const userOrders = user ? orders.filter((order) => order.userEmail === user.email) : [];
   const sortedOrders = [...userOrders].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -44,7 +50,17 @@ export default function Orders() {
           {sortedOrders.length ? (
             sortedOrders.map((order) => {
               const totalItems = order.items.reduce((sum, item) => sum + item.quantity, 0);
-              const previewProduct = products.find((p) => p.id === order.items[0]?.productId);
+              const previewProduct = productLookup.get(order.items[0]?.productId ?? "");
+              const orderItems = order.items
+                .map(({ productId, quantity }) => {
+                  const product = productLookup.get(productId);
+                  if (!product) return null;
+                  return { product, quantity };
+                })
+                .filter(Boolean) as {
+                  product: (typeof products)[number];
+                  quantity: number;
+                }[];
               const orderDate = new Intl.DateTimeFormat("en-US", {
 
                 month: "long",
@@ -53,6 +69,7 @@ export default function Orders() {
               }).format(new Date(order.createdAt));
               const timeline = getOrderTimeline(order);
               const activeStatus = getActiveOrderStatus(order);
+              const drawerOpen = openOrderId === order.id;
               return (
                 <article
                   key={order.id}
@@ -88,7 +105,22 @@ export default function Orders() {
                         >
                           {activeStatus.status}
                         </span>
-                        <BiChevronDown className="text-lg text-slate-300" />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setOpenOrderId((current) => (current === order.id ? null : order.id))
+                          }
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 transition hover:text-slate-900"
+                          aria-expanded={drawerOpen}
+                          aria-controls={`order-items-${order.id}`}
+                        >
+                          Items ({totalItems})
+                          <BiChevronDown
+                            className={`text-lg transition ${
+                              drawerOpen ? "rotate-180 text-slate-900" : "text-slate-300"
+                            }`}
+                          />
+                        </button>
                       </div>
                     </div>
                     <dl className="space-y-1 text-sm text-slate-500">
@@ -130,6 +162,44 @@ export default function Orders() {
                         );
                       })}
                     </div>
+                    {drawerOpen ? (
+                      <div
+                        id={`order-items-${order.id}`}
+                        className="mt-4 space-y-3 rounded-2xl border border-slate-200 bg-slate-50 p-4"
+                      >
+                        <div className="flex items-center justify-between text-sm font-semibold text-slate-900">
+                          <p>Items in this order</p>
+                          <span className="text-xs uppercase tracking-[0.3em] text-slate-500">
+                            {totalItems} {totalItems === 1 ? "item" : "items"}
+                          </span>
+                        </div>
+                        {orderItems.length ? (
+                          orderItems.map(({ product, quantity }) => (
+                            <div
+                              key={product.id}
+                              className="flex items-center gap-3 rounded-xl bg-white px-3 py-2 shadow-sm"
+                            >
+                              <img
+                                src={product.image}
+                                alt={product.title}
+                                className="h-16 w-16 flex-shrink-0 rounded-xl object-cover"
+                              />
+                              <div className="flex flex-1 flex-col gap-1">
+                                <p className="text-sm font-semibold text-slate-900">{product.title}</p>
+                                <p className="text-xs text-slate-500">{product.seller}</p>
+                                <p className="text-xs font-semibold text-slate-700">
+                                  Qty {quantity} · {currency.format(product.price * quantity)}
+                                </p>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-sm text-slate-500">
+                            Products for this order are no longer available.
+                          </p>
+                        )}
+                      </div>
+                    ) : null}
                   </div>
                 </article>
               );
