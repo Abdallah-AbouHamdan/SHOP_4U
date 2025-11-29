@@ -1,8 +1,9 @@
+import { useEffect, useState, type MouseEvent } from "react";
 import { FaStar } from "react-icons/fa";
 import { GiShoppingCart } from "react-icons/gi";
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { useStore } from "../store/useStore";
 import { useLocation, useNavigate } from "react-router-dom";
-import type { MouseEvent } from "react";
 import { CiHeart } from "react-icons/ci";
 
 type Props = { id: string };
@@ -20,6 +21,22 @@ export default function ProductCard({ id }: Props) {
   const p = products.find((x) => x.id === id);
   if (!p) return null;
 
+  const galleryImages = p.images?.length ? p.images : [p.image];
+  const [activeImage, setActiveImage] = useState(0);
+
+  useEffect(() => {
+    setActiveImage(0);
+  }, [p.id]);
+
+  useEffect(() => {
+    if (galleryImages.length <= 1) return undefined;
+    const timer = setInterval(
+      () => setActiveImage((prev) => (prev + 1) % galleryImages.length),
+      4200
+    );
+    return () => clearInterval(timer);
+  }, [galleryImages.length]);
+
   const hasCompare = typeof p.compareAtPrice === "number";
   const discountPercent =
     hasCompare && p.compareAtPrice
@@ -34,19 +51,28 @@ export default function ProductCard({ id }: Props) {
       navigate("/login", { state: { from: location.pathname } });
       return;
     }
-    toggleFavorite(p.id)
-  }
+    toggleFavorite(p.id);
+  };
+
+  const openDetails = () => openProductModal(p.id);
 
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-100 bg-white p-4 shadow-[0_15px_45px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:border-slate-200 hover:shadow-[0_20px_55px_rgba(15,23,42,0.12)]">
-      <button
-        type="button"
-        onClick={() => openProductModal(p.id)}
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={openDetails}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openDetails();
+          }
+        }}
         className="relative w-full overflow-hidden rounded-2xl bg-slate-100 text-left transition focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-slate-900"
         aria-label={`View details for ${p.title}`}
       >
         <img
-          src={p.image}
+          src={galleryImages[activeImage]}
           className="h-56 w-full object-cover transition duration-700 group-hover:scale-105"
           loading="lazy"
           alt={p.title}
@@ -71,7 +97,45 @@ export default function ProductCard({ id }: Props) {
             </span>
           </span>
         </div>
-      </button>
+        {galleryImages.length > 1 && (
+          <>
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-3 opacity-0 transition duration-300 group-hover:opacity-100">
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setActiveImage((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+                }}
+                aria-label="Previous image"
+                className="pointer-events-auto inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-slate-800 shadow-sm transition hover:scale-105 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-slate-900"
+              >
+                <HiChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setActiveImage((prev) => (prev + 1) % galleryImages.length);
+                }}
+                aria-label="Next image"
+                className="pointer-events-auto inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-slate-800 shadow-sm transition hover:scale-105 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-slate-900"
+              >
+                <HiChevronRight className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="pointer-events-none absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
+              {galleryImages.map((_, index) => (
+                <span
+                  key={`${p.id}-dot-${index}`}
+                  className={`h-1.5 w-1.5 rounded-full transition ${
+                    index === activeImage ? "bg-white" : "bg-white/60"
+                  }`}
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
       <button
         type="button"
         onClick={handleFavoriteToggle}
