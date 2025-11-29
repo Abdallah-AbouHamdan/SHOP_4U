@@ -22,7 +22,6 @@ export default function ProductModal() {
     [products, selectedProductId]
   );
 
-  // Close the modal on Escape and prevent background scrolling while open.
   useEffect(() => {
     if (!product) return undefined;
     const onKeyDown = (event: KeyboardEvent) => {
@@ -67,7 +66,7 @@ export default function ProductModal() {
         <button
           type="button"
           onClick={closeProductModal}
-          className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:-translate-y-0.5 hover:text-slate-900"
+          className="absolute right-4 z-10 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:-translate-y-0.5 hover:text-slate-900"
           aria-label="Close product quick view"
         >
           ×
