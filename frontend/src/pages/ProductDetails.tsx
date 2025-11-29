@@ -132,6 +132,7 @@ export default function ProductDetails() {
                   <dd>{product.stock}</dd>
                 </div>
               </dl>
+              
             </div>
             <div className="rounded-4xl border border-slate-100 bg-white p-6 shadow-[0_25px_40px_rgba(15,23,42,0.08)]">
               <div className="flex items-center justify-between">
