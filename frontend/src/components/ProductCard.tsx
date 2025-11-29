@@ -19,14 +19,13 @@ export default function ProductCard({ id }: Props) {
   const navigate = useNavigate();
   const location = useLocation();
   const p = products.find((x) => x.id === id);
-  if (!p) return null;
 
-  const galleryImages = p.images?.length ? p.images : [p.image];
+  const galleryImages = (p?.images?.length ? p.images : p?.image ? [p.image] : []) as string[];
   const [activeImage, setActiveImage] = useState(0);
 
   useEffect(() => {
     setActiveImage(0);
-  }, [p.id]);
+  }, [p?.id]);
 
   useEffect(() => {
     if (galleryImages.length <= 1) return undefined;
@@ -36,6 +35,8 @@ export default function ProductCard({ id }: Props) {
     );
     return () => clearInterval(timer);
   }, [galleryImages.length]);
+
+  if (!p) return null;
 
   const hasCompare = typeof p.compareAtPrice === "number";
   const discountPercent =
