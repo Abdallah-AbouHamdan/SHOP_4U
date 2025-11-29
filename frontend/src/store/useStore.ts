@@ -549,7 +549,6 @@ type Actions = {
   };
   logout: () => void;
   updateUsername: (username: string) => void;
-  updateUser: (payload: Partial<User>) => void;
 };
 
 export type OrderStatusTimelineEntry = {

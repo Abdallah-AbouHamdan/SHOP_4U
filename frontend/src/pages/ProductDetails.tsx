@@ -71,7 +71,7 @@ export default function ProductDetails() {
           ← Back to shop
         </button>
         <div className="mt-6 grid gap-8 lg:grid-cols-[1.1fr,1fr]">
-          <div className="rounded-[32px] border border-slate-100 bg-slate-50 p-6 shadow-[0_25px_40px_rgba(15,23,42,0.15)]">
+          <div className="rounded-4xl border border-slate-100 bg-slate-50 p-6 shadow-[0_25px_40px_rgba(15,23,42,0.15)]">
             <ImageGallery
               images={galleryImages}
               alt={product.title}
@@ -116,7 +116,7 @@ export default function ProductDetails() {
             </button>
           </div>
           <div className="space-y-6">
-            <div className="rounded-[32px] border border-slate-100 bg-white p-6 shadow-[0_25px_40px_rgba(15,23,42,0.08)]">
+            <div className="rounded-4xl border border-slate-100 bg-white p-6 shadow-[0_25px_40px_rgba(15,23,42,0.08)]">
               <h2 className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-400">Product details</h2>
               <dl className="mt-4 space-y-3 text-sm text-slate-600">
                 <div className="flex justify-between">
@@ -133,7 +133,7 @@ export default function ProductDetails() {
                 </div>
               </dl>
             </div>
-            <div className="rounded-[32px] border border-slate-100 bg-white p-6 shadow-[0_25px_40px_rgba(15,23,42,0.08)]">
+            <div className="rounded-4xl border border-slate-100 bg-white p-6 shadow-[0_25px_40px_rgba(15,23,42,0.08)]">
               <div className="flex items-center justify-between">
                 <h2 className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-400">Reviews</h2>
                 <span className="text-xs text-slate-500">{productReviews.length} shared</span>
