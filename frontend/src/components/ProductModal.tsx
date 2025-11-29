@@ -57,7 +57,7 @@ export default function ProductModal() {
       .sort(
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
-  }, [product?.id, reviews]);
+  }, [product, reviews]);
 
   const canLeaveReview = useMemo(() => {
     if (!product || !user) return false;
@@ -67,7 +67,7 @@ export default function ProductModal() {
         isOrderDelivered(order) &&
         order.items.some((item) => item.productId === product.id)
     );
-  }, [orders, product?.id, user]);
+  }, [orders, product, user]);
 
   useEffect(() => {
     setQuantity(1);

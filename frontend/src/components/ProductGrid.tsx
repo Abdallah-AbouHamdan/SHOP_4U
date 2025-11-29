@@ -2,7 +2,7 @@ import { useStore } from "../store/useStore";
 import ProductCard from "./ProductCard";
 
 export default function ProductGrid() {
-  const { products, filters } = useStore();
+  const { products, filters, setFilter } = useStore();
   const searchTerm = (filters.search ?? "").trim().toLowerCase();
   const filtered = products
     .filter((p) => {
@@ -22,21 +22,25 @@ export default function ProductGrid() {
     })
   return (
     <>
-      <div className="mb-4 flex items-center justify-between text-sm text-slate-500">
+      <div className="mb-4 flex flex-col gap-3 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
         <span>
           Showing <span className="font-semibold text-slate-900">{filtered.length}</span>{" "}
           {filtered.length === 1 ? "item" : "items"}
         </span>
-        <span className="hidden sm:block">
-          Sorted by{" "}
-          <span className="font-medium text-slate-900">
-            {filters.sort === "popular"
-              ? "Most Popular"
-              : filters.sort === "priceLow"
-                ? "Price:Low to High"
-                : "Price:High to Low"}
-          </span>
-        </span>
+        <label className="flex items-center gap-2 text-slate-600">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-slate-400">Sort by</span>
+          <select
+            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-sm outline-none transition hover:border-slate-300"
+            value={filters.sort}
+            onChange={(e) =>
+              setFilter("sort", e.target.value as "popular" | "priceLow" | "priceHigh")
+            }
+          >
+            <option value="popular">Most Popular</option>
+            <option value="priceLow">Price: Low to High</option>
+            <option value="priceHigh">Price: High to Low</option>
+          </select>
+        </label>
       </div>
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
         {filtered.length === 0 ? (
