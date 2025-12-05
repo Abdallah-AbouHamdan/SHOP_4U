@@ -77,7 +77,7 @@ export default function ProductDetails() {
                 images={galleryImages}
                 alt={product.title}
                 className="space-y-4"
-                mainImageClassName="h-[400px] w-full rounded-[28px] object-cover"
+                mainImageClassName="h-[420px] w-full rounded-[28px] object-cover"
               />
             </div>
             <div className="flex flex-col gap-4">
@@ -109,7 +109,7 @@ export default function ProductDetails() {
                 )}
               </div>
               <p className="text-sm leading-relaxed text-slate-600">{product.description ?? product.tagline}</p>
-              <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4 text-sm text-slate-600">
+              <div className="rounded-2xl border border-slate-100 bg-slate-50/60 p-4 text-sm text-slate-600">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-slate-700">Seller</span>
                   <span>{product.seller}</span>
@@ -144,6 +144,7 @@ export default function ProductDetails() {
             </div>
           </div>
         </div>
+
         <div className="mt-8 rounded-4xl border border-slate-100 bg-white p-6 shadow-[0_25px_40px_rgba(15,23,42,0.08)]">
           <div className="flex items-center justify-between">
             <h2 className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-400">Reviews</h2>

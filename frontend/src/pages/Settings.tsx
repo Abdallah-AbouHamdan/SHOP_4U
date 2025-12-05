@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { useStore } from "../store/useStore";
 import { isUsernameValid, usernameRequirements } from "../utils/formValidation";
 
@@ -13,6 +14,7 @@ export default function Settings() {
   const user = useStore((state) => state.user);
   const logout = useStore((state) => state.logout);
   const changePassword = useStore((state) => state.changePassword);
+  const navigate = useNavigate();
   const [passwordForm, setPasswordForm] = useState({
     current: "",
     next: "",
@@ -81,6 +83,27 @@ export default function Settings() {
     updateUsername(trimmed);
   };
 
+  const handleUsernameSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const trimmed = usernameInput.trim();
+
+    if (!user) {
+      setUsernameError("Log in to update your username.");
+      setUsernameSuccess(null);
+      return;
+    }
+    if (!isUsernameValid(trimmed)) {
+      setUsernameError(`Username must be ${usernameRequirements}.`);
+      setUsernameSuccess(null);
+      return;
+    }
+
+    setUsernameError(null);
+    setUsernameSuccess("Username updated.");
+    setUsernameInput(trimmed);
+    updateUsername(trimmed);
+  };
+
   return (
     <section className="bg-[#f8fafc] py-12">
       <div className="mx-auto w-11/12 max-w-6xl space-y-8">
@@ -118,13 +141,22 @@ export default function Settings() {
               shopping experience. Update your details as needed and log out when you're
               done.
             </p>
-            <button
-              type="button"
-              onClick={logout}
-              className="inline-flex items-center justify-center rounded-2xl bg-rose-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-rose-600"
-            >
-              Logout
-            </button>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <button
+                type="button"
+                onClick={() => navigate("/orders")}
+                className="inline-flex items-center justify-center rounded-2xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-900 transition hover:border-slate-300 hover:bg-slate-50"
+              >
+                View order history
+              </button>
+              <button
+                type="button"
+                onClick={logout}
+                className="inline-flex items-center justify-center rounded-2xl bg-rose-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-rose-600"
+              >
+                Logout
+              </button>
+            </div>
           </div>
 
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm h-full">

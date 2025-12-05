@@ -22,6 +22,27 @@ export default function ProductModal() {
     [products, selectedProductId]
   );
 
+  const galleryImages = product?.images?.length ? product.images : product ? [product.image] : [];
+
+  const productReviews = useMemo(() => {
+    if (!product) return [];
+    return reviews
+      .filter((review) => review.productId === product.id)
+      .sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+  }, [product, reviews]);
+
+  const canLeaveReview = useMemo(() => {
+    if (!product || !user) return false;
+    return orders.some(
+      (order) =>
+        order.userEmail === user.email &&
+        isOrderDelivered(order) &&
+        order.items.some((item) => item.productId === product.id)
+    );
+  }, [orders, product, user]);
+
   useEffect(() => {
     if (!product) return undefined;
     const onKeyDown = (event: KeyboardEvent) => {

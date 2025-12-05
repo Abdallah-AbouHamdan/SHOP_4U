@@ -531,7 +531,7 @@ type Actions = {
   removeFromCart: (id: string) => void;
   removeProductFromCart: (id: string) => void;
   clearCart: () => void;
-  setFilter: (key: keyof State["filters"], value: any) => void;
+  setFilter: <K extends keyof State["filters"]>(key: K, value: State["filters"][K]) => void;
   openProductModal: (id: string) => void;
   closeProductModal: () => void;
   toggleFavorite: (id: string) => void;
@@ -549,7 +549,6 @@ type Actions = {
   };
   logout: () => void;
   updateUsername: (username: string) => void;
-  updateUser: (payload: Partial<User>) => void;
 };
 
 export type OrderStatusTimelineEntry = {

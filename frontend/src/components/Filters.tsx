@@ -122,24 +122,6 @@ export default function Filters() {
         />
       </label>
 
-      <div className="space-y-2">
-        <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Sort by
-        </label>
-        <div className="rounded-2xl border border-slate-200 bg-white px-3">
-          <select
-            className="w-full border-none bg-transparent py-2 text-sm font-medium text-slate-800 outline-none"
-            value={filters.sort}
-            onChange={(e) =>
-              setFilter("sort", e.target.value as "popular" | "priceLow" | "priceHigh")
-            }
-          >
-            <option value="popular">Most Popular</option>
-            <option value="priceLow">Price: Low to High</option>
-            <option value="priceHigh">Price: High to Low</option>
-          </select>
-        </div>
-      </div>
     </section>
   );
 }
