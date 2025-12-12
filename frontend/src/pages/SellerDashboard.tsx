@@ -77,6 +77,14 @@ export default function SellerDashboard() {
       setStatus({ type: "error", text: "Pick a category to continue." });
       return;
     }
+    const primaryImage = formState.image.trim();
+    const galleryImages = [formState.galleryImage1, formState.galleryImage2, formState.galleryImage3]
+      .map((url) => url.trim())
+      .filter(Boolean);
+    if (!primaryImage && galleryImages.length === 0) {
+      setStatus({ type: "error", text: "Add at least one product image before publishing." });
+      return;
+    }
     let compareAtPrice: number | undefined;
     if (formState.discountActive) {
       const parsed = Number(formState.compareAtPrice);
@@ -90,17 +98,13 @@ export default function SellerDashboard() {
       compareAtPrice = parsed;
     }
 
-    const galleryImages = [formState.galleryImage1, formState.galleryImage2, formState.galleryImage3]
-      .map((url) => url.trim())
-      .filter(Boolean);
-
     const result = addProduct({
       title: trimmedTitle,
       tagline: formState.tagline.trim() || "Fresh seller listing",
       category: formState.category,
       price,
       compareAtPrice,
-      image: formState.image.trim() || "",
+      image: primaryImage,
       images: galleryImages,
       stock: Number(formState.stock),
       description: formState.description.trim() || undefined,
@@ -203,6 +207,7 @@ export default function SellerDashboard() {
                     onChange={(event) => handleInputChange("image", event.target.value)}
                     className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-slate-400 focus:bg-white"
                     placeholder="https://images.unsplash.com/..."
+                    required
                   />
                 </label>
               </div>

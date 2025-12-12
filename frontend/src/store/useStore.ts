@@ -680,13 +680,16 @@ export const useStore = create<State & Actions>()(
         if (!payload.category) {
           return { success: false, error: "Select a category." };
         }
-        const imageUrl =
-          payload.image?.trim() ||
-          "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800&auto=format&fit=crop";
+        const imageUrl = payload.image?.trim();
         const normalizedGallery =
           payload.images?.map((img) => img.trim()).filter(Boolean) ?? [];
-        const extraGallery = normalizedGallery.filter((img) => img !== imageUrl);
-        const galleryImages = [imageUrl, ...extraGallery];
+        if (!imageUrl && normalizedGallery.length === 0) {
+          return { success: false, error: "Add at least one image to create a listing." };
+        }
+        const extraGallery = imageUrl
+          ? normalizedGallery.filter((img) => img !== imageUrl)
+          : normalizedGallery;
+        const galleryImages = imageUrl ? [imageUrl, ...extraGallery] : extraGallery;
         let compareAtPrice: number | undefined;
         if (payload.compareAtPrice && payload.compareAtPrice > price) {
           compareAtPrice = payload.compareAtPrice;
@@ -706,7 +709,7 @@ export const useStore = create<State & Actions>()(
           category: payload.category,
           seller: currentUser.username ?? currentUser.email,
           tagline: payload.tagline?.trim() || "Seller listing",
-          image: imageUrl,
+          image: imageUrl ?? galleryImages[0],
           images: galleryImages,
           rating: 0,
           reviews: 0,
