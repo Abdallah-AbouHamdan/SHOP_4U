@@ -2,12 +2,10 @@ import { Product } from "../models/Product.js";
 import { Store } from "../models/Store.js";
 import mongoose from "mongoose";
 
-/**
- * CREATE PRODUCT (SELLER ONLY)
- */
+
 export const createProduct = async (req, res) => {
   try {
-    const user = req.user; // comes from auth middleware
+    const user = req.user;
     const {
       title,
       description,
@@ -22,7 +20,6 @@ export const createProduct = async (req, res) => {
       return res.status(403).json({ error: "Only sellers can create products" });
     }
 
-    // Get seller store
     const store = await Store.findOne({ owner: user.userId });
     if (!store || !store.approved) {
       return res.status(403).json({ error: "Store not approved" });
@@ -51,9 +48,7 @@ export const createProduct = async (req, res) => {
   }
 };
 
-/**
- * GET ALL PRODUCTS (PUBLIC)
- */
+
 export const getProducts = async (req, res) => {
   try {
     const products = await Product.find()
@@ -67,9 +62,7 @@ export const getProducts = async (req, res) => {
   }
 };
 
-/**
- * GET PRODUCT BY ID (PUBLIC)
- */
+
 export const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -93,9 +86,7 @@ export const getProductById = async (req, res) => {
   }
 };
 
-/**
- * UPDATE PRODUCT (OWNER SELLER ONLY)
- */
+
 export const updateProduct = async (req, res) => {
   try {
     const user = req.user;
@@ -127,9 +118,7 @@ export const updateProduct = async (req, res) => {
   }
 };
 
-/**
- * DELETE PRODUCT (OWNER SELLER ONLY)
- */
+
 export const deleteProduct = async (req, res) => {
   try {
     const user = req.user;
