@@ -182,7 +182,7 @@ export default function Orders() {
                               <img
                                 src={product.image}
                                 alt={product.title}
-                                className="h-16 w-16 flex-shrink-0 rounded-xl object-cover"
+                                className="h-16 w-16 shrink-0 rounded-xl object-cover"
                               />
                               <div className="flex flex-1 flex-col gap-1">
                                 <p className="text-sm font-semibold text-slate-900">{product.title}</p>
