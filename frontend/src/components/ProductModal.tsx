@@ -48,7 +48,10 @@ export default function ProductModal() {
     [products, selectedProductId]
   );
 
-  const galleryImages = product?.images?.length ? product.images : product ? [product.image] : [];
+  const galleryImages = useMemo(() => {
+    if (!product) return [];
+    return product.images?.length ? product.images : [product.image];
+  }, [product]);
 
   const productReviews = useMemo(() => {
     if (!product) return [];
