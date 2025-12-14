@@ -73,6 +73,11 @@ export default function SellerDashboard() {
       setStatus({ type: "error", text: "Product title is required." });
       return;
     }
+    const trimmedImage = formState.image.trim();
+    if (!trimmedImage) {
+      setStatus({ type: "error", text: "Add a product image to publish your listing." });
+      return;
+    }
     if (!formState.category) {
       setStatus({ type: "error", text: "Pick a category to continue." });
       return;
@@ -100,7 +105,7 @@ export default function SellerDashboard() {
       category: formState.category,
       price,
       compareAtPrice,
-      image: formState.image.trim() || "",
+      image: trimmedImage,
       images: galleryImages,
       stock: Number(formState.stock),
       description: formState.description.trim() || undefined,
@@ -196,16 +201,17 @@ export default function SellerDashboard() {
                 </label>
 
                 <label className="space-y-1 text-sm font-semibold text-slate-600">
-                  Image URL
-                  <input
-                    type="url"
-                    value={formState.image}
-                    onChange={(event) => handleInputChange("image", event.target.value)}
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-slate-400 focus:bg-white"
-                    placeholder="https://images.unsplash.com/..."
-                  />
-                </label>
-              </div>
+                Image URL
+                <input
+                  type="url"
+                  value={formState.image}
+                  onChange={(event) => handleInputChange("image", event.target.value)}
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-slate-400 focus:bg-white"
+                  placeholder="https://images.unsplash.com/..."
+                  required
+                />
+              </label>
+            </div>
 
               <label className="space-y-1 text-sm font-semibold text-slate-600">
                 Description (optional)

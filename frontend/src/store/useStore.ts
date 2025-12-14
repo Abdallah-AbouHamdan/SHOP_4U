@@ -681,9 +681,10 @@ export const useStore = create<State & Actions>()(
         if (!payload.category) {
           return { success: false, error: "Select a category." };
         }
-        const imageUrl =
-          payload.image?.trim() ||
-          "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800&auto=format&fit=crop";
+        const imageUrl = payload.image?.trim();
+        if (!imageUrl) {
+          return { success: false, error: "Add a primary product image to publish." };
+        }
         const normalizedGallery =
           payload.images?.map((img) => img.trim()).filter(Boolean) ?? [];
         const extraGallery = normalizedGallery.filter((img) => img !== imageUrl);
